@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Crostata</string>
+    <string name="become_a_citizen"><a href="https://www.google.com">
+        Become a Citizen</a></string>
 </resources>
