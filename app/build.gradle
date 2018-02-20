@@ -11,13 +11,18 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "0.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFile 'C:/Users/Sid/AndroidStudioProjects/Crostata/app/proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true
+            proguardFile 'C:/Users/Sid/AndroidStudioProjects/Crostata/app/proguard-rules.pro'
         }
     }
     buildToolsVersion '27.0.3'
@@ -34,14 +39,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     implementation 'com.google.dagger:dagger:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.airbnb.android:lottie:2.5.0-rc1'
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     implementation 'io.reactivex:rxandroid:1.2.1'
-    implementation "io.reactivex.rxjava2:rxjava:2.1.7"
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.android.support:recyclerview-v7:27.0.2'

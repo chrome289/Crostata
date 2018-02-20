@@ -1,12 +1,13 @@
-package xyz.siddharthseth.crostata.data
+package xyz.siddharthseth.crostata.data.model
 
 object Subject {
     var birthId = ""
     var password = ""
 
     fun getInstance(birthId: String, password: String): Subject {
-        this.birthId = birthId
-        this.password = password
+        Subject.birthId = birthId
+        Subject.password = password
         return this
     }
+
 }
