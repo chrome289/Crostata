@@ -20,44 +20,34 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Platform calls Class.forName on types which do not exist on Android to determine platform.
--dontnote retrofit2.Platform
-# Platform used when running on Java 8 VMs. Will not be used at runtime.
--dontwarn retrofit2.Platform$Java8
-# Retain generic type information for use by reflection by converters and adapters.
--keepattributes Signature
-# Retain declared checked exceptions for use by a Proxy instance.
--keepattributes Exceptions
+### OKHTTP
+-dontnote okhttp3.internal.Platform
+
+
+-dontwarn javax.annotation.**
+
+-dontwarn sun.misc.Unsafe
+-dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
+
+#dagger
+-dontwarn com.google.errorprone.annotations.**
+
+#retrofit
 -dontwarn okio.**
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-keepattributes Signature
+-keepattributes Exceptions
 
-# Retrofit 2.X
-## https://square.github.io/retrofit/ ##
 
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
-
--keepclasseswithmembers class * {
-    @retrofit2.http.* <methods>;
+#glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
 }
 
-# rxjava
--keep class rx.schedulers.Schedulers {
-    public static <methods>;
-}
--keep class rx.schedulers.ImmediateScheduler {
-    public <methods>;
-}
--keep class rx.schedulers.TestScheduler {
-    public <methods>;
-}
--keep class rx.schedulers.Schedulers {
-    public static ** test();
-}
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
-    long producerIndex;
-    long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-    long producerNode;
-    long consumerNode;
-}
+#If you're targeting any API level less than Android API 27, also include:
+##pro
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder

@@ -4,9 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 27
     defaultConfig {
+        multiDexEnabled true
         applicationId 'xyz.siddharthseth.crostata'
         minSdkVersion 21
         targetSdkVersion 27
@@ -17,12 +20,16 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            useProguard true
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFile 'C:/Users/Sid/AndroidStudioProjects/Crostata/app/proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
-            proguardFile 'C:/Users/Sid/AndroidStudioProjects/Crostata/app/proguard-rules.pro'
+            /* minifyEnabled true
+             useProguard true
+             shrinkResources true
+           //  proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             proguardFile 'C:/Users/Sid/AndroidStudioProjects/Crostata/app/proguard-rules.pro'*/
         }
     }
     buildToolsVersion '27.0.3'
@@ -39,6 +46,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+
+    kapt "android.arch.lifecycle:compiler:1.1.0"
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    //annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
     implementation 'com.google.dagger:dagger:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
     implementation 'de.hdodenhof:circleimageview:2.2.0'

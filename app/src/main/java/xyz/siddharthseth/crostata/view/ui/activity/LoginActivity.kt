@@ -1,12 +1,10 @@
 package xyz.siddharthseth.crostata.view.ui
 
 import android.app.AlertDialog
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
-import android.util.JsonReader
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_login.*
@@ -14,14 +12,14 @@ import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 import xyz.siddharthseth.crostata.modelView.LoginActivityViewModel
-import java.io.InputStreamReader
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private val TAG = "LoginActivity"
-    private var loginActivityViewModel = LoginActivityViewModel()
-    private var compositeSubscription = CompositeSubscription()
+
+    var loginActivityViewModel = LoginActivityViewModel()
+    var compositeSubscription = CompositeSubscription()
 
     override fun onClick(view: View?) {
         if (view != null) {
@@ -48,17 +46,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun hideLoadingDialog() {
-        loadingFrame.visibility=View.GONE
+        loadingFrame.visibility = View.GONE
         animationView.cancelAnimation()
     }
 
     private fun showLoadingDialog() {
-        loadingFrame.visibility=View.VISIBLE
+        loadingFrame.visibility = View.VISIBLE
         animationView.playAnimation()
     }
 
     private fun openHomePage() {
-        startActivity(Intent(this,MainActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
 
@@ -89,7 +87,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        loginActivityViewModel = LoginActivityViewModel()
 
         loadingFrame.setOnClickListener { v ->
             Log.v(TAG, "Don't click")
@@ -99,7 +96,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val token = SharedPrefrencesService().getToken(this)
         if (token.isNotEmpty()) {
             showLoadingDialog()
-            loginActivityViewModel.signInSilently(token,this)
+            loginActivityViewModel.signInSilently(token, this)
                     .subscribe({ resultCode ->
                         hideLoadingDialog()
                         if (resultCode == 0) {

@@ -1,11 +1,9 @@
 package xyz.siddharthseth.crostata.data.service
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.view.Display
 import xyz.siddharthseth.crostata.data.model.Subject
-import xyz.siddharthseth.crostata.data.model.Token
+import xyz.siddharthseth.crostata.data.model.retrofit.Token
 
 class SharedPrefrencesService {
     fun saveToken(token: Token, context: Context): Boolean {
