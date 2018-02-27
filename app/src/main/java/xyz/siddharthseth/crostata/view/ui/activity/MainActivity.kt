@@ -35,9 +35,9 @@ class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteraction
                 .commit()
 
 
-        homeFeedViewModel.getNextPosts(this).subscribe({ post ->
+        homeFeedViewModel.getNextPosts(this).subscribe({ postList ->
             Log.v(TAG, "got a post")
-            homeFeedFragment.addNewPost(post)
+            homeFeedFragment.addNewPosts(postList)
         }, { onError ->
             onError.printStackTrace()
             Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)

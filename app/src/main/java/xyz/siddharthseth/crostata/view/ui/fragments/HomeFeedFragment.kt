@@ -76,8 +76,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun addNewPost(post: Post) {
-        homeFeedAdapter.postList.add(post)
+    fun addNewPosts(postList: ArrayList<Post>) {
+        homeFeedAdapter.postList.addAll(postList)
+        homeFeedAdapter.sortList()
         homeFeedAdapter.notifyDataSetChanged()
     }
 
