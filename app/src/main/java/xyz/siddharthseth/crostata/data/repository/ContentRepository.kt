@@ -9,10 +9,14 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
     val TAG = "ContentRepository"
 
     fun getNextPostsList(token: String, noOfPosts: Int, lastTimestamp: Float): Observable<NextPosts> {
-        return crostataApiService.getNextPostsList(token, noOfPosts, lastTimestamp)
+        return crostataApiService.nextPostsList(token, noOfPosts, lastTimestamp)
     }
 
     fun getTextPost(token: String, postId: String): Observable<Post> {
-        return crostataApiService.getTextPost(token, postId)
+        return crostataApiService.textPost(token, postId)
+    }
+
+    fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<Boolean> {
+        return crostataApiService.submitVote(token, postId, birthId, value)
     }
 }

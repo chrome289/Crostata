@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context=".view.ui.LoginActivity">
+    tools:context=".view.ui.activity.LoginActivity">
 
 
         <android.support.constraint.ConstraintLayout

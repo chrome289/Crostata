@@ -1,24 +1,27 @@
-package xyz.siddharthseth.crostata.view.ui
+package xyz.siddharthseth.crostata.view.ui.activity
 
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import rx.subscriptions.CompositeSubscription
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
-import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
-import xyz.siddharthseth.crostata.view.ui.fragments.HomeFeedFragment
+import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
+import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
+
 
 class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteractionListener {
 
     private val TAG = "MainActivity"
-    private var homeFeedViewModel = HomeFeedViewModel()
-    private var compositeSubscription = CompositeSubscription()
+    private lateinit var homeFeedFragment: HomeFeedFragment
 
-    override fun onFragmentInteraction(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onFragmentInteraction(view: View, adapterPosition: Int) {
+        when (view.id) {
+        }
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +30,29 @@ class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteraction
         init()
     }
 
-    private fun init() {
-        val homeFeedFragment = HomeFeedFragment.newInstance()
-        val fragmentManager = fragmentManager
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuInflater: MenuInflater = menuInflater
+        menu?.clear()
+        menuInflater.inflate(R.menu.menu_toolbar_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    fun init() {
+        homeFeedFragment = HomeFeedFragment.newInstance()
+
+        val fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
                 .add(R.id.frame, homeFeedFragment)
                 .commit()
 
+        toolbar.title = ""
+        setSupportActionBar(toolbar)
 
-        homeFeedViewModel.getNextPosts(this).subscribe({ postList ->
-            Log.v(TAG, "got a post")
-            homeFeedFragment.addNewPosts(postList)
-        }, { onError ->
-            onError.printStackTrace()
-            Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
-        })
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        bottomNavigationView.selectedItemId = 0
+    }
+
+    fun submitVote() {
+
     }
 }

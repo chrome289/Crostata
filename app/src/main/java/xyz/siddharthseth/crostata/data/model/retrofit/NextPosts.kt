@@ -4,6 +4,5 @@ import xyz.siddharthseth.crostata.data.model.Post
 
 class NextPosts {
     var success = false
-    var resultCode = 0
     var posts: ArrayList<Post> = ArrayList<Post>()
 }

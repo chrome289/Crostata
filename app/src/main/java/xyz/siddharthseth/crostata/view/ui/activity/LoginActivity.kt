@@ -1,6 +1,7 @@
-package xyz.siddharthseth.crostata.view.ui
+package xyz.siddharthseth.crostata.view.ui.activity
 
 import android.app.AlertDialog
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -17,8 +18,8 @@ import xyz.siddharthseth.crostata.modelView.LoginActivityViewModel
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private val TAG = "LoginActivity"
+    lateinit var loginActivityViewModel: LoginActivityViewModel
 
-    var loginActivityViewModel = LoginActivityViewModel()
     var compositeSubscription = CompositeSubscription()
 
     override fun onClick(view: View?) {
@@ -26,7 +27,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             when (view.id) {
                 R.id.signIn -> {
                     showLoadingDialog()
-                    loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString(), this)
+                    Log.v(TAG, "here0")
+                    loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
                             .subscribe({ resultCode ->
                                 hideLoadingDialog()
                                 if (resultCode == 0) {
@@ -35,10 +37,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                     showErrorAlert(resultCode)
                                 }
                             }, { onError ->
+                                onError.printStackTrace()
                                 Log.v(TAG, "Network Error")
                                 hideLoadingDialog()
                                 showErrorAlert(3)
                             })
+
                 }
             }
         } else
@@ -88,7 +92,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loadingFrame.setOnClickListener { v ->
+        loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
+
+        loadingFrame.setOnClickListener {
             Log.v(TAG, "Don't click")
             true
         }
@@ -96,7 +102,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         val token = SharedPrefrencesService().getToken(this)
         if (token.isNotEmpty()) {
             showLoadingDialog()
-            loginActivityViewModel.signInSilently(token, this)
+            loginActivityViewModel.signInSilently(token)
                     .subscribe({ resultCode ->
                         hideLoadingDialog()
                         if (resultCode == 0) {

@@ -1,12 +1,10 @@
 package xyz.siddharthseth.crostata.data.service
 
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.CheckToken
@@ -20,27 +18,33 @@ interface CrostataApiService {
     fun signIn(
             @Field("birth_id") birthId: String,
             @Field("password") password: String
-    ): Observable<Token>
+    ): Observable<Response<Token>>
 
     @POST("/api/auth/loginToken")
     fun signInSilently(
             @Header("authorization") token: String
     ): Observable<CheckToken>
 
-    @POST("/api/content/getNextPostsList")
-    @FormUrlEncoded
-    fun getNextPostsList(
+    @GET("/api/content/nextPostsList")
+    fun nextPostsList(
             @Header("authorization") token: String,
-            @Field("noOfPosts") noOfPosts: Int,
-            @Field("lastTimestamp") lastTimestamp: Float
+            @Query("noOfPosts") noOfPosts: Int,
+            @Query("lastTimestamp") lastTimestamp: Float
     ): Observable<NextPosts>
 
-    @POST("/api/content/getTextPost")
-    @FormUrlEncoded
-    fun getTextPost(
+    @GET("/api/content/textPost")
+    fun textPost(
             @Header("authorization") token: String,
-            @Field("noOfPosts") postId: String
+            @Query("post_id") postId: String
     ): Observable<Post>
+
+    @POST("/api/content/textPost")
+    @FormUrlEncoded
+    fun submitVote(
+            @Header("authorization") token: String,
+            @Field("post_id") postId: String,
+            @Field("birth_id") birthId: String,
+            @Field("value") value: Int): Observable<Boolean>
 
     companion object {
         fun Create(): CrostataApiService {

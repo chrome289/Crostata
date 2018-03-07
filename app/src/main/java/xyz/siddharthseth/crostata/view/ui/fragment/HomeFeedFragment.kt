@@ -1,33 +1,36 @@
-package xyz.siddharthseth.crostata.view.ui.fragments
+package xyz.siddharthseth.crostata.view.ui.fragment
 
-import android.app.Fragment
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_home_feed.*
-
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.view.adapters.HomeFeedAdapter
+import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
+import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
 
 class HomeFeedFragment : Fragment(), View.OnClickListener {
-    override fun onClick(v: View?) {
-        if (v != null) {
-            when (v.id) {
 
-            }
+    private lateinit var homeFeedViewModel: HomeFeedViewModel
+
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(view: View, adapterPosition: Int)
+    }
+
+    override fun onClick(v: View?) {
+        if (v != null && mListener != null) {
         }
     }
 
-    private var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter()
-
     private var mListener: OnFragmentInteractionListener? = null
+    lateinit var homeFeedAdapter: HomeFeedAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +45,27 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is HomeFeedFragment.OnFragmentInteractionListener) {
             mListener = context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    val TAG = "HomeFeedFragment"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
 
-        homeFeedAdapter.token = SharedPrefrencesService().getToken(activity)
+        homeFeedViewModel.getNextPosts().subscribe({ postList ->
+            Log.v(TAG, "got a post")
+            addNewPosts(postList)
+        }, { onError ->
+            onError.printStackTrace()
+            Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
+        })
+
+        homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = homeFeedAdapter
@@ -66,10 +79,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         mListener = null
     }
 
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(uri: Uri)
-    }
-
     companion object {
         fun newInstance(): HomeFeedFragment {
             return HomeFeedFragment()
@@ -81,5 +90,14 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         homeFeedAdapter.sortList()
         homeFeedAdapter.notifyDataSetChanged()
     }
-
 }
+/* fun registerVote(value: Int, adapterPosition: Int) {
+     val post = homeFeedAdapter.postList.get(adapterPosition)
+     if (value != post.myVote) {
+         post.myVote = value
+     } else {
+         post.myVote = 0
+     }
+     homeFeedAdapter.notifyItemChanged(adapterPosition, post.myVote)
+ }*/
+
