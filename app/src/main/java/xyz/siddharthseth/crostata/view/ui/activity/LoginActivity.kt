@@ -17,17 +17,17 @@ import xyz.siddharthseth.crostata.modelView.LoginActivityViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val TAG = "LoginActivity"
-    lateinit var loginActivityViewModel: LoginActivityViewModel
+    private val _tag = "LoginActivity"
+    private lateinit var loginActivityViewModel: LoginActivityViewModel
 
-    var compositeSubscription = CompositeSubscription()
+    private var compositeSubscription = CompositeSubscription()
 
     override fun onClick(view: View?) {
         if (view != null) {
             when (view.id) {
                 R.id.signIn -> {
                     showLoadingDialog()
-                    Log.v(TAG, "here0")
+                    Log.v(_tag, "here0")
                     loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
                             .subscribe({ resultCode ->
                                 hideLoadingDialog()
@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                             }, { onError ->
                                 onError.printStackTrace()
-                                Log.v(TAG, "Network Error")
+                                Log.v(_tag, "Network Error")
                                 hideLoadingDialog()
                                 showErrorAlert(3)
                             })
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         } else
-            Log.v(TAG, "view is null")
+            Log.v(_tag, "view is null")
     }
 
     private fun hideLoadingDialog() {
@@ -65,16 +65,15 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showErrorAlert(resultCode: Int) {
-        var message = ""
-        when (resultCode) {
-            1 -> message = "No User with this Birth ID exists"
-            2 -> message = "Incorrect password"
-            else -> message = "Check your Internet Connection and try again"
+        val message: String = when (resultCode) {
+            1 -> "No User with this Birth ID exists"
+            2 -> "Incorrect password"
+            else -> "Check your Internet Connection and try again"
         }
 
         val alertDialog = AlertDialog.Builder(this)
                 .setCancelable(true)
-                .setPositiveButton("OKAY", { dialog, which -> dialog.dismiss() })
+                .setPositiveButton("OKAY", { dialog, _ -> dialog.dismiss() })
                 .setTitle("Login Unsuccessful")
                 .setMessage(message)
                 .create()
@@ -95,7 +94,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
 
         loadingFrame.setOnClickListener {
-            Log.v(TAG, "Don't click")
+            Log.v(_tag, "Don't click")
             true
         }
 
@@ -111,7 +110,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             showErrorAlert(resultCode)
                         }
                     }, { error ->
-                        Log.v(TAG, "Network Error " + error.message)
+                        Log.v(_tag, "Network Error " + error.message)
                         hideLoadingDialog()
                         showErrorAlert(3)
                     })

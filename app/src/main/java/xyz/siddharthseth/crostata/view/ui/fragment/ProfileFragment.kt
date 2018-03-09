@@ -33,8 +33,8 @@ class ProfileFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
+        mListener = if (context is OnFragmentInteractionListener) {
+            context
         } else {
             throw RuntimeException((context!!.toString() + " must implement OnFragmentInteractionListener"))
         }
@@ -52,7 +52,7 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(param1: String, param2: String): ProfileFragment {
+        fun newInstance(): ProfileFragment {
             val fragment = ProfileFragment()
             val args = Bundle()
             fragment.arguments = args

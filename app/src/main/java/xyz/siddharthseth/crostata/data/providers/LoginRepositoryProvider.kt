@@ -5,7 +5,7 @@ import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 object LoginRepositoryProvider {
     fun getLoginRepository(): LoginRepository {
-        return LoginRepository(CrostataApiService.Create())
+        return LoginRepository(CrostataApiService.create())
     }
 }
 

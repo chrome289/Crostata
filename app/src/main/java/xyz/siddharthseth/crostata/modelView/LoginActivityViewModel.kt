@@ -8,7 +8,7 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.data.model.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.CheckToken
+import xyz.siddharthseth.crostata.data.model.retrofit.Success
 import xyz.siddharthseth.crostata.data.providers.LoginRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.LoginRepository
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -16,7 +16,7 @@ import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 
 class LoginActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val TAG = "LoginActivityViewModel"
+    private val _tag = "LoginActivityViewModel"
     private val sharedPrefrencesService = SharedPrefrencesService()
 
 
@@ -32,7 +32,7 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                 .subscribeOn(Schedulers.io())
                 .flatMap({ responseToken ->
                     val token = responseToken.body()
-                    Log.v(TAG, "here")
+                    Log.v(_tag, "here")
                     if (token == null)
                         Observable.just(4)
                     else {
@@ -58,9 +58,9 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
         return loginRepository.signInSilently(token)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .flatMap({ checkToken: CheckToken ->
-                    Log.v(TAG, "here")
-                    if (checkToken.success)
+                .flatMap({ success: Success ->
+                    Log.v(_tag, "here")
+                    if (success.success)
                         Observable.just(0)
                     else {
                         val subject = sharedPrefrencesService.getUserDetails(getApplication())

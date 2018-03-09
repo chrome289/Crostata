@@ -9,10 +9,10 @@ import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
 import xyz.siddharthseth.crostata.view.adapter.viewholder.AdapterPost
 import java.util.*
 
-class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<AdapterPost>() {
+class HomeFeedAdapter(private val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<AdapterPost>() {
 
     var postList = ArrayList<Post>()
-    var TAG = "HomeFeedAdapter"
+    var _tag = "HomeFeedAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterPost {
         return AdapterPost(LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_home_card, parent, false)
@@ -20,7 +20,7 @@ class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: AdapterPost, position: Int) {
-        holder.init(postList.get(position))
+        holder.init(postList[position])
     }
 
 
@@ -29,7 +29,7 @@ class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.A
     }
 
     fun getItem(position: Int): Post {
-        return postList.get(position)
+        return postList[position]
     }
 
     fun sortList() {

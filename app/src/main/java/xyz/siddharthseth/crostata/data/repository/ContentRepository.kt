@@ -1,22 +1,22 @@
 package xyz.siddharthseth.crostata.data.repository
 
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
+import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 class ContentRepository(private var crostataApiService: CrostataApiService) {
-    val TAG = "ContentRepository"
+    val _tag = "ContentRepository"
 
-    fun getNextPostsList(token: String, noOfPosts: Int, lastTimestamp: Float): Observable<NextPosts> {
-        return crostataApiService.nextPostsList(token, noOfPosts, lastTimestamp)
+    fun getNextPostsList(token: String, noOfPosts: Int, lastTimestamp: Float, birthId: String): Observable<NextPosts> {
+        return crostataApiService.nextPostsList(token, noOfPosts, lastTimestamp, birthId)
     }
 
-    fun getTextPost(token: String, postId: String): Observable<Post> {
-        return crostataApiService.textPost(token, postId)
-    }
-
-    fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<Boolean> {
+    fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<VoteTotal> {
         return crostataApiService.submitVote(token, postId, birthId, value)
+    }
+
+    fun clearVote(token: String, postId: String, birthId: String): Observable<VoteTotal> {
+        return crostataApiService.clearVote(token, postId, birthId)
     }
 }

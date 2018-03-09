@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigationView"
         android:layout_below="@+id/toolbar"
-        android:background="#eee"
+        android:background="#f5f5f5"
         tools:listitem="@layout/recyclerview_home_card" />
 
 

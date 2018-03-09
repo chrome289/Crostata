@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginTop="4dp"
     android:background="#fff"
     android:elevation="2dp"
     android:orientation="vertical">
@@ -27,6 +25,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_weight="0"
+            android:contentDescription="@string/profile_image"
             android:src="@drawable/palmyra"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Darwin Ceniceros"
+                android:text="@string/sample_name"
                 android:textColor="#333"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -70,12 +69,13 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="18dp"
+                    android:layout_width="0dp"
                     android:layout_height="18dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="-2dp"
                     android:layout_weight="0"
+                    android:contentDescription="@string/clock"
                     app:srcCompat="@drawable/ic_action_clock" />
 
                 <TextView
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="8dp"
-                    android:text="11:45 PM"
+                    android:text="@string/sample_time"
                     android:textColor="#9e9e9e"
                     android:textSize="12sp" />
 
@@ -93,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Jan 31, '11"
+                    android:text="@string/sample_date"
                     android:textColor="#9e9e9e"
                     android:textSize="12sp" />
 
@@ -111,7 +111,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="0"
             android:background="@drawable/button_rectangle_border"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
@@ -126,6 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_weight="0"
+        android:contentDescription="@string/content_image"
         app:layout_constraintBottom_toBottomOf="@+id/textPost"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +145,7 @@
         android:layout_weight="0"
         android:ellipsize="end"
         android:maxLines="5"
-        android:text="A sample text"
+        android:text="@string/sample_text"
         android:textColor="#222"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -159,6 +160,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_weight="0"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -177,6 +179,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="#00ffffff"
+                android:contentDescription="@string/up_vote_button"
                 android:padding="2dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/up3" />
@@ -188,7 +191,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="123"
+                android:text="@string/_123"
                 android:textColor="#444"
                 android:textStyle="bold" />
 
@@ -199,6 +202,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="#00ffffff"
+                android:contentDescription="@string/down_vote_button"
                 android:padding="2dp"
                 android:rotation="-180"
                 android:scaleType="fitCenter"
@@ -220,6 +224,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="#00ffffff"
+                android:contentDescription="@string/comment_button"
                 android:scaleType="fitEnd"
                 android:src="@drawable/ic_insert_comment"
                 android:tint="@android:color/darker_gray" />
@@ -231,7 +236,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="0" />
+                android:text="@string/_0" />
 
         </LinearLayout>
 
@@ -249,6 +254,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:background="#00ffffff"
+                android:contentDescription="@string/report_button"
                 android:scaleType="fitEnd"
                 android:src="@drawable/ic_flag"
                 android:tint="@android:color/darker_gray" />
@@ -261,7 +267,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="Report" />
+                android:text="@string/report" />
         </LinearLayout>
 
     </LinearLayout>

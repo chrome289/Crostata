@@ -1,5 +1,7 @@
 package xyz.siddharthseth.crostata.data.model.retrofit
 
-class CheckToken {
+
+class VoteTotal {
     val success: Boolean = false
+    val total: Int = 0
 }

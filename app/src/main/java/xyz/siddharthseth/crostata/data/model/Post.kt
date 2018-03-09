@@ -16,9 +16,11 @@ class Post : Comparable<Post> {
         calendar.time = inputFormat.parse(this.timeCreated)
         calendar2.time = inputFormat.parse(other.timeCreated)
 
-        return if ((calendar2.timeInMillis - calendar.timeInMillis) > 0) 1
-        else if ((calendar2.timeInMillis - calendar.timeInMillis) < 0) -1
-        else 0
+        return when {
+            (calendar2.timeInMillis - calendar.timeInMillis) > 0 -> 1
+            (calendar2.timeInMillis - calendar.timeInMillis) < 0 -> -1
+            else -> 0
+        }
     }
 
     fun getTimestamp(): Float {
@@ -37,9 +39,8 @@ class Post : Comparable<Post> {
     var timeCreated = ""
     var contentType = ""
     var text = ""
-    var upVotes = 0
-    var downVotes = 0
+    var votes = 0
     var isCensored = false
 
-    var myVote = 0
+    var opinion = 0
 }

@@ -6,10 +6,10 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.CheckToken
 import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
+import xyz.siddharthseth.crostata.data.model.retrofit.Success
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
+import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface CrostataApiService {
 
@@ -23,31 +23,34 @@ interface CrostataApiService {
     @POST("/api/auth/loginToken")
     fun signInSilently(
             @Header("authorization") token: String
-    ): Observable<CheckToken>
+    ): Observable<Success>
 
     @GET("/api/content/nextPostsList")
     fun nextPostsList(
             @Header("authorization") token: String,
             @Query("noOfPosts") noOfPosts: Int,
-            @Query("lastTimestamp") lastTimestamp: Float
+            @Query("lastTimestamp") lastTimestamp: Float,
+            @Query("birth_id") birthId: String
     ): Observable<NextPosts>
 
-    @GET("/api/content/textPost")
-    fun textPost(
-            @Header("authorization") token: String,
-            @Query("post_id") postId: String
-    ): Observable<Post>
-
-    @POST("/api/content/textPost")
+    @POST("/api/opinion/vote")
     @FormUrlEncoded
     fun submitVote(
             @Header("authorization") token: String,
             @Field("post_id") postId: String,
             @Field("birth_id") birthId: String,
-            @Field("value") value: Int): Observable<Boolean>
+            @Field("value") value: Int
+    ): Observable<VoteTotal>
+
+    @DELETE("/api/opinion/vote")
+    fun clearVote(
+            @Header("authorization") token: String,
+            @Query("post_id") postId: String,
+            @Query("birth_id") birthId: String
+    ): Observable<VoteTotal>
 
     companion object {
-        fun Create(): CrostataApiService {
+        fun create(): CrostataApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())

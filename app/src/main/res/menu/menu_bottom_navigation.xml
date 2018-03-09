@@ -5,24 +5,28 @@
         android:id="@+id/home"
         android:enabled="true"
         android:icon="@drawable/ic_home"
-        android:title="Home"
+        android:orderInCategory="0"
+        android:title="@string/toolbar_home"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/message"
+        android:id="@+id/search"
         android:enabled="true"
-        android:icon="@drawable/ic_message"
-        android:title="Message"
+        android:icon="@drawable/ic_search_white_36dp"
+        android:orderInCategory="1"
+        android:title="@string/toolbar_search"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/community"
         android:enabled="true"
         android:icon="@drawable/ic_location_city"
-        android:title="Community"
+        android:orderInCategory="2"
+        android:title="@string/toolbar_community"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile"
         android:enabled="true"
         android:icon="@drawable/ic_person"
-        android:title="Profile"
+        android:orderInCategory="3"
+        android:title="@string/toolbar_profile"
         app:showAsAction="ifRoom" />
 </menu>

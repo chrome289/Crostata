@@ -5,6 +5,6 @@ import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 object ContentRepositoryProvider {
     fun getContentRepository(): ContentRepository {
-        return ContentRepository(CrostataApiService.Create())
+        return ContentRepository(CrostataApiService.create())
     }
 }

@@ -5,6 +5,33 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toolbar_home">Home</string>
+    <string name="toolbar_search">Search</string>
+    <string name="toolbar_community">Community</string>
+    <string name="toolbar_profile">My Profile</string>
+    <string name="app_tagline">The People\'s Network</string>
+    <string name="birth_id">Birth ID</string>
+    <string name="useravatar">userAvatar</string>
+    <string name="password">Password</string>
+    <string name="keyavatar">keyAvatar</string>
+    <string name="sign_in">Sign In</string>
+    <string name="developer">Ministry of Communication Banana Republic of Palmyra</string>
+    <string name="profile_image">profileImage</string>
+    <string name="sample_name">Darwin Ceniceros</string>
+    <string name="clock">clock</string>
+    <string name="sample_time">11:45 PM</string>
+    <string name="sample_date">Jan 31, \'11</string>
+    <string name="profile">Profile</string>
+    <string name="sample_text">A sample text</string>
+    <string name="report">Report</string>
+    <string name="_0">0</string>
+    <string name="_123">123</string>
+    <string name="up_vote_button">up vote button</string>
+    <string name="comment_button">comment button</string>
+    <string name="report_button">report button</string>
+    <string name="content_image">content image</string>
+    <string name="down_vote_button">down vote button</string>
+    <string name="brplogo">brpLogo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
