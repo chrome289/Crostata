@@ -41,6 +41,5 @@ class Post : Comparable<Post> {
     var text = ""
     var votes = 0
     var isCensored = false
-
     var opinion = 0
 }

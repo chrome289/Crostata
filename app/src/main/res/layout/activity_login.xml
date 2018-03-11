@@ -99,7 +99,6 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:id="@+id/userAvatar"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
@@ -135,7 +134,6 @@
                 app:layout_constraintVertical_bias="0.4" />
 
             <ImageView
-                android:id="@+id/keyAvatar"
                 android:layout_width="0dp"
                 android:layout_height="22dp"
                 android:layout_marginBottom="8dp"

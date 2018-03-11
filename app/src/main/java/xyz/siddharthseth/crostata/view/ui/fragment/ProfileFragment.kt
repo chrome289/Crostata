@@ -25,10 +25,11 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
+        /*if (mListener != null) {
             mListener!!.onFragmentInteraction(uri)
-        }
+        }*/
     }
 
     override fun onAttach(context: Context?) {
@@ -48,7 +49,7 @@ class ProfileFragment : Fragment() {
 
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        // fun onFragmentInteraction(uri: Uri)
     }
 
     companion object {

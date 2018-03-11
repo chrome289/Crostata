@@ -1,6 +1,5 @@
 package xyz.siddharthseth.crostata.view.ui.activity
 
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -9,24 +8,41 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
+import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
-import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.*
 
 
-class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener {
-    override fun onFragmentInteraction(uri: Uri) {
+class MainActivity : AppCompatActivity()
+        , HomeFeedFragment.OnFragmentInteractionListener
+        , ProfileFragment.OnFragmentInteractionListener
+        , SearchFragment.OnFragmentInteractionListener
+        , CommunityFragment.OnFragmentInteractionListener
+        , PostFragment.OnFragmentInteractionListener {
 
+    override fun showBottomNavigation(shouldShow: Boolean) {
+        if (shouldShow)
+            bottomNavigationView.visibility = View.VISIBLE
+        else
+            bottomNavigationView.visibility = View.GONE
     }
 
-    private val _tag = "MainActivity"
+    override fun openFullPost(post: Post) {
+        supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(R.id.frame, postFragment)
+                .addToBackStack("postFragment")
+                .commit()
+    }
+
+
+    private val TAG = "MainActivity"
     private lateinit var homeFeedFragment: HomeFeedFragment
     private lateinit var profileFragment: ProfileFragment
-
-    override fun onFragmentInteraction(view: View, adapterPosition: Int) {
-        when (view.id) {
-        }
-    }
+    private lateinit var searchFragment: SearchFragment
+    private lateinit var communityFragment: CommunityFragment
+    private lateinit var postFragment: PostFragment
+    private var lastSelectedId = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,45 +62,54 @@ class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteraction
     private fun init() {
         homeFeedFragment = HomeFeedFragment.newInstance()
         profileFragment = ProfileFragment.newInstance()
+        communityFragment = CommunityFragment.newInstance()
+        searchFragment = SearchFragment.newInstance()
+        postFragment = PostFragment.newInstance()
 
-        supportFragmentManager.beginTransaction()
-                .add(R.id.frame, homeFeedFragment)
-                .commit()
-
+        /* supportFragmentManager.beginTransaction()
+                 .add(R.id.frame, homeFeedFragment)
+                 .addToBackStack("homeFragment")
+                 .commit()
+ */
         toolbar.title = ""
         toolbarTitle.text = resources.getString(R.string.toolbar_home)
 
         setSupportActionBar(toolbar)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        bottomNavigationView.selectedItemId = 0
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
-            Log.v(_tag, item.order.toString())
+            Log.v(TAG, item.order.toString())
             when (item.order) {
                 0 -> {
                     supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.frame, homeFeedFragment)
+                            .addToBackStack("homeFragment")
                             .commit()
 
                     toolbarTitle.text = resources.getString(R.string.toolbar_home)
                 }
                 1 -> {
-                    supportFragmentManager.beginTransaction()
-                            .replace(R.id.frame, homeFeedFragment)
-                            .commit()
-
-                    toolbarTitle.text = resources.getString(R.string.toolbar_search)
+                    if (lastSelectedId > 1) {
+                        supportFragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
+                                .replace(R.id.frame, communityFragment)
+                                .addToBackStack("communityFragment")
+                                .commit()
+                    } else {
+                        supportFragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                                .replace(R.id.frame, communityFragment)
+                                .addToBackStack("communityFragment")
+                                .commit()
+                    }
+                    toolbarTitle.text = resources.getString(R.string.toolbar_community)
                 }
                 2 -> {
                     supportFragmentManager.beginTransaction()
-                            .replace(R.id.frame, homeFeedFragment)
-                            .commit()
-
-                    toolbarTitle.text = resources.getString(R.string.toolbar_community)
-                }
-                3 -> {
-                    supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.frame, profileFragment)
+                            .addToBackStack("profileFragment")
                             .commit()
 
                     toolbarTitle.text = resources.getString(R.string.toolbar_profile)
@@ -94,6 +119,7 @@ class MainActivity : AppCompatActivity(), HomeFeedFragment.OnFragmentInteraction
             true
         }
 
+        bottomNavigationView.selectedItemId = R.id.home
     }
 
     fun submitVote() {

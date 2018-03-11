@@ -6,7 +6,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 class ContentRepository(private var crostataApiService: CrostataApiService) {
-    val _tag = "ContentRepository"
+    private val TAG = "ContentRepository"
 
     fun getNextPostsList(token: String, noOfPosts: Int, lastTimestamp: Float, birthId: String): Observable<NextPosts> {
         return crostataApiService.nextPostsList(token, noOfPosts, lastTimestamp, birthId)

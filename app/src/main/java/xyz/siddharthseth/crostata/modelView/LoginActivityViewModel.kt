@@ -16,7 +16,7 @@ import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 
 class LoginActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _tag = "LoginActivityViewModel"
+    private val TAG = "LoginActivityViewModel"
     private val sharedPrefrencesService = SharedPrefrencesService()
 
 
@@ -32,7 +32,7 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                 .subscribeOn(Schedulers.io())
                 .flatMap({ responseToken ->
                     val token = responseToken.body()
-                    Log.v(_tag, "here")
+                    Log.v(TAG, "here")
                     if (token == null)
                         Observable.just(4)
                     else {
@@ -59,7 +59,7 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .flatMap({ success: Success ->
-                    Log.v(_tag, "here")
+                    Log.v(TAG, "here")
                     if (success.success)
                         Observable.just(0)
                     else {

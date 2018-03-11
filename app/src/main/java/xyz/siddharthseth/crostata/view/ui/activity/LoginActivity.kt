@@ -17,7 +17,7 @@ import xyz.siddharthseth.crostata.modelView.LoginActivityViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val _tag = "LoginActivity"
+    private val TAG = "LoginActivity"
     private lateinit var loginActivityViewModel: LoginActivityViewModel
 
     private var compositeSubscription = CompositeSubscription()
@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             when (view.id) {
                 R.id.signIn -> {
                     showLoadingDialog()
-                    Log.v(_tag, "here0")
+                    // Log.v(TAG, "here0")
                     loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
                             .subscribe({ resultCode ->
                                 hideLoadingDialog()
@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 }
                             }, { onError ->
                                 onError.printStackTrace()
-                                Log.v(_tag, "Network Error")
+                                Log.v(TAG, "Network Error")
                                 hideLoadingDialog()
                                 showErrorAlert(3)
                             })
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         } else
-            Log.v(_tag, "view is null")
+            Log.v(TAG, "view is null")
     }
 
     private fun hideLoadingDialog() {
@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
 
         loadingFrame.setOnClickListener {
-            Log.v(_tag, "Don't click")
+            Log.v(TAG, "Don't click")
             true
         }
 
@@ -110,7 +110,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             showErrorAlert(resultCode)
                         }
                     }, { error ->
-                        Log.v(_tag, "Network Error " + error.message)
+                        Log.v(TAG, "Network Error " + error.message)
                         hideLoadingDialog()
                         showErrorAlert(3)
                     })

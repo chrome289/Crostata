@@ -9,7 +9,7 @@ import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 class LoginRepository(private val crostataApiService: CrostataApiService) {
 
-    val _tag = "LoginRepository"
+    val TAG = "LoginRepository"
 
     fun signIn(subject: Subject): Observable<Response<Token>> {
         return crostataApiService.signIn(subject.birthId, subject.password)

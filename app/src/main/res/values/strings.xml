@@ -2,9 +2,6 @@
     <string name="app_name">Crostata</string>
     <string name="become_a_citizen"><a href="https://www.google.com">
         Become a Citizen</a></string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="toolbar_home">Home</string>
     <string name="toolbar_search">Search</string>
     <string name="toolbar_community">Community</string>
@@ -15,14 +12,14 @@
     <string name="password">Password</string>
     <string name="keyavatar">keyAvatar</string>
     <string name="sign_in">Sign In</string>
-    <string name="developer">Ministry of Communication Banana Republic of Palmyra</string>
+    <string name="developer">Ministry of Communication\nBanana Republic of Palmyra</string>
     <string name="profile_image">profileImage</string>
     <string name="sample_name">Darwin Ceniceros</string>
     <string name="clock">clock</string>
-    <string name="sample_time">11:45 PM</string>
+    <string name="sample_time">45 MINS AGO</string>
     <string name="sample_date">Jan 31, \'11</string>
     <string name="profile">Profile</string>
-    <string name="sample_text">A sample text</string>
+    <string name="sample_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="report">Report</string>
     <string name="_0">0</string>
     <string name="_123">123</string>
@@ -34,4 +31,7 @@
     <string name="brplogo">brpLogo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toolbar_add_post">New Post</string>
+
 </resources>

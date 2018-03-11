@@ -12,7 +12,7 @@ import java.util.*
 class HomeFeedAdapter(private val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<AdapterPost>() {
 
     var postList = ArrayList<Post>()
-    var _tag = "HomeFeedAdapter"
+    var TAG = "HomeFeedAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterPost {
         return AdapterPost(LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_home_card, parent, false)

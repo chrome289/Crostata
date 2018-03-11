@@ -65,4 +65,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.android.support:design:27.1.0'
+    implementation 'com.github.marlonlom:timeago:3.0.1'
 }
