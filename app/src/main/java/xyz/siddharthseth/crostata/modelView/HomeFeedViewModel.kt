@@ -14,19 +14,21 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.data.model.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 import xyz.siddharthseth.crostata.util.recyclerView.RecyclerViewListener
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , RecyclerViewListener {
 
     override fun openFullPost(post: Post) {
-        fullPost.value = post
+        mutablePost.value = post
     }
 
 
@@ -47,11 +49,15 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var token: String = ""
     private var noOfPosts: Int = 10
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
+    var isInitialized = false
+    var mutablePost: SingleLivePost = SingleLivePost()
+    var postList: ArrayList<Post> = ArrayList<Post>()
 
-    var fullPost: MutableLiveData<Post> = MutableLiveData<Post>()
+
+//    var fullPost: MutableLiveData<Post> = MutableLiveData<Post>()
 
     fun getFullPostObservable(): MutableLiveData<Post> {
-        return fullPost
+        return mutablePost
     }
 
     override fun loadPostedImage(postId: String, imageView: ImageView) {
@@ -115,19 +121,34 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun getNextPosts(): Observable<ArrayList<Post>> {
+    fun getPosts(): Observable<Post> {
+        if (isInitialized)
+            return Observable.from(postList)
+        else
+            return getNextPosts()
+    }
+
+    fun getNextPosts(): Observable<Post> {
         // initColorTints()
         token = sharedPrefrencesService.getToken(getApplication())
         val birthId = sharedPrefrencesService.getUserDetails(getApplication())
         return contentRepository.getNextPostsList(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .concatMap({ nextPosts ->
+                // .concatMap({ newPosts -> postList.addAll(newPosts.posts);postList.sort();return@concatMap Observable.just(postList) })
+                .flatMap({ nextPosts ->
+                    if (!isInitialized)
+                        isInitialized = true
+                    postList.addAll(nextPosts.posts)
                     Log.v(TAG, "postID    " + nextPosts.posts.size)
                     nextPosts.posts.sort()
                     lastTimestamp = nextPosts.posts[nextPosts.posts.size - 1].getTimestamp()
-                    return@concatMap Observable.just(nextPosts.posts)
+                    return@flatMap Observable.from(nextPosts.posts)
                 })
+    }
+
+    fun resetLastTimeStamp() {
+        lastTimestamp = Float.MAX_VALUE
     }
 
     /* private fun initColorTints() {

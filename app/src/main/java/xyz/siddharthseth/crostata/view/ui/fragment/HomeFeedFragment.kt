@@ -20,7 +20,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     interface OnFragmentInteractionListener {
         fun openFullPost(post: Post)
-        fun showBottomNavigation(shouldShow: Boolean)
     }
 
     override fun onClick(v: View?) {
@@ -31,6 +30,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.v(TAG, "onCreate")
         if (arguments != null) {
         }
     }
@@ -38,46 +38,59 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        Log.v(TAG, "attach")
         mListener = if (context is HomeFeedFragment.OnFragmentInteractionListener) {
             context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
-
-//        mListener?.showBottomNavigation(true)
     }
 
 
     private val TAG = "HomeFeedFragment"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
 
-        Log.v(TAG, "well shiiiit")
-        homeFeedViewModel.fullPost.observe(this, Observer<Post> { post ->
+
+        Log.v(TAG, "onViewCreated")
+        /*homeFeedViewModel.fullPost.observe(this, Observer<Post> { post ->
             if (post != null) {
                 Log.v(TAG, post.postId)
                 //mListener?.showBottomNavigation(false)
                 mListener?.openFullPost(post)
             }
-        })
+        })*/
 
-        homeFeedViewModel.getNextPosts().subscribe({ postList ->
-            Log.v(TAG, "got posts " + postList.size)
-            homeFeedAdapter.postList = postList
+        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
+        val observer: Observer<Post> = Observer {
+            Log.v(TAG, "observer called")
+            if (it != null) {
+                mListener?.openFullPost(it)
+            }
+        }
+
+        homeFeedViewModel.getFullPostObservable().observe(this, observer)
+        homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
+
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = homeFeedAdapter
+
+        homeFeedViewModel.getPosts().subscribe({ post ->
+            Log.v(TAG, "got posts " + post)
+            homeFeedAdapter.postList.add(post)
             homeFeedAdapter.notifyDataSetChanged()
         }, { onError ->
             onError.printStackTrace()
             Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
         })
 
-        homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
-
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = homeFeedAdapter
-
         //val dividerItemDecoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
         //recyclerView.addItemDecoration(dividerItemDecoration)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.v(TAG, "onpause")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -87,7 +100,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onDetach() {
         super.onDetach()
+        Log.v(TAG, "detached")
         mListener = null
+        // homeFeedViewModel.resetLastTimeStamp()
     }
 
     companion object {

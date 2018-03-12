@@ -10,12 +10,14 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/community"
         android:enabled="true"
         android:icon="@drawable/ic_location_city"
         android:orderInCategory="1"
         android:title="@string/toolbar_community"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/profile"
         android:enabled="true"
         android:icon="@drawable/ic_person"
         android:orderInCategory="2"

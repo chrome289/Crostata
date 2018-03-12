@@ -25,7 +25,7 @@
                 android:layout_marginEnd="16dp">
 
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/addPostButton"
                     android:layout_width="28dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -47,13 +47,13 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-                    app:layout_constraintStart_toEndOf="@+id/imageButton"
+                    app:layout_constraintEnd_toStartOf="@+id/searchButton"
+                    app:layout_constraintStart_toEndOf="@+id/addPostButton"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
                 <ImageButton
-                    android:id="@+id/imageButton2"
+                    android:id="@+id/searchButton"
                     android:layout_width="26dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"

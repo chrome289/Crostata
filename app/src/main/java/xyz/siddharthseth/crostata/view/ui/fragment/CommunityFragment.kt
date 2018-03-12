@@ -10,14 +10,6 @@ import android.view.ViewGroup
 
 import xyz.siddharthseth.crostata.R
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [CommunityFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [CommunityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CommunityFragment : Fragment() {
 
     // TODO: Rename and change types of parameters
