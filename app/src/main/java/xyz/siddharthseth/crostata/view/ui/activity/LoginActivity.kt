@@ -9,6 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_login.*
+import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -56,6 +57,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialog() {
         loadingFrame.visibility = View.VISIBLE
+        animationView.setAnimation(R.raw.preloader)
         animationView.playAnimation()
     }
 
@@ -98,10 +100,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             true
         }
 
-        val token = SharedPrefrencesService().getToken(this)
+        val token = SharedPrefrencesService().getToken(applicationContext)
         if (token.isNotEmpty()) {
             showLoadingDialog()
+            autoFillFields()
             loginActivityViewModel.signInSilently(token)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ resultCode ->
                         hideLoadingDialog()
                         if (resultCode == 0) {
@@ -115,6 +119,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         showErrorAlert(3)
                     })
         }
+    }
+
+    private fun autoFillFields() {
+        val user = SharedPrefrencesService().getUserDetails(applicationContext)
+        birthId.setText(user.birthId)
+        password.setText(user.password)
     }
 
     override fun onStart() {

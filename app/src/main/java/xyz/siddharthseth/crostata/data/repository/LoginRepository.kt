@@ -1,9 +1,9 @@
 package xyz.siddharthseth.crostata.data.repository
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.Success
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
@@ -15,7 +15,7 @@ class LoginRepository(private val crostataApiService: CrostataApiService) {
         return crostataApiService.signIn(subject.birthId, subject.password)
     }
 
-    fun signInSilently(token: String): Observable<Success> {
+    fun signInSilently(token: String): Observable<Response<ResponseBody>> {
         return crostataApiService.signInSilently(token)
     }
 }

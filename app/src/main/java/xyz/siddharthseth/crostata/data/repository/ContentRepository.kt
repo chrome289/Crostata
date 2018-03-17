@@ -8,8 +8,8 @@ import xyz.siddharthseth.crostata.data.service.CrostataApiService
 class ContentRepository(private var crostataApiService: CrostataApiService) {
     private val TAG = "ContentRepository"
 
-    fun getNextPostsList(token: String, noOfPosts: Int, lastTimestamp: Float, birthId: String): Observable<NextPosts> {
-        return crostataApiService.nextPostsList(token, noOfPosts, lastTimestamp, birthId)
+    fun getNextPosts(token: String, noOfPosts: Int, lastTimestamp: Float, birthId: String): Observable<NextPosts> {
+        return crostataApiService.nextPosts(token, noOfPosts, lastTimestamp, birthId)
     }
 
     fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<VoteTotal> {

@@ -1,12 +1,11 @@
 package xyz.siddharthseth.crostata.data.model
 
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 class Post : Comparable<Post> {
     override fun compareTo(other: Post): Int {
-        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
         val calendar = Calendar.getInstance()
         val calendar2 = Calendar.getInstance()
 
@@ -24,7 +23,7 @@ class Post : Comparable<Post> {
     }
 
     fun getTimestamp(): Float {
-        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
         val calendar = Calendar.getInstance()
         calendar.time = inputFormat.parse(this.timeCreated)

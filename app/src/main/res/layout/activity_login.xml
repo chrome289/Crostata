@@ -204,7 +204,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:lottie_fileName="preloader.json"
                     app:lottie_loop="true" />
             </LinearLayout>
 

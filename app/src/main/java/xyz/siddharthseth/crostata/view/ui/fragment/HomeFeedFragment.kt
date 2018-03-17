@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_home_feed.*
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
@@ -48,49 +50,48 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
 
     private val TAG = "HomeFeedFragment"
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    lateinit var postSubscription: Subscription
 
-
-        Log.v(TAG, "onViewCreated")
-        /*homeFeedViewModel.fullPost.observe(this, Observer<Post> { post ->
-            if (post != null) {
-                Log.v(TAG, post.postId)
-                //mListener?.showBottomNavigation(false)
-                mListener?.openFullPost(post)
-            }
-        })*/
+    override fun onResume() {
+        super.onResume()
+        Log.v(TAG, "onResume")
 
         homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
-        val observer: Observer<Post> = Observer {
-            Log.v(TAG, "observer called")
-            if (it != null) {
-                mListener?.openFullPost(it)
-            }
-        }
 
-        homeFeedViewModel.getFullPostObservable().observe(this, observer)
         homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = homeFeedAdapter
 
-        homeFeedViewModel.getPosts().subscribe({ post ->
-            Log.v(TAG, "got posts " + post)
-            homeFeedAdapter.postList.add(post)
-            homeFeedAdapter.notifyDataSetChanged()
-        }, { onError ->
-            onError.printStackTrace()
-            Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
-        })
-
         //val dividerItemDecoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
         //recyclerView.addItemDecoration(dividerItemDecoration)
+
+
+        postSubscription = homeFeedViewModel.getPosts()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ post ->
+                    Log.v(TAG, "got posts " + post)
+                    homeFeedAdapter.postList.add(post)
+                }, { onError ->
+                    onError.printStackTrace()
+                    Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
+                }, {
+                    homeFeedAdapter.notifyDataSetChanged()
+                })
     }
 
     override fun onPause() {
         super.onPause()
         Log.v(TAG, "onpause")
+
+        postSubscription.unsubscribe()
+    }
+
+    val observer: Observer<Post> = Observer {
+        Log.v(TAG, "observer called")
+        if (it != null) {
+            mListener?.openFullPost(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

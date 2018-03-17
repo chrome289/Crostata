@@ -10,7 +10,6 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
 import xyz.siddharthseth.crostata.util.recyclerView.RecyclerViewListener
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,7 +43,7 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
         val calendar = Calendar.getInstance()
         calendar.timeZone = TimeZone.getTimeZone("UTC")
 
-        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
         calendar.time = inputFormat.parse(post.timeCreated)
 
         //val dateOutputFormat: DateFormat = SimpleDateFormat("MMM dd, -yy", Locale.US)
@@ -54,6 +53,11 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
         itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis)//timeDateFormat.format(calendar.time)
 
         itemView.votesTotal.text = post.votes.toString()
+        itemView.votesTotal.setTextColor(when (post.opinion) {
+            1 -> ColorStateList.valueOf(listener.upVoteColorTint)
+            -1 -> ColorStateList.valueOf(listener.downVoteColorTint)
+            else -> ColorStateList.valueOf(listener.greyUnselected)
+        })
 
         //itemView.upVoteButton.setImageResource(if (post.opinion == 1) R.drawable.up2 else R.drawable.up3)
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }

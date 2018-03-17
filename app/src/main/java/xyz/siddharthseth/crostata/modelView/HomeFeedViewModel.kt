@@ -2,7 +2,6 @@ package xyz.siddharthseth.crostata.modelView
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -31,7 +30,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         mutablePost.value = post
     }
 
-
     override val greyUnselected: Int
         get() = ContextCompat.getColor(getApplication(), R.color.greyUnselected)
     override val upVoteColorTint: Int
@@ -47,21 +45,15 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private val sharedPrefrencesService = SharedPrefrencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = ""
-    private var noOfPosts: Int = 10
+    private var noOfPosts: Int = 1
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
     var isInitialized = false
     var mutablePost: SingleLivePost = SingleLivePost()
-    var postList: ArrayList<Post> = ArrayList<Post>()
+    var postList: ArrayList<Post> = ArrayList()
 
-
-//    var fullPost: MutableLiveData<Post> = MutableLiveData<Post>()
-
-    fun getFullPostObservable(): MutableLiveData<Post> {
-        return mutablePost
-    }
 
     override fun loadPostedImage(postId: String, imageView: ImageView) {
-        val glideUrl = GlideUrl("http://192.168.1.123:3000/api/content/postedImage?post_id=$postId&dimen=1080&quality=80"
+        val glideUrl = GlideUrl("http://192.168.1.123:3000/api/content/postedImage?postId=$postId&dimen=1080&quality=80"
                 , LazyHeaders.Builder().addHeader("authorization", token).build())
         val context: Context = getApplication()
         GlideApp.with(context)
@@ -76,7 +68,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun loadProfileImage(creatorId: String, imageView: ImageView) {
-        val glideUrl = GlideUrl("http://192.168.1.123:3000" + "/api/content/profileImage?birth_id=$creatorId&dimen=256&quality=70"
+        val glideUrl = GlideUrl("http://192.168.1.123:3000" + "/api/content/profileImage?birthId=$creatorId&dimen=256&quality=70"
                 , LazyHeaders.Builder().addHeader("authorization", token).build())
 
         val context: Context = getApplication()
@@ -86,6 +78,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                 .circleCrop()
                 // .skipMemoryCache(true)
                 // .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.home_feed_content_placeholder)
                 .into(imageView)
     }
 
@@ -132,11 +125,11 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         // initColorTints()
         token = sharedPrefrencesService.getToken(getApplication())
         val birthId = sharedPrefrencesService.getUserDetails(getApplication())
-        return contentRepository.getNextPostsList(token, noOfPosts, lastTimestamp, birthId.birthId)
-                .observeOn(AndroidSchedulers.mainThread())
+        return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .subscribeOn(Schedulers.io())
                 // .concatMap({ newPosts -> postList.addAll(newPosts.posts);postList.sort();return@concatMap Observable.just(postList) })
                 .flatMap({ nextPosts ->
+                    //Thread.sleep(5000)
                     if (!isInitialized)
                         isInitialized = true
                     postList.addAll(nextPosts.posts)

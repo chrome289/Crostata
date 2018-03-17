@@ -10,9 +10,11 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="0"
-        android:background="#f5f5f5"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +22,8 @@
 
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/profile_image"
             android:src="@drawable/palmyra"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -30,81 +31,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/work_sans_semibold"
+            android:text="@string/sample_name"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/profileImage"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/nameTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/work_sans_semibold"
-                android:text="@string/sample_name"
-                android:textAllCaps="true"
-                android:textColor="#212121"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@+id/profileImage"
-                app:layout_constraintTop_toTopOf="@+id/profileImage" />
-
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:text="@string/sample_time"
-                android:textAllCaps="true"
-                android:textColor="#9e9e9e"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/reportLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+            android:text="@string/sample_time"
+            android:textAllCaps="true"
+            android:textColor="#9e9e9e"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/nameTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout2">
-
-            <ImageButton
-                android:id="@+id/reportButton"
-                android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:background="#00ffffff"
-                android:contentDescription="@string/report_button"
-                android:scaleType="fitEnd"
-                android:src="@drawable/ic_flag"
-                android:tint="#bdbdbd" />
-
-            <TextView
-                android:id="@+id/reportTextView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="fill_vertical"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/report"
-                android:textSize="12sp" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="@+id/nameTextView" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -112,28 +66,30 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="0">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@color/greyLighter"
+            android:background="@color/white"
             android:contentDescription="@string/content_image"
             android:scaleType="centerInside"
             android:src="@drawable/palmyra"
             android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/textPost"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textPost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
             android:layout_weight="0"
             android:ellipsize="end"
             android:fontFamily="@font/open_sans"
@@ -148,10 +104,10 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/opinion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_weight="0"
@@ -171,41 +127,41 @@
 
             <ImageButton
                 android:id="@+id/upVoteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0"
                 android:background="#00ffffff"
                 android:contentDescription="@string/up_vote_button"
-                android:padding="1dp"
-                android:scaleType="fitEnd"
-                android:src="@drawable/up3"
+                android:rotation="270"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_forward"
                 android:tint="#bdbdbd" />
 
             <TextView
                 android:id="@+id/votesTotal"
-                android:layout_width="60dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_marginStart="4dp"
-                android:layout_weight="1"
+                android:layout_weight="0"
+                android:fontFamily="@font/work_sans_semibold"
                 android:gravity="center"
+                android:minWidth="36dp"
                 android:text="@string/_123"
-                android:textColor="#212121" />
+                android:textColor="#bdbdbd" />
 
             <ImageButton
                 android:id="@+id/downVoteButton"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_width="24dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0"
                 android:background="#00ffffff"
                 android:contentDescription="@string/down_vote_button"
-                android:padding="1dp"
-                android:rotation="-180"
-                android:scaleType="fitEnd"
-                android:src="@drawable/up3"
+                android:rotation="90"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_forward"
                 android:tint="#bdbdbd" />
 
         </LinearLayout>
@@ -218,32 +174,69 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="match_parent"
+                android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:background="#00ffffff"
                 android:contentDescription="@string/comment_button"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_chat_bubble"
+                android:src="@drawable/ic_insert_comment"
                 android:tint="#bdbdbd" />
 
             <TextView
                 android:id="@+id/commentTextView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
+                android:layout_weight="0"
+                android:fontFamily="@font/work_sans_semibold"
+                android:gravity="center"
                 android:text="@string/_0"
-                android:textColor="#212121" />
+                android:textColor="#bdbdbd" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/reportLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/commentLayout">
+
+            <ImageButton
+                android:id="@+id/reportButton"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="#00ffffff"
+                android:contentDescription="@string/report_button"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_flag"
+                android:tint="#bdbdbd" />
+
+            <TextView
+                android:id="@+id/reportTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_weight="0"
+                android:fontFamily="@font/work_sans_semibold"
+                android:gravity="center"
+                android:text="@string/report"
+                android:textColor="#bdbdbd" />
+        </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 
 

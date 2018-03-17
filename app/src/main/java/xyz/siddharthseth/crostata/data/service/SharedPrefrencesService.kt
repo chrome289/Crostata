@@ -7,21 +7,21 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Token
 
 class SharedPrefrencesService {
     fun saveToken(token: Token, context: Context): Boolean {
-        val sharedPrefrences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        sharedPrefrences.edit().putString("token", token.tokenValue).apply()
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        sharedPreferences.edit().putString("token", token.tokenValue).apply()
 
         return true
     }
 
     fun getToken(context: Context): String {
-        val sharedPrefrences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        return sharedPrefrences.getString("token", "")
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        return sharedPreferences.getString("token", "")
 
     }
 
     fun saveSubjectDetails(subject: Subject, context: Context): Boolean {
-        val sharedPrefrences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        sharedPrefrences.edit()
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        sharedPreferences.edit()
                 .putString("birthId", subject.birthId)
                 .putString("password", subject.password)
                 .apply()
@@ -30,8 +30,8 @@ class SharedPrefrencesService {
     }
 
     fun getUserDetails(context: Context): Subject {
-        val sharedPrefrences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        return Subject.getInstance(sharedPrefrences.getString("birthId", "")
-                , sharedPrefrences.getString("password", ""))
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        return Subject.getInstance(sharedPreferences.getString("birthId", "")
+                , sharedPreferences.getString("password", ""))
     }
 }

@@ -8,7 +8,6 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.data.model.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.Success
 import xyz.siddharthseth.crostata.data.providers.LoginRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.LoginRepository
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -56,11 +55,10 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 
         return loginRepository.signInSilently(token)
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .flatMap({ success: Success ->
+                .flatMap({ response ->
                     Log.v(TAG, "here")
-                    if (success.success)
+                    if (response.isSuccessful)
                         Observable.just(0)
                     else {
                         val subject = sharedPrefrencesService.getUserDetails(getApplication())
