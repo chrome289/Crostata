@@ -3,7 +3,6 @@ package xyz.siddharthseth.crostata.modelView
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
-import android.util.Log
 import xyz.siddharthseth.crostata.R
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -24,13 +23,16 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     internal fun addToFragmentStack(fragmentId: Int) {
-        val position = fragmentCustomStack.indexOf(fragmentId)
-        if (position > -1)
-            fragmentCustomStack.removeAt(position)
-        fragmentCustomStack.add(fragmentId)
-        var string = ""
-        for (value in fragmentCustomStack)
-            string += value.toString() + "--"
-        Log.v(TAG, "fragmentStack " + string)
+        if (addToBackStack) {
+            val position = fragmentCustomStack.indexOf(fragmentId)
+            if (position > -1)
+                fragmentCustomStack.removeAt(position)
+            fragmentCustomStack.add(fragmentId)
+            var string = ""
+            for (value in fragmentCustomStack)
+                string += value.toString() + "--"
+        } else
+            addToBackStack = true
+        lastSelectedId = fragmentId
     }
 }

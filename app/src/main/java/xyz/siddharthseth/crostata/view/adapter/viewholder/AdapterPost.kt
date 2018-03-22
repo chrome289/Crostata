@@ -13,64 +13,63 @@ import xyz.siddharthseth.crostata.util.recyclerView.RecyclerViewListener
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
-    : RecyclerView.ViewHolder(view), View.OnClickListener {
+    : RecyclerView.ViewHolder(view) {
 
     private var TAG = "AdapterPost"
 
     private var listener: RecyclerViewListener = homeFeedViewModel
+    private val calendar = Calendar.getInstance()
+    private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    override fun onClick(v: View?) {
-    }
+    val upVoteColor = ColorStateList.valueOf(listener.upVoteColorTint)
+    val downVoteColor = ColorStateList.valueOf(listener.downVoteColorTint)
+    val commentColor = ColorStateList.valueOf(listener.commentColorTint)
+    val reportColor = ColorStateList.valueOf(listener.reportColorTint)
+    val greyColor = ColorStateList.valueOf(listener.greyUnselected)
 
     fun init(post: Post) {
-        Log.v(TAG, "sdfsdfsfsdfs")
-        itemView.nameTextView.text = post.creatorName
+
+        itemView.nameTextView.text = post.creatorName.toUpperCase()
+
         if (post.contentType == "TO") {
             itemView.imageView.visibility = View.GONE
-            itemView.textPost.visibility = View.VISIBLE
+            clearView()
         } else {
             itemView.imageView.visibility = View.VISIBLE
-            itemView.textPost.visibility = View.VISIBLE
-
-            listener.loadPostedImage(post.postId, itemView.imageView)
+            itemView.imageView.setOnClickListener { listener.openFullPost(post) }
+            listener.loadPostedImage(post, itemView.imageView)
+            itemView.imageView.requestLayout()
         }
+
         listener.loadProfileImage(post.creatorId, itemView.profileImage)
 
         itemView.textPost.text = post.text
-        Log.v(TAG, itemView.textPost.lineCount.toString())
-        val calendar = Calendar.getInstance()
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
+        itemView.textPost.setOnClickListener { listener.openFullPost(post) }
 
-        val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
 
-        //val dateOutputFormat: DateFormat = SimpleDateFormat("MMM dd, -yy", Locale.US)
-        // val timeDateFormat: DateFormat = SimpleDateFormat("hh:mm a", Locale.US)
-
-        //itemView.dateTextView.text = dateOutputFormat.format(calendar.time).replace('-', '\'')
-        itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis)//timeDateFormat.format(calendar.time)
+        itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis).toUpperCase()
 
         itemView.votesTotal.text = post.votes.toString()
         itemView.votesTotal.setTextColor(when (post.opinion) {
-            1 -> ColorStateList.valueOf(listener.upVoteColorTint)
-            -1 -> ColorStateList.valueOf(listener.downVoteColorTint)
-            else -> ColorStateList.valueOf(listener.greyUnselected)
+            1 -> upVoteColor
+            -1 -> downVoteColor
+            else -> greyColor
         })
 
-        //itemView.upVoteButton.setImageResource(if (post.opinion == 1) R.drawable.up2 else R.drawable.up3)
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
-                (if (post.opinion == 1) ColorStateList.valueOf(listener.upVoteColorTint)
-                else ColorStateList.valueOf(listener.greyUnselected))
+                (if (post.opinion == 1) upVoteColor
+                else greyColor)
 
         itemView.downVoteButton.setOnClickListener { handleVoteClick(post, -1) }
         itemView.downVoteButton.imageTintList =
-                (if (post.opinion == -1) ColorStateList.valueOf(listener.downVoteColorTint)
-                else ColorStateList.valueOf(listener.greyUnselected))
+                (if (post.opinion == -1) downVoteColor
+                else greyColor)
 
-        itemView.content.setOnClickListener { it -> listener.openFullPost(post) }
+        Log.v(TAG, post.postId + " loaded")
     }
 
     private fun handleVoteClick(post: Post, newValue: Int) {
@@ -98,5 +97,9 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
                             }
                             , { error -> error.printStackTrace() })
         }
+    }
+
+    private fun clearView() {
+        listener.clearPostedImageGlide(itemView.imageView)
     }
 }

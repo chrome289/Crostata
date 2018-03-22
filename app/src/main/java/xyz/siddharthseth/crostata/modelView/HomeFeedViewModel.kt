@@ -5,9 +5,13 @@ import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -15,6 +19,8 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
+import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -25,6 +31,16 @@ import kotlin.collections.ArrayList
 
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , RecyclerViewListener {
+
+    private val TAG = "HomeFeedViewModel"
+    private val sharedPreferencesService = SharedPrefrencesService()
+    private val contentRepository = ContentRepositoryProvider.getContentRepository()
+    private var token: String = ""
+    private var noOfPosts: Int = 15
+    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
+    var isInitialized = false
+    var mutablePost: SingleLivePost = SingleLivePost()
+    var postList: ArrayList<Post> = ArrayList()
 
     override fun openFullPost(post: Post) {
         mutablePost.value = post
@@ -41,54 +57,58 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override val reportColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.reportSelected)
 
-    private val TAG = "HomeFeedViewModel"
-    private val sharedPrefrencesService = SharedPrefrencesService()
-    private val contentRepository = ContentRepositoryProvider.getContentRepository()
-    private var token: String = ""
-    private var noOfPosts: Int = 1
-    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-    var isInitialized = false
-    var mutablePost: SingleLivePost = SingleLivePost()
-    var postList: ArrayList<Post> = ArrayList()
 
-
-    override fun loadPostedImage(postId: String, imageView: ImageView) {
-        val glideUrl = GlideUrl("http://192.168.1.123:3000/api/content/postedImage?postId=$postId&dimen=1080&quality=80"
-                , LazyHeaders.Builder().addHeader("authorization", token).build())
+    override fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
+        GlideApp.with(context).clear(imageView as View)
+    }
+
+    override fun loadPostedImage(post: Post, imageView: ImageView) {
+        val context: Context = getApplication()
+
+        val dimen = 1080
+        val quality = 70
+        val postId = post.postId
+
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/content/postedImage?postId=$postId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        Log.v(TAG, "width like ---" + imageView.width)
         GlideApp.with(context)
-                .load(glideUrl)//.listener(createLoggerListener("match_image"))
-                // .downsample(DownsampleStrategy.CENTER_INSIDE)//.listener(createLoggerListener("match_image"))
-                .fitCenter()//.listener(createLoggerListener("match_image"))
-                .centerInside()
-                // .skipMemoryCache(true)
-                // .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .load(glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
+                .downsample(DownsampleStrategy.FIT_CENTER)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.LOW)
+                .fitCenter()
+                .override(1080)
                 .into(imageView)
+        //.getSize({ width, height -> Log.v(TAG, "glide size $width * $height") })
     }
 
     override fun loadProfileImage(creatorId: String, imageView: ImageView) {
-        val glideUrl = GlideUrl("http://192.168.1.123:3000" + "/api/content/profileImage?birthId=$creatorId&dimen=256&quality=70"
-                , LazyHeaders.Builder().addHeader("authorization", token).build())
-
         val context: Context = getApplication()
+        val dimen = 128
+        val quality = 70
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/content/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
         GlideApp.with(context)
                 .load(glideUrl)
-                .fitCenter()
-                .circleCrop()
-                // .skipMemoryCache(true)
-                // .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .placeholder(R.drawable.home_feed_content_placeholder)
+                .downsample(DownsampleStrategy.CENTER_INSIDE)
+                .centerInside()
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .priority(Priority.IMMEDIATE)
                 .into(imageView)
     }
-
-    /*override fun onUpVoteButtonClick(postId: String): Observable<Boolean> {
-        Log.v(TAG, "upVoteButtonClick")
-        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
-        return contentRepository.submitVote(token, postId, birthId, 1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io()).map({ it -> return@map it.success })
-    }*/
 
     override fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
         Log.v(TAG, "upVoteButtonClick")
@@ -123,38 +143,27 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     fun getNextPosts(): Observable<Post> {
         // initColorTints()
-        token = sharedPrefrencesService.getToken(getApplication())
-        val birthId = sharedPrefrencesService.getUserDetails(getApplication())
+        token = sharedPreferencesService.getToken(getApplication())
+        val birthId = sharedPreferencesService.getUserDetails(getApplication())
         return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .subscribeOn(Schedulers.io())
-                // .concatMap({ newPosts -> postList.addAll(newPosts.posts);postList.sort();return@concatMap Observable.just(postList) })
-                .flatMap({ nextPosts ->
+                .flatMap({ nextPosts: NextPosts ->
                     //Thread.sleep(5000)
                     if (!isInitialized)
                         isInitialized = true
                     postList.addAll(nextPosts.posts)
-                    Log.v(TAG, "postID    " + nextPosts.posts.size)
-                    nextPosts.posts.sort()
-                    lastTimestamp = nextPosts.posts[nextPosts.posts.size - 1].getTimestamp()
+                    postList.sort()
+                    lastTimestamp = postList[postList.size - 1].getTimestamp()
                     return@flatMap Observable.from(nextPosts.posts)
                 })
+                .flatMap(
+                        { post: Post ->
+                            if (post.contentType == "TO")
+                                return@flatMap Observable.just(ImageMetadata())
+                            else
+                                return@flatMap contentRepository.getImageMetadata(token, post.postId)
+                        }
+                        , { post: Post, imageMetadata: ImageMetadata -> post.metadata = imageMetadata;return@flatMap post }
+                )
     }
-
-    fun resetLastTimeStamp() {
-        lastTimestamp = Float.MAX_VALUE
-    }
-
-    /* private fun initColorTints() {
-        upVoteColorTint =
-        downVoteColorTint = ContextCompat.getColor(getApplication(), R.color.downVoteSelected)
-        commentColorTint = ContextCompat.getColor(getApplication(), R.color.commentSelected)
-        reportColorTint = ContextCompat.getColor(getApplication(), R.color.reportSelected)
-    }*/
-
-    /* fun submitVote(postId: String, birthId: String, value: Int): Observable<VoteTotal> {
-         token = sharedPrefrencesService.getToken(getApplication())
-         return contentRepository.submitVote(token, postId, birthId, value)
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribeOn(Schedulers.io())
-     }*/
 }

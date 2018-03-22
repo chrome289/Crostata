@@ -32,6 +32,7 @@ class ViewPostFragment : Fragment() {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
         mListener?.showBottomNavigation(false)
+        mListener?.showToolbarMain(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,24 +48,21 @@ class ViewPostFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        Log.v(TAG, "onResume")
 
         viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
-
-        Log.v(TAG, "onResume")
-        mListener?.showBottomNavigation(false)
-        mListener?.showToolbarMain(false)
     }
 
     override fun onPause() {
         super.onPause()
-        Log.v(TAG, "onResume")
-
-        mListener?.showBottomNavigation(true)
-        mListener?.showToolbarMain(true)
+        Log.v(TAG, "onPause")
     }
 
     override fun onDetach() {
         super.onDetach()
+
+        mListener?.showBottomNavigation(true)
+        mListener?.showToolbarMain(true)
         mListener = null
     }
 

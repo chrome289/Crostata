@@ -1,5 +1,6 @@
 package xyz.siddharthseth.crostata.data.model
 
+import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,4 +42,6 @@ class Post : Comparable<Post> {
     var votes = 0
     var isCensored = false
     var opinion = 0
+
+    var metadata: ImageMetadata = ImageMetadata()
 }

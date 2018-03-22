@@ -15,17 +15,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_weight="0"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:contentDescription="@string/profile_image"
-            android:src="@drawable/palmyra"
+            android:src="@drawable/home_feed_content_placeholder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +36,6 @@
             android:layout_weight="1"
             android:fontFamily="@font/work_sans_semibold"
             android:text="@string/sample_name"
-            android:textAllCaps="true"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
@@ -53,7 +49,6 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:text="@string/sample_time"
-            android:textAllCaps="true"
             android:textColor="#9e9e9e"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/nameTextView"
@@ -62,46 +57,32 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/content"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_weight="0">
+        android:layout_weight="0"
+        android:adjustViewBounds="true"
+        android:background="@color/white"
+        android:contentDescription="@string/content_image"
+        android:src="@drawable/home_feed_content_placeholder"
+        android:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:contentDescription="@string/content_image"
-            android:scaleType="centerInside"
-            android:src="@drawable/palmyra"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/textPost"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textPost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:ellipsize="end"
-            android:fontFamily="@font/open_sans"
-            android:maxLines="5"
-            android:text="@string/sample_text"
-            android:textColor="#212121"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    </android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/textPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/open_sans"
+        android:maxLines="5"
+        android:paddingTop="8dp"
+        android:text="@string/sample_text"
+        android:textColor="#212121" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/opinion"
@@ -110,134 +91,103 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_weight="0"
         android:baselineAligned="false"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/voteLayout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
+        <ImageButton
+            android:id="@+id/upVoteButton"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_weight="0"
+            android:background="#00ffffff"
+            android:contentDescription="@string/up_vote_button"
+            android:rotation="270"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_forward"
+            android:tint="#bdbdbd"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/upVoteButton"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/up_vote_button"
-                android:rotation="270"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_forward"
-                android:tint="#bdbdbd" />
-
-            <TextView
-                android:id="@+id/votesTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="0"
-                android:fontFamily="@font/work_sans_semibold"
-                android:gravity="center"
-                android:minWidth="36dp"
-                android:text="@string/_123"
-                android:textColor="#bdbdbd" />
-
-            <ImageButton
-                android:id="@+id/downVoteButton"
-                android:layout_width="24dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/down_vote_button"
-                android:rotation="90"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_forward"
-                android:tint="#bdbdbd" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/commentLayout"
+        <TextView
+            android:id="@+id/votesTotal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0"
+            android:fontFamily="@font/work_sans_semibold"
+            android:gravity="center"
+            android:minWidth="36dp"
+            android:text="@string/_123"
+            android:textColor="#bdbdbd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/upVoteButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/downVoteButton"
+            android:layout_width="24dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0"
+            android:background="#00ffffff"
+            android:contentDescription="@string/down_vote_button"
+            android:rotation="90"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_forward"
+            android:tint="#bdbdbd"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/votesTotal"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/commentButton"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="0"
+            android:background="#00ffffff"
+            android:contentDescription="@string/comment_button"
+            android:paddingBottom="2dp"
+            android:paddingTop="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_insert_comment"
+            android:tint="#bdbdbd"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <ImageButton
-                android:id="@+id/commentButton"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/comment_button"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_insert_comment"
-                android:tint="#bdbdbd" />
-
-            <TextView
-                android:id="@+id/commentTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="4dp"
-                android:layout_weight="0"
-                android:fontFamily="@font/work_sans_semibold"
-                android:gravity="center"
-                android:text="@string/_0"
-                android:textColor="#bdbdbd" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/reportLayout"
+        <TextView
+            android:id="@+id/commentTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:fontFamily="@font/work_sans_semibold"
+            android:gravity="center"
+            android:text="@string/_0"
+            android:textColor="#bdbdbd"
+            app:layout_constraintLeft_toRightOf="@+id/commentButton" />
+
+        <ImageButton
+            android:id="@+id/reportButton"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:orientation="horizontal"
+            android:background="#00ffffff"
+            android:contentDescription="@string/report_button"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_flag"
+            android:tint="#bdbdbd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/commentLayout">
-
-            <ImageButton
-                android:id="@+id/reportButton"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="#00ffffff"
-                android:contentDescription="@string/report_button"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_flag"
-                android:tint="#bdbdbd" />
-
-            <TextView
-                android:id="@+id/reportTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="4dp"
-                android:layout_weight="0"
-                android:fontFamily="@font/work_sans_semibold"
-                android:gravity="center"
-                android:text="@string/report"
-                android:textColor="#bdbdbd" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
-
-
 </LinearLayout>

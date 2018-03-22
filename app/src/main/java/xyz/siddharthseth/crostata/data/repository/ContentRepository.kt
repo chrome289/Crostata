@@ -1,6 +1,7 @@
 package xyz.siddharthseth.crostata.data.repository
 
 import rx.Observable
+import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
@@ -18,5 +19,9 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
 
     fun clearVote(token: String, postId: String, birthId: String): Observable<VoteTotal> {
         return crostataApiService.clearVote(token, postId, birthId)
+    }
+
+    fun getImageMetadata(token: String, postId: String): Observable<ImageMetadata> {
+        return crostataApiService.imageMetadata(token, postId)
     }
 }

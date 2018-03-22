@@ -7,6 +7,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import rx.Observable
+import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
@@ -48,6 +49,12 @@ interface CrostataApiService {
             @Query("postId") postId: String,
             @Query("birthId") birthId: String
     ): Observable<VoteTotal>
+
+    @GET("/api/content/imageMetadata")
+    fun imageMetadata(
+            @Header("authorization") token: String,
+            @Query("postId") postId: String
+    ): Observable<ImageMetadata>
 
     companion object {
         fun create(): CrostataApiService {

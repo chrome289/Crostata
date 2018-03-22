@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity()
     private lateinit var communityFragment: CommunityFragment
     private lateinit var viewPostFragment: ViewPostFragment
 
+    private lateinit var selectedPost: Post
+
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun showToolbarMain(shouldShow: Boolean) {
@@ -59,20 +61,10 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun openFullPost(post: Post) {
-        val fragment = supportFragmentManager.findFragmentByTag("viewPostFragment")
-        if (fragment == null) {
-            viewPostFragment = ViewPostFragment.newInstance(post)
-        } else {
-            viewPostFragment = fragment as ViewPostFragment
-        }
-
-        supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(R.id.frame, viewPostFragment, "viewPostFragment")
-                .addToBackStack("viewPostFragment")
-                .commit()
-
-        mainActivityViewModel.lastSelectedId = 3
+        selectedPost = post
+        openFragment(getFragment(R.id.viewPost))
+        mainActivityViewModel.addToFragmentStack(R.id.viewPost)
+        // toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.viewPost)
     }
 
 
@@ -83,7 +75,40 @@ class MainActivity : AppCompatActivity()
         setSupportActionBar(toolbar)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+
+        toolbar.title = ""
+        toolbarTitle.text = resources.getString(R.string.toolbar_home)
+
+        setSupportActionBar(toolbar)
+
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
+            Log.v(TAG, item.order.toString())
+            when (item.itemId) {
+                R.id.home -> {
+                    openFragment(getFragment(R.id.home))
+                    mainActivityViewModel.addToFragmentStack(R.id.home)
+                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.home)
+                }
+                R.id.community -> {
+                    openFragment(getFragment(R.id.community))
+                    mainActivityViewModel.addToFragmentStack(R.id.community)
+                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.community)
+                }
+                R.id.profile -> {
+                    openFragment(getFragment(R.id.profile))
+                    mainActivityViewModel.addToFragmentStack(R.id.profile)
+                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.profile)
+                }
+            }
+            true
+        }
+        bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
+        showBottomNavigation(true)
+
+        addPostButton.setOnClickListener { v: View -> startActivity(Intent(this, AddPostActivity::class.java)) }
     }
+
 
     override fun onBackPressed() {
         Log.v(TAG, "fragmentCustomStack.size  " + mainActivityViewModel.fragmentCustomStack.size)
@@ -101,67 +126,22 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        toolbar.title = ""
-        toolbarTitle.text = resources.getString(R.string.toolbar_home)
-
-        setSupportActionBar(toolbar)
-
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
-            Log.v(TAG, item.order.toString())
-            when (item.itemId) {
-                R.id.home -> {
-                    openFragment(getFragment(R.id.home), R.id.home)
-                }
-                R.id.community -> {
-                    openFragment(getFragment(R.id.community), R.id.community)
-                }
-                R.id.profile -> {
-                    openFragment(getFragment(R.id.profile), R.id.profile)
-                }
-            }
-            mainActivityViewModel.isInitialized = true
-            true
-        }
-        bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
-        showBottomNavigation(true)
-
-        addPostButton.setOnClickListener { v: View -> startActivity(Intent(this, AddPostActivity::class.java)) }
-    }
-
-    private fun openFragment(fragment: Fragment, fragmentId: Int) {
+    private fun openFragment(fragment: Fragment) {
         Log.v(TAG, "openFragment")
         val transaction = supportFragmentManager.beginTransaction()
         if (mainActivityViewModel.isInitialized) {
             transaction.setCustomAnimations(R.anim.shift_up, R.anim.blank)
+        } else {
+            mainActivityViewModel.isInitialized = true
         }
         transaction.replace(R.id.frame, fragment)
-                .commit()
-        if (mainActivityViewModel.addToBackStack)
-            mainActivityViewModel.addToFragmentStack(fragmentId)
-        else
-            mainActivityViewModel.addToBackStack = true
-
-        mainActivityViewModel.lastSelectedId = fragmentId
-        toolbarTitle.text = mainActivityViewModel.getToolbarTitle(fragmentId)
+        transaction.commit()
         Log.v(TAG, "done")
     }
 
 
     private fun getFragment(fragmentId: Int): Fragment {
         when (fragmentId) {
-            R.id.home -> {
-                val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)
-                if (fragment == null) {
-                    homeFeedFragment = HomeFeedFragment.newInstance()
-                } else {
-                    homeFeedFragment = fragment as HomeFeedFragment
-                }
-                return homeFeedFragment
-            }
             R.id.community -> {
                 val fragment = supportFragmentManager.findFragmentByTag(CommunityFragment::class.java.name)
                 if (fragment == null) {
@@ -179,6 +159,15 @@ class MainActivity : AppCompatActivity()
                     profileFragment = fragment as ProfileFragment
                 }
                 return profileFragment
+            }
+            R.id.viewPost -> {
+                val fragment = supportFragmentManager.findFragmentByTag(ViewPostFragment::class.java.name)
+                if (fragment == null) {
+                    viewPostFragment = ViewPostFragment.newInstance(selectedPost)
+                } else {
+                    viewPostFragment = fragment as ViewPostFragment
+                }
+                return viewPostFragment
             }
             else -> {
                 val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)
