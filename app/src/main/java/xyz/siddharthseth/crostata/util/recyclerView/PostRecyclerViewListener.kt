@@ -5,7 +5,7 @@ import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
-interface RecyclerViewListener {
+interface PostRecyclerViewListener {
     fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal>
     fun onCommentButtonClick(postId: String)
     fun onReportButtonClick(postId: String)

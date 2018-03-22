@@ -7,10 +7,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
-import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
-import xyz.siddharthseth.crostata.data.model.retrofit.Token
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
+import xyz.siddharthseth.crostata.data.model.retrofit.*
 
 interface CrostataApiService {
 
@@ -27,7 +24,7 @@ interface CrostataApiService {
     ): Observable<Response<ResponseBody>>
 
     @GET("/api/content/nextPosts")
-    fun nextPosts(
+    fun getPosts(
             @Header("authorization") token: String,
             @Query("noOfPosts") noOfPosts: Int,
             @Query("lastTimestamp") lastTimestamp: Float,
@@ -36,7 +33,7 @@ interface CrostataApiService {
 
     @POST("/api/opinion/vote")
     @FormUrlEncoded
-    fun submitVote(
+    fun addVote(
             @Header("authorization") token: String,
             @Field("postId") postId: String,
             @Field("birthId") birthId: String,
@@ -44,7 +41,7 @@ interface CrostataApiService {
     ): Observable<VoteTotal>
 
     @DELETE("/api/opinion/vote")
-    fun clearVote(
+    fun deleteVote(
             @Header("authorization") token: String,
             @Query("postId") postId: String,
             @Query("birthId") birthId: String
@@ -55,6 +52,14 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("postId") postId: String
     ): Observable<ImageMetadata>
+
+    @GET("/api/opinion/comments")
+    fun getComments(
+            @Header("authorization") token: String,
+            @Query("noOfComments") noOfComments: Int,
+            @Query("lastTimestamp") lastTimestamp: Float,
+            @Query("postId") postId: String
+    ): Observable<NextComments>
 
     companion object {
         fun create(): CrostataApiService {

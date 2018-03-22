@@ -13,7 +13,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.modelView.LoginActivityViewModel
+import xyz.siddharthseth.crostata.viewmodel.LoginActivityViewModel
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {

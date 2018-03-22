@@ -13,12 +13,12 @@ import kotlinx.android.synthetic.main.toolbar_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.modelView.MainActivityViewModel
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.ViewPostFragment
+import xyz.siddharthseth.crostata.viewmodel.MainActivityViewModel
 
 
 class MainActivity : AppCompatActivity()
@@ -135,6 +135,7 @@ class MainActivity : AppCompatActivity()
             mainActivityViewModel.isInitialized = true
         }
         transaction.replace(R.id.frame, fragment)
+                .addToBackStack(fragment.tag)
         transaction.commit()
         Log.v(TAG, "done")
     }

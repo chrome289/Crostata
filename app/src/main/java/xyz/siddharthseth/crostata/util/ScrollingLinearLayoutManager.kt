@@ -17,7 +17,7 @@ class ScrollingLinearLayoutManager(context: Context?, orientation: Int, reverseL
         val currentPosition = recyclerView.getChildPosition(firstVisibleChild)
         var distanceInPixels = Math.abs((currentPosition - position) * itemHeight)
         if (distanceInPixels == 0) {
-            distanceInPixels = Math.abs(firstVisibleChild.y) as Int
+            distanceInPixels = Math.abs(firstVisibleChild.y).toInt()
         }
         val smoothScroller = SmoothScroller(recyclerView.context, distanceInPixels, duration)
         smoothScroller.targetPosition = position
@@ -25,12 +25,11 @@ class ScrollingLinearLayoutManager(context: Context?, orientation: Int, reverseL
     }
 
     private inner class SmoothScroller(context: Context, distanceInPixels: Int, duration: Int) : LinearSmoothScroller(context) {
-        private val distanceInPixels: Float
+        private val distanceInPixels: Float = distanceInPixels.toFloat()
         private val duration: Float
         private val TARGET_SEEK_SCROLL_DISTANCE_PX = 10000
 
         init {
-            this.distanceInPixels = distanceInPixels.toFloat()
             val millisecondsPerPx = calculateSpeedPerPixel(context.resources.displayMetrics)
             this.duration = (if (distanceInPixels < TARGET_SEEK_SCROLL_DISTANCE_PX)
                 (Math.abs(distanceInPixels) * millisecondsPerPx).toInt()

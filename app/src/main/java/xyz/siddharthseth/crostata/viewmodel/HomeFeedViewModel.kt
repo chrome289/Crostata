@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.modelView
+package xyz.siddharthseth.crostata.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -24,18 +24,18 @@ import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.util.recyclerView.RecyclerViewListener
+import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
-        , RecyclerViewListener {
+        , PostRecyclerViewListener {
 
-    private val TAG = "HomeFeedViewModel"
+    private val TAG = javaClass.simpleName
     private val sharedPreferencesService = SharedPrefrencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
-    private var token: String = ""
+    private var token: String = sharedPreferencesService.getToken(getApplication())
     private var noOfPosts: Int = 15
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
     var isInitialized = false
@@ -143,7 +143,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     fun getNextPosts(): Observable<Post> {
         // initColorTints()
-        token = sharedPreferencesService.getToken(getApplication())
         val birthId = sharedPreferencesService.getUserDetails(getApplication())
         return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .subscribeOn(Schedulers.io())

@@ -8,25 +8,25 @@ import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
-import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
-import xyz.siddharthseth.crostata.util.recyclerView.RecyclerViewListener
+import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
+import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
+class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
     : RecyclerView.ViewHolder(view) {
 
-    private var TAG = "AdapterPost"
+    private var TAG = javaClass.simpleName
 
-    private var listener: RecyclerViewListener = homeFeedViewModel
+    private var listenerPost: PostRecyclerViewListener = homeFeedViewModel
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    val upVoteColor = ColorStateList.valueOf(listener.upVoteColorTint)
-    val downVoteColor = ColorStateList.valueOf(listener.downVoteColorTint)
-    val commentColor = ColorStateList.valueOf(listener.commentColorTint)
-    val reportColor = ColorStateList.valueOf(listener.reportColorTint)
-    val greyColor = ColorStateList.valueOf(listener.greyUnselected)
+    val upVoteColor = ColorStateList.valueOf(listenerPost.upVoteColorTint)
+    val downVoteColor = ColorStateList.valueOf(listenerPost.downVoteColorTint)
+    val commentColor = ColorStateList.valueOf(listenerPost.commentColorTint)
+    val reportColor = ColorStateList.valueOf(listenerPost.reportColorTint)
+    val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
 
     fun init(post: Post) {
 
@@ -37,15 +37,15 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
             clearView()
         } else {
             itemView.imageView.visibility = View.VISIBLE
-            itemView.imageView.setOnClickListener { listener.openFullPost(post) }
-            listener.loadPostedImage(post, itemView.imageView)
+            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
+            listenerPost.loadPostedImage(post, itemView.imageView)
             itemView.imageView.requestLayout()
         }
 
-        listener.loadProfileImage(post.creatorId, itemView.profileImage)
+        listenerPost.loadProfileImage(post.creatorId, itemView.profileImage)
 
         itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { listener.openFullPost(post) }
+        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
@@ -74,7 +74,7 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
 
     private fun handleVoteClick(post: Post, newValue: Int) {
         if (post.opinion == newValue) {
-            listener.onClearVote(post.postId).subscribe(
+            listenerPost.onClearVote(post.postId).subscribe(
                     { voteTotal: VoteTotal ->
                         Log.v(TAG, "success :" + voteTotal.success)
                         if (voteTotal.success) {
@@ -85,7 +85,7 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
                     }
                     , { error -> error.printStackTrace() })
         } else {
-            listener.onVoteButtonClick(post.postId, newValue)
+            listenerPost.onVoteButtonClick(post.postId, newValue)
                     .subscribe(
                             { voteTotal: VoteTotal ->
                                 Log.v(TAG, "success :" + voteTotal.success)
@@ -100,6 +100,6 @@ class AdapterPost(view: View, homeFeedViewModel: HomeFeedViewModel)
     }
 
     private fun clearView() {
-        listener.clearPostedImageGlide(itemView.imageView)
+        listenerPost.clearPostedImageGlide(itemView.imageView)
     }
 }

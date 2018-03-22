@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,9 +16,8 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
-import xyz.siddharthseth.crostata.util.ScrollingLinearLayoutManager
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
+import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
 
 class HomeFeedFragment : Fragment(), View.OnClickListener {
 
@@ -36,23 +36,26 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         if (arguments != null) {
         }
 
-        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
+        if (!isInitialized) {
+            homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
 
-        homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
-        homeFeedAdapter.setHasStableIds(true)
+            homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
+            homeFeedAdapter.setHasStableIds(true)
 
-        homeFeedViewModel.mutablePost.observe(this, observer)
+            homeFeedViewModel.mutablePost.observe(this, observer)
 
-        postSubscription = homeFeedViewModel.getPosts()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ post ->
-                    homeFeedAdapter.postList.add(post)
-                    homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
-                }, { onError ->
-                    onError.printStackTrace()
-                    Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
-                })
+            postSubscription = homeFeedViewModel.getPosts()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ post ->
+                        homeFeedAdapter.postList.add(post)
+                        homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
+                    }, { onError ->
+                        onError.printStackTrace()
+                        Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
+                    })
 
+            isInitialized = true
+        }
     }
 
     override fun onPause() {
@@ -88,7 +91,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         super.onResume()
         Log.v(TAG, "onResume")
 
-        recyclerView.layoutManager = ScrollingLinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = homeFeedAdapter
     }
 
@@ -109,6 +112,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     private lateinit var homeFeedViewModel: HomeFeedViewModel
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var homeFeedAdapter: HomeFeedAdapter
+    private var isInitialized: Boolean = false
 
     companion object {
         fun newInstance(): HomeFeedFragment {

@@ -6,18 +6,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.modelView.HomeFeedViewModel
-import xyz.siddharthseth.crostata.view.adapter.viewholder.AdapterPost
+import xyz.siddharthseth.crostata.view.adapter.viewholder.PostViewHolder
+import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
 import java.util.*
 
-class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<AdapterPost>() {
+class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<PostViewHolder>() {
 
     var postList = ArrayList<Post>()
-    var TAG = "HomeFeedAdapter"
+    var TAG = javaClass.simpleName
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterPost {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         Log.v(TAG, "onCreateViewHolder")
-        return AdapterPost(
+        return PostViewHolder(
                 LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.recyclerview_home_card, parent, false)
@@ -25,7 +25,7 @@ class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.A
         )
     }
 
-    override fun onBindViewHolder(holder: AdapterPost, position: Int) {
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         Log.v(TAG, "onBindViewHolder")
         holder.init(postList[position])
     }
