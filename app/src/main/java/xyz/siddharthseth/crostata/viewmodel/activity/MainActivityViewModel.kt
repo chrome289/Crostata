@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.viewmodel
+package xyz.siddharthseth.crostata.viewmodel.activity
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -8,7 +8,7 @@ import xyz.siddharthseth.crostata.R
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     var lastSelectedId = R.id.home
     var isInitialized = false
-    val TAG = this::class.java.simpleName
+    val TAG: String? = this::class.java.simpleName
     val fragmentCustomStack = ArrayList<Int>()
     var addToBackStack: Boolean = true
 

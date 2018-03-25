@@ -13,7 +13,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.viewmodel.LoginActivityViewModel
+import xyz.siddharthseth.crostata.viewmodel.activity.LoginActivityViewModel
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -95,7 +95,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
 
-        loadingFrame.setOnClickListener {
+        loadingFrame.setOnTouchListener { _, _ ->
             Log.v(TAG, "Don't click")
             true
         }

@@ -17,7 +17,7 @@ import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
-import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
+import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 
 class HomeFeedFragment : Fragment(), View.OnClickListener {
 
@@ -34,27 +34,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         Log.v(TAG, "onCreate")
         if (arguments != null) {
-        }
-
-        if (!isInitialized) {
-            homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
-
-            homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
-            homeFeedAdapter.setHasStableIds(true)
-
-            homeFeedViewModel.mutablePost.observe(this, observer)
-
-            postSubscription = homeFeedViewModel.getPosts()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ post ->
-                        homeFeedAdapter.postList.add(post)
-                        homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
-                    }, { onError ->
-                        onError.printStackTrace()
-                        Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
-                    })
-
-            isInitialized = true
         }
     }
 
@@ -90,9 +69,29 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         Log.v(TAG, "onResume")
+        if (!isInitialized || recyclerView.adapter.itemCount == 0) {
+            homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
 
-        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recyclerView.adapter = homeFeedAdapter
+            homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
+            homeFeedAdapter.setHasStableIds(true)
+
+            homeFeedViewModel.mutablePost.observe(this, observer)
+
+            postSubscription = homeFeedViewModel.getPosts()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ post ->
+                        homeFeedAdapter.postList.add(post)
+                        homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
+                    }, { onError ->
+                        onError.printStackTrace()
+                        Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
+                    })
+
+
+            recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            recyclerView.adapter = homeFeedAdapter
+            isInitialized = true
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -108,7 +107,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     }
 
     private val TAG = "HomeFeedFragment"
-    lateinit var postSubscription: Subscription
+    private lateinit var postSubscription: Subscription
     private lateinit var homeFeedViewModel: HomeFeedViewModel
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var homeFeedAdapter: HomeFeedAdapter

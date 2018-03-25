@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
-import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
+import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,11 +22,11 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    val upVoteColor = ColorStateList.valueOf(listenerPost.upVoteColorTint)
-    val downVoteColor = ColorStateList.valueOf(listenerPost.downVoteColorTint)
-    val commentColor = ColorStateList.valueOf(listenerPost.commentColorTint)
-    val reportColor = ColorStateList.valueOf(listenerPost.reportColorTint)
-    val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
+    private val upVoteColor = ColorStateList.valueOf(listenerPost.upVoteColorTint)
+    private val downVoteColor = ColorStateList.valueOf(listenerPost.downVoteColorTint)
+    val commentColor: ColorStateList? = ColorStateList.valueOf(listenerPost.commentColorTint)
+    val reportColor: ColorStateList? = ColorStateList.valueOf(listenerPost.reportColorTint)
+    private val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
 
     fun init(post: Post) {
 

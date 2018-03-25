@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.viewmodel
+package xyz.siddharthseth.crostata.viewmodel.activity
 
 
 import android.app.Application

@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.toolbar_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.Post
@@ -17,56 +16,29 @@ import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.ViewPostFragment
-import xyz.siddharthseth.crostata.viewmodel.MainActivityViewModel
+import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
 
 class MainActivity : AppCompatActivity()
         , HomeFeedFragment.OnFragmentInteractionListener
         , ProfileFragment.OnFragmentInteractionListener
-        , CommunityFragment.OnFragmentInteractionListener
-        , ViewPostFragment.OnFragmentInteractionListener {
+        , CommunityFragment.OnFragmentInteractionListener {
 
     private val TAG = "MainActivity"
     private lateinit var homeFeedFragment: HomeFeedFragment
     private lateinit var profileFragment: ProfileFragment
     private lateinit var communityFragment: CommunityFragment
-    private lateinit var viewPostFragment: ViewPostFragment
-
-    private lateinit var selectedPost: Post
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
-    override fun showToolbarMain(shouldShow: Boolean) {
-        if (shouldShow) {
-            toolbarMain.visibility = View.VISIBLE
-            toolbarViewPost.visibility = View.GONE
-
-            toolbar.navigationIcon = null
-            toolbar.setNavigationOnClickListener { null }
-        } else {
-            toolbarMain.visibility = View.GONE
-            toolbarViewPost.visibility = View.VISIBLE
-
-            toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back)
-            toolbar.setNavigationOnClickListener { it -> supportFragmentManager.popBackStack() }
-        }
-    }
-
-    override fun showBottomNavigation(shouldShow: Boolean) {
-        if (shouldShow)
-            bottomNavigationView.visibility = View.VISIBLE
-        else
-            bottomNavigationView.visibility = View.GONE
-    }
-
     override fun openFullPost(post: Post) {
-        selectedPost = post
-        openFragment(getFragment(R.id.viewPost))
-        mainActivityViewModel.addToFragmentStack(R.id.viewPost)
-        // toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.viewPost)
-    }
+        val intent = Intent(this, ViewPostActivity::class.java)
+        intent.putExtra("post", post)
+        intent.putExtra("transitionName", post.postId)
 
+        startActivity(intent)
+        //  overridePendingTransition(R.anim.slide_up, R.anim.blank)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +76,7 @@ class MainActivity : AppCompatActivity()
             true
         }
         bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
-        showBottomNavigation(true)
+        //showBottomNavigation(true)
 
         addPostButton.setOnClickListener { v: View -> startActivity(Intent(this, AddPostActivity::class.java)) }
     }
@@ -130,13 +102,13 @@ class MainActivity : AppCompatActivity()
         Log.v(TAG, "openFragment")
         val transaction = supportFragmentManager.beginTransaction()
         if (mainActivityViewModel.isInitialized) {
-            transaction.setCustomAnimations(R.anim.shift_up, R.anim.blank)
+            transaction.setCustomAnimations(R.anim.shift_up, 0)
         } else {
             mainActivityViewModel.isInitialized = true
         }
         transaction.replace(R.id.frame, fragment)
-                .addToBackStack(fragment.tag)
-        transaction.commit()
+                .setReorderingAllowed(true)
+                .commit()
         Log.v(TAG, "done")
     }
 
@@ -145,37 +117,28 @@ class MainActivity : AppCompatActivity()
         when (fragmentId) {
             R.id.community -> {
                 val fragment = supportFragmentManager.findFragmentByTag(CommunityFragment::class.java.name)
-                if (fragment == null) {
-                    communityFragment = CommunityFragment.newInstance()
+                communityFragment = if (fragment == null) {
+                    CommunityFragment.newInstance()
                 } else {
-                    communityFragment = fragment as CommunityFragment
+                    fragment as CommunityFragment
                 }
                 return communityFragment
             }
             R.id.profile -> {
                 val fragment = supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.name)
-                if (fragment == null) {
-                    profileFragment = ProfileFragment.newInstance()
+                profileFragment = if (fragment == null) {
+                    ProfileFragment.newInstance()
                 } else {
-                    profileFragment = fragment as ProfileFragment
+                    fragment as ProfileFragment
                 }
                 return profileFragment
             }
-            R.id.viewPost -> {
-                val fragment = supportFragmentManager.findFragmentByTag(ViewPostFragment::class.java.name)
-                if (fragment == null) {
-                    viewPostFragment = ViewPostFragment.newInstance(selectedPost)
-                } else {
-                    viewPostFragment = fragment as ViewPostFragment
-                }
-                return viewPostFragment
-            }
             else -> {
                 val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)
-                if (fragment == null) {
-                    homeFeedFragment = HomeFeedFragment.newInstance()
+                homeFeedFragment = if (fragment == null) {
+                    HomeFeedFragment.newInstance()
                 } else {
-                    homeFeedFragment = fragment as HomeFeedFragment
+                    fragment as HomeFeedFragment
                 }
                 return homeFeedFragment
             }

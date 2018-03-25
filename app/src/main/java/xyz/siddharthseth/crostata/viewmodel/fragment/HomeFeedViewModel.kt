@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.viewmodel
+package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -38,9 +38,9 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var token: String = sharedPreferencesService.getToken(getApplication())
     private var noOfPosts: Int = 15
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-    var isInitialized = false
+    private var isInitialized = false
     var mutablePost: SingleLivePost = SingleLivePost()
-    var postList: ArrayList<Post> = ArrayList()
+    private var postList: ArrayList<Post> = ArrayList()
 
     override fun openFullPost(post: Post) {
         mutablePost.value = post
@@ -141,7 +141,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
             return getNextPosts()
     }
 
-    fun getNextPosts(): Observable<Post> {
+    private fun getNextPosts(): Observable<Post> {
         // initColorTints()
         val birthId = sharedPreferencesService.getUserDetails(getApplication())
         return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)

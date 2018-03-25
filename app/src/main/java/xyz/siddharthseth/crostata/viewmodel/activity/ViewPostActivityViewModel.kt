@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.viewmodel
+package xyz.siddharthseth.crostata.viewmodel.activity
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -22,17 +22,16 @@ import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 import xyz.siddharthseth.crostata.util.recyclerView.CommentRecyclerViewListener
 import java.util.*
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentRecyclerViewListener {
-
+class ViewPostActivityViewModel(application: Application) : AndroidViewModel(application), CommentRecyclerViewListener {
     var post: Post = Post()
-    var commentList = ArrayList<Comment>()
+    private var commentList = ArrayList<Comment>()
     private val sharedPreferencesService = SharedPrefrencesService()
     private var token: String = sharedPreferencesService.getToken(getApplication())
     val TAG: String = javaClass.simpleName
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var noOfComments: Int = 10
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-    var isInitialized = false
+    private var isInitialized = false
 
     fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()

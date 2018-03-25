@@ -3,9 +3,9 @@ package xyz.siddharthseth.crostata.util.recyclerView
 import android.support.v7.util.DiffUtil
 import xyz.siddharthseth.crostata.data.model.Post
 
-class DiffUtilCallback(val postList: ArrayList<Post>, val newPosts: ArrayList<Post>) : DiffUtil.Callback() {
+class DiffUtilCallback(private val postList: ArrayList<Post>, private val newPosts: ArrayList<Post>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return postList.get(oldItemPosition).postId.equals(newPosts.get(newItemPosition).postId)
+        return postList[oldItemPosition].postId == newPosts.get(newItemPosition).postId
     }
 
     override fun getOldListSize(): Int {
@@ -17,6 +17,6 @@ class DiffUtilCallback(val postList: ArrayList<Post>, val newPosts: ArrayList<Po
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return postList.get(oldItemPosition).postId.equals(newPosts.get(newItemPosition).postId)
+        return postList[oldItemPosition].postId == newPosts.get(newItemPosition).postId
     }
 }

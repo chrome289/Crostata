@@ -47,9 +47,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/work_sans"
+                android:fontFamily="@font/work_sans_medium"
                 android:text="@string/sample_name"
-                android:textAllCaps="true"
                 android:textColor="#212121"
                 android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
@@ -67,46 +66,23 @@
                 android:text="@string/sample_time"
                 android:textAllCaps="true"
                 android:textColor="#9e9e9e"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/reportLayout"
+        <TextView
+            android:id="@+id/reportTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_gravity="fill_vertical"
             android:layout_marginEnd="24dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="0"
-            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:text="@string/report"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/reportButton"
-                android:layout_width="wrap_content"
-                android:layout_height="18dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/report_button"
-                android:scaleType="fitEnd"
-                android:src="@drawable/ic_flag"
-                android:tint="#bdbdbd" />
-
-            <TextView
-                android:id="@+id/reportTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="fill_vertical"
-                android:layout_weight="0"
-                android:gravity="center_vertical"
-                android:text="@string/report"
-                android:textSize="12sp" />
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

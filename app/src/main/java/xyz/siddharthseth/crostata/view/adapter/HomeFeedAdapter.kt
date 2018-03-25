@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.view.adapter.viewholder.PostViewHolder
-import xyz.siddharthseth.crostata.viewmodel.HomeFeedViewModel
+import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.util.*
 
-class HomeFeedAdapter(val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<PostViewHolder>() {
+class HomeFeedAdapter(private val homeFeedViewModel: HomeFeedViewModel) : RecyclerView.Adapter<PostViewHolder>() {
 
     var postList = ArrayList<Post>()
-    var TAG = javaClass.simpleName
+    var TAG: String = javaClass.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         Log.v(TAG, "onCreateViewHolder")
