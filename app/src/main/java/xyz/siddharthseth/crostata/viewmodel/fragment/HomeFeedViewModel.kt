@@ -94,7 +94,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         val dimen = 128
         val quality = 70
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
+                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())

@@ -21,11 +21,9 @@ class ProfileFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
         /*if (mListener != null) {
             mListener!!.onFragmentInteraction(uri)
@@ -47,10 +45,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        // fun onFragmentInteraction(uri: Uri)
-    }
+    interface OnFragmentInteractionListener
 
     companion object {
         fun newInstance(): ProfileFragment {

@@ -14,7 +14,7 @@
     <string name="sign_in">Sign In</string>
     <string name="developer">Ministry of Communication\nBanana Republic of Palmyra</string>
     <string name="profile_image">profileImage</string>
-    <string name="sample_name">DARWIN CENICEROS</string>
+    <string name="sample_name">Darwin Ceniceros</string>
     <string name="clock">clock</string>
     <string name="sample_time">45 MINS AGO</string>
     <string name="sample_date">Jan 31, \'11</string>
@@ -35,5 +35,9 @@
     <string name="toolbar_add_post">New Post</string>
     <string name="comments">Comments</string>
     <string name="add_a_comment">Add a comment</string>
-
+    <string name="sample_name_all_caps">DARWIN CENICEROS</string>
+    <string name="info_message">Visit your nearest Citizen Help Desk</string>
+    <string name="comments_caps">COMMENTS</string>
+    <string name="posts">POSTS</string>
+    <string name="sample_comment">Can you not please?</string>
 </resources>
