@@ -1,10 +1,7 @@
 package xyz.siddharthseth.crostata.data.repository
 
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
-import xyz.siddharthseth.crostata.data.model.retrofit.NextComments
-import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
+import xyz.siddharthseth.crostata.data.model.retrofit.*
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 class ContentRepository(private var crostataApiService: CrostataApiService) {
@@ -29,4 +26,17 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
     fun getComments(token: String, noOfComments: Int, lastTimestamp: Float, postId: String): Observable<NextComments> {
         return crostataApiService.getComments(token, noOfComments, lastTimestamp, postId)
     }
+
+    fun getPatriotChart(token:String): Observable<List<ChartEntry>> {
+        return crostataApiService.getPatriotChart(token)
+    }
+
+    fun getSubjectInfo(token: String,birthId: String):Observable<Subject>{
+        return crostataApiService.getSubjectInfo(token,birthId)
+    }
+
+    fun getSubjectComments(token: String, birthId: String, noOfComments: Int, lastCommentTimestamp: Float): Observable<NextComments> {
+        return crostataApiService.getComments(token, noOfComments, lastCommentTimestamp, birthId)
+    }
+
 }

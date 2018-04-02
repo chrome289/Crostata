@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -23,6 +24,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     interface OnFragmentInteractionListener {
         fun openFullPost(post: Post)
+        fun addNewPost()
     }
 
     override fun onClick(v: View?) {
@@ -90,6 +92,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
             recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             recyclerView.adapter = homeFeedAdapter
+
+            addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
+
             isInitialized = true
         }
     }

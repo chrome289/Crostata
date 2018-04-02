@@ -61,6 +61,17 @@ interface CrostataApiService {
             @Query("postId") postId: String
     ): Observable<NextComments>
 
+    @GET("/api/subject/charts")
+    fun getPatriotChart(
+            @Header("authorization") token: String
+    ): Observable<List<ChartEntry>>
+
+    @GET("/api/subject/info")
+    fun getSubjectInfo(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String
+    ): Observable<xyz.siddharthseth.crostata.data.model.retrofit.Subject>
+
     companion object {
         fun create(): CrostataApiService {
             val retrofit = Retrofit.Builder()

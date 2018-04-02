@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
@@ -23,6 +22,9 @@ class MainActivity : AppCompatActivity()
         , HomeFeedFragment.OnFragmentInteractionListener
         , ProfileFragment.OnFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener {
+    override fun addNewPost() {
+        startActivity(Intent(this, AddPostActivity::class.java))
+    }
 
     private val TAG = "MainActivity"
     private lateinit var homeFeedFragment: HomeFeedFragment
@@ -44,14 +46,7 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(activity_main)
 
-        setSupportActionBar(toolbar)
-
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-
-        toolbar.title = ""
-        toolbarTitle.text = resources.getString(R.string.toolbar_home)
-
-        setSupportActionBar(toolbar)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
@@ -60,25 +55,20 @@ class MainActivity : AppCompatActivity()
                 R.id.home -> {
                     openFragment(getFragment(R.id.home))
                     mainActivityViewModel.addToFragmentStack(R.id.home)
-                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.home)
                 }
                 R.id.community -> {
                     openFragment(getFragment(R.id.community))
                     mainActivityViewModel.addToFragmentStack(R.id.community)
-                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.community)
                 }
                 R.id.profile -> {
                     openFragment(getFragment(R.id.profile))
                     mainActivityViewModel.addToFragmentStack(R.id.profile)
-                    toolbarTitle.text = mainActivityViewModel.getToolbarTitle(R.id.profile)
                 }
             }
             true
         }
         bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
         //showBottomNavigation(true)
-
-        addPostButton.setOnClickListener { v: View -> startActivity(Intent(this, AddPostActivity::class.java)) }
     }
 
 
@@ -101,11 +91,11 @@ class MainActivity : AppCompatActivity()
     private fun openFragment(fragment: Fragment) {
         Log.v(TAG, "openFragment")
         val transaction = supportFragmentManager.beginTransaction()
-        if (mainActivityViewModel.isInitialized) {
+        /*if (mainActivityViewModel.isInitialized) {
             transaction.setCustomAnimations(R.anim.shift_up, 0)
-        } else {
-            mainActivityViewModel.isInitialized = true
-        }
+        } else {*/
+        mainActivityViewModel.isInitialized = true
+        //}
         transaction.replace(R.id.frame, fragment)
                 .setReorderingAllowed(true)
                 .commit()
