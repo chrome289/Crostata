@@ -3,19 +3,20 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
+import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import rx.Observable
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
-import xyz.siddharthseth.crostata.data.model.retrofit.NextComments
-import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
@@ -28,11 +29,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     val TAG: String = javaClass.simpleName
     val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
-    private var noOfPosts: Int = 5
-    private var noOfComments: Int = 5
-    private var lastPostTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-    private var lastCommentTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-
+    private var size: Int = 5
+    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
     var commentList = ArrayList<Comment>()
     var postList = ArrayList<Post>()
     private var isInitialized = false
@@ -42,7 +40,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .subscribeOn(Schedulers.io())
     }
 
-    fun loadProfileImage(imageView: ImageView) {
+    fun loadProfileImage(imageView: ImageView, isCircle: Boolean) {
         val context: Context = getApplication()
         val dimen = 1024
         val quality = 70
@@ -53,13 +51,24 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .addHeader("authorization", token)
                 .build())
 
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .centerInside()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .priority(Priority.IMMEDIATE)
-                .into(imageView)
+        if (isCircle) {
+            GlideApp.with(context)
+                    .load(glideUrl)
+                    .placeholder(R.drawable.home_feed_content_placeholder)
+                    .centerInside()
+                    .circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView)
+        } else {
+            GlideApp.with(context)
+                    .load(glideUrl)
+                    .placeholder(R.drawable.home_feed_content_placeholder)
+                    .centerInside()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView)
+        }
     }
 
     fun getComments(): Observable<Comment> {
@@ -69,17 +78,54 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             return getNextComments()
     }
 
-    fun getNextComments(): Observable<Comment> {
-        return contentRepository.getSubjectComments(token, birthId, noOfComments, lastCommentTimestamp)
+
+    private fun getNextComments(): Observable<Comment> {
+        return contentRepository.getSubjectComments(token, birthId, size, lastTimestamp)
                 .subscribeOn(Schedulers.io())
-                .flatMap({ nextComments: NextComments ->
-                    //Thread.sleep(5000)
-                    if (!isInitialized)
-                        isInitialized = true
-                    commentList.addAll(nextComments.comments)
-                    commentList.sort()
-                    lastCommentTimestamp = commentList[commentList.size - 1].getTimestamp()
-                    return@flatMap Observable.from(nextComments.comments)
-                })
+                .flatMap { return@flatMap Observable.from(it) }
+    }
+
+
+    fun getPosts(): Observable<Post> {
+        if (isInitialized)
+            return Observable.from(postList)
+        else
+            return getNextPosts()
+    }
+
+    private fun getNextPosts(): Observable<Post> {
+        return contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
+                .subscribeOn(Schedulers.io())
+                .flatMap { return@flatMap Observable.from(it) }
+    }
+
+    fun loadPostedImage(imageView: ImageView, post: Post) {
+        val context: Context = getApplication()
+
+        val dimen = 1080
+        val quality = 70
+        val postId = post.imageId
+
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/content/postedImage?postId=$postId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        Log.v(TAG, "width like ---" + imageView.width)
+        GlideApp.with(context)
+                .load(glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .downsample(DownsampleStrategy.FIT_CENTER)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.LOW)
+                .fitCenter()
+                .override(1080)
+                .into(imageView)
+    }
+
+    fun clearPostedImageGlide(contentImage: ImageView?) {
+        val context: Context = getApplication()
+        GlideApp.with(context).clear(contentImage as View)
     }
 }

@@ -2,7 +2,7 @@ package xyz.siddharthseth.crostata.data.service
 
 import android.content.Context
 import android.content.SharedPreferences
-import xyz.siddharthseth.crostata.data.model.Subject
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 
 class SharedPrefrencesService {
@@ -19,7 +19,7 @@ class SharedPrefrencesService {
 
     }
 
-    fun saveSubjectDetails(subject: Subject, context: Context): Boolean {
+    fun saveSubjectDetails(subject: LoggedSubject, context: Context): Boolean {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
         sharedPreferences.edit()
                 .putString("birthId", subject.birthId)
@@ -29,9 +29,9 @@ class SharedPrefrencesService {
         return true
     }
 
-    fun getUserDetails(context: Context): Subject {
+    fun getUserDetails(context: Context): LoggedSubject {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        return Subject.getInstance(sharedPreferences.getString("birthId", "")
+        return LoggedSubject.getInstance(sharedPreferences.getString("birthId", "")
                 , sharedPreferences.getString("password", ""))
     }
 }

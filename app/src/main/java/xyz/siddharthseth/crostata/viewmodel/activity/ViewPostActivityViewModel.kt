@@ -85,18 +85,18 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun getComments(): Observable<Comment> {
-        return contentRepository.getComments(token, noOfComments, lastTimestamp, post.postId)
+        return contentRepository.getComments(token, post.postId, noOfComments, lastTimestamp)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
                     if (!isInitialized)
                         isInitialized = true
-                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.comments.size)
-                    commentList.addAll(it.comments)
+                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.size)
+                    commentList.addAll(it)
                     commentList.sort()
-                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.comments.size)
+                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.size)
                     lastTimestamp = if (commentList.size > 0) commentList[commentList.size - 1].getTimestamp()
                     else Calendar.getInstance().timeInMillis / 1000.0f
-                    return@flatMap Observable.from(it.comments)
+                    return@flatMap Observable.from(it)
                 }
     }
 }

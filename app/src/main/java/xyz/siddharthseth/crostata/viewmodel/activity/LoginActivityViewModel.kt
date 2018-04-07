@@ -7,7 +7,7 @@ import android.util.Log
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import xyz.siddharthseth.crostata.data.model.Subject
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.providers.LoginRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.LoginRepository
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -21,7 +21,7 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
 
     fun signIn(birthId: String, password: String): Observable<Int> {
 
-        val subject = Subject.getInstance(birthId, password)
+        val subject = LoggedSubject.getInstance(birthId, password)
 
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 

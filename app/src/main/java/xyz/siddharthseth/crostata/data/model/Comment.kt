@@ -37,4 +37,7 @@ class Comment : Comparable<Comment> {
     var birthId = ""
     var text: String = ""
     var timeCreated = ""
+    var isGenerated = false
+    var isCensored = false
+    var post: Post = Post()
 }

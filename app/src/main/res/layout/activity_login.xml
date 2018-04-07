@@ -99,15 +99,16 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:layout_width="0dp"
+                android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
                 android:contentDescription="@string/useravatar"
+                android:tint="#757575"
                 app:layout_constraintBottom_toBottomOf="@+id/birthId"
                 app:layout_constraintDimensionRatio="w,1:1"
                 app:layout_constraintStart_toStartOf="@+id/birthId"
                 app:layout_constraintTop_toTopOf="@+id/birthId"
-                app:srcCompat="@drawable/user_avatar" />
+                app:srcCompat="@drawable/ic_action_user" />
 
             <EditText
                 android:id="@+id/password"
@@ -134,17 +135,18 @@
                 app:layout_constraintVertical_bias="0.4" />
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/keyavatar"
+                android:tint="#757575"
                 app:layout_constraintBottom_toBottomOf="@+id/password"
                 app:layout_constraintDimensionRatio="w,1:1"
                 app:layout_constraintStart_toStartOf="@+id/password"
                 app:layout_constraintTop_toTopOf="@+id/password"
-                app:srcCompat="@drawable/key_avatar" />
+                app:srcCompat="@drawable/ic_action_key" />
 
             <Button
                 android:id="@+id/signIn"

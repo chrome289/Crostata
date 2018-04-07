@@ -44,6 +44,7 @@ class Post() : Comparable<Post>, Parcelable {
     var votes = 0
     private var isCensored = false
     var opinion = 0
+    var imageId = ""
 
     var metadata: ImageMetadata = ImageMetadata()
 

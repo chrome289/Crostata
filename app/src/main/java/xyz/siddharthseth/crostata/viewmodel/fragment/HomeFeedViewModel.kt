@@ -20,7 +20,6 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
-import xyz.siddharthseth.crostata.data.model.retrofit.NextPosts
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -146,14 +145,14 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         val birthId = sharedPreferencesService.getUserDetails(getApplication())
         return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .subscribeOn(Schedulers.io())
-                .flatMap({ nextPosts: NextPosts ->
+                .flatMap({ nextPosts ->
                     //Thread.sleep(5000)
                     if (!isInitialized)
                         isInitialized = true
-                    postList.addAll(nextPosts.posts)
+                    postList.addAll(nextPosts)
                     postList.sort()
                     lastTimestamp = postList[postList.size - 1].getTimestamp()
-                    return@flatMap Observable.from(nextPosts.posts)
+                    return@flatMap Observable.from(nextPosts)
                 })
                 .flatMap(
                         { post: Post ->

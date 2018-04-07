@@ -20,8 +20,10 @@ import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
 class MainActivity : AppCompatActivity()
         , HomeFeedFragment.OnFragmentInteractionListener
-        , ProfileFragment.OnFragmentInteractionListener
+        , ProfileFragment.OnProfileFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener {
+
+
     override fun addNewPost() {
         startActivity(Intent(this, AddPostActivity::class.java))
     }
@@ -86,6 +88,7 @@ class MainActivity : AppCompatActivity()
                 super.onBackPressed()
             }
         }
+
     }
 
     private fun openFragment(fragment: Fragment) {
