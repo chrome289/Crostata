@@ -22,8 +22,7 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    private val upVoteColor = ColorStateList.valueOf(listenerPost.upVoteColorTint)
-    private val downVoteColor = ColorStateList.valueOf(listenerPost.downVoteColorTint)
+    private val voteColor = ColorStateList.valueOf(listenerPost.voteColorTint)
     val commentColor: ColorStateList? = ColorStateList.valueOf(listenerPost.commentColorTint)
     val reportColor: ColorStateList? = ColorStateList.valueOf(listenerPost.reportColorTint)
     private val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
@@ -37,7 +36,6 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
             clearView()
         } else {
             itemView.imageView.visibility = View.VISIBLE
-            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
             listenerPost.loadPostedImage(post, itemView.imageView)
             itemView.imageView.requestLayout()
         }
@@ -45,31 +43,27 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
         listenerPost.loadProfileImage(post.creatorId, itemView.profileImage)
 
         itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
 
-        itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis).toUpperCase()
+        itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis).capitalize()
 
         itemView.votesTotal.text = post.votes.toString()
-        itemView.votesTotal.setTextColor(when (post.opinion) {
-            1 -> upVoteColor
-            -1 -> downVoteColor
-            else -> greyColor
-        })
 
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
-                (if (post.opinion == 1) upVoteColor
+                (if (post.opinion == 1) voteColor
                 else greyColor)
 
         itemView.downVoteButton.setOnClickListener { handleVoteClick(post, -1) }
         itemView.downVoteButton.imageTintList =
-                (if (post.opinion == -1) downVoteColor
+                (if (post.opinion == -1) voteColor
                 else greyColor)
 
-        Log.v(TAG, post.postId + " loaded")
+        itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }
+
+        //Log.v(TAG, post.postId + " loaded")
     }
 
     private fun handleVoteClick(post: Post, newValue: Int) {

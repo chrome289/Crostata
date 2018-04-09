@@ -12,7 +12,7 @@ import xyz.siddharthseth.crostata.data.service.CrostataApiService
 class ContentRepository(private var crostataApiService: CrostataApiService) {
     private val TAG = "ContentRepository"
 
-    fun getNextPosts(token: String, noOfPosts: Int, lastTimestamp: Float, birthId: String): Observable<List<Post>> {
+    fun getNextPosts(token: String, noOfPosts: Int, lastTimestamp: Long, birthId: String): Observable<List<Post>> {
         return crostataApiService.getPosts(token, birthId, noOfPosts, lastTimestamp)
     }
 

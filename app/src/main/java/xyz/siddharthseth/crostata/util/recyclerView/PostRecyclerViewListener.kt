@@ -11,8 +11,7 @@ interface PostRecyclerViewListener {
     fun onReportButtonClick(postId: String)
     fun loadProfileImage(creatorId: String, imageView: ImageView)
     fun onClearVote(postId: String): Observable<VoteTotal>
-    val upVoteColorTint: Int
-    val downVoteColorTint: Int
+    val voteColorTint: Int
     val commentColorTint: Int
     val reportColorTint: Int
     val greyUnselected: Int

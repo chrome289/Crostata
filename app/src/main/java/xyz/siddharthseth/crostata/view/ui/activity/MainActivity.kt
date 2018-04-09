@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
@@ -15,14 +16,23 @@ import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.VigilanceFragment
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
 
 class MainActivity : AppCompatActivity()
         , HomeFeedFragment.OnFragmentInteractionListener
         , ProfileFragment.OnProfileFragmentInteractionListener
-        , CommunityFragment.OnFragmentInteractionListener {
+        , CommunityFragment.OnFragmentInteractionListener
+        , VigilanceFragment.OnFragmentInteractionListener {
 
+    override fun bottomNavigationVisible(isVisible: Boolean) {
+        if (bottomNavigationView.isShown && !isVisible) {
+            bottomNavigationView.visibility = View.GONE
+        } else if (isVisible) {
+            bottomNavigationView.visibility = View.VISIBLE
+        }
+    }
 
     override fun addNewPost() {
         startActivity(Intent(this, AddPostActivity::class.java))
@@ -32,6 +42,7 @@ class MainActivity : AppCompatActivity()
     private lateinit var homeFeedFragment: HomeFeedFragment
     private lateinit var profileFragment: ProfileFragment
     private lateinit var communityFragment: CommunityFragment
+    private lateinit var vigilanceFragment: VigilanceFragment
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
@@ -66,11 +77,14 @@ class MainActivity : AppCompatActivity()
                     openFragment(getFragment(R.id.profile))
                     mainActivityViewModel.addToFragmentStack(R.id.profile)
                 }
+                R.id.vigilance -> {
+                    openFragment(getFragment(R.id.vigilance))
+                    mainActivityViewModel.addToFragmentStack(R.id.vigilance)
+                }
             }
             true
         }
         bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
-        //showBottomNavigation(true)
     }
 
 
@@ -125,6 +139,15 @@ class MainActivity : AppCompatActivity()
                     fragment as ProfileFragment
                 }
                 return profileFragment
+            }
+            R.id.vigilance -> {
+                val fragment = supportFragmentManager.findFragmentByTag(VigilanceFragment::class.java.name)
+                vigilanceFragment = if (fragment == null) {
+                    VigilanceFragment.newInstance()
+                } else {
+                    fragment as VigilanceFragment
+                }
+                return vigilanceFragment
             }
             else -> {
                 val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)

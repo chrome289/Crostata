@@ -6,11 +6,11 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="white">#ffffff</color>
-    <color name="upVoteSelected">#1976d2</color>
-    <color name="downVoteSelected">#f4511e</color>
-    <color name="commentSelected">#00c853</color>
+    <color name="voteSelected">#ff9800</color>
+    <color name="commentSelected">#90caf9</color>
     <color name="reportSelected">#e53935</color>
     <color name="greyUnselected">#bdbdbd</color>
     <color name="greyLighter">#e0e0e0</color>
-    <color name="greyLightest">#f5f5f5</color>
+    <color name="greyLightest">#fafafa</color>
+    <color name="foreground_material_light">#212121</color>
 </resources>

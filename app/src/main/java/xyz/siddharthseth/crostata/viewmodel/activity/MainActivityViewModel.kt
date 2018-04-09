@@ -18,6 +18,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             R.id.home -> return context.resources.getString(R.string.toolbar_home)
             R.id.community -> return context.resources.getString(R.string.toolbar_community)
             R.id.profile -> return context.resources.getString(R.string.toolbar_profile)
+            R.id.vigilance -> return context.resources.getString(R.string.toolbar_vigilance)
         }
         return ""
     }

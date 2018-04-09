@@ -25,14 +25,14 @@ class Post() : Comparable<Post>, Parcelable {
         }
     }
 
-    fun getTimestamp(): Float {
+    fun getTimestamp(): Long {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
         val calendar = Calendar.getInstance()
         calendar.time = inputFormat.parse(this.timeCreated)
         calendar.timeZone = TimeZone.getTimeZone("UTC")
 
-        return calendar.timeInMillis / 1000.0f
+        return calendar.timeInMillis
     }
 
     var postId = ""

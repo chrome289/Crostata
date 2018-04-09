@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -25,6 +24,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     interface OnFragmentInteractionListener {
         fun openFullPost(post: Post)
         fun addNewPost()
+        fun bottomNavigationVisible(isVisible: Boolean)
     }
 
     override fun onClick(v: View?) {
@@ -92,10 +92,38 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
             recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             recyclerView.adapter = homeFeedAdapter
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    //pagination
+                    checkMorePostsNeeded(recyclerView, dy)
 
-            addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
+                    //hide/show bottom bar
+                    if (dy > 0)
+                        mListener?.bottomNavigationVisible(false)
+                    else if (dy < 0)
+                        mListener?.bottomNavigationVisible(true)
+                }
+            })
+
+            //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
 
             isInitialized = true
+        }
+    }
+
+    private fun checkMorePostsNeeded(recyclerView: RecyclerView, dy: Int) {
+        val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+        if (!homeFeedViewModel.isLoading && dy > 0
+                && layoutManager.itemCount <=
+                (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
+            homeFeedViewModel.isLoading = true
+            homeFeedViewModel.getNextPosts().observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ post ->
+                        homeFeedAdapter.postList.add(post)
+                        homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
+                    }, { onError ->
+                        onError.printStackTrace()
+                    })
         }
     }
 
@@ -117,6 +145,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var homeFeedAdapter: HomeFeedAdapter
     private var isInitialized: Boolean = false
+    private val toleranceEndlessScroll = 1
 
     companion object {
         fun newInstance(): HomeFeedFragment {

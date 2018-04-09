@@ -33,7 +33,7 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
             @Query("noOfPosts") noOfPosts: Int,
-            @Query("lastTimestamp") lastTimestamp: Float
+            @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Post>>
 
     @POST("/api/opinion/vote")

@@ -16,7 +16,7 @@
     <string name="profile_image">profileImage</string>
     <string name="sample_name">Darwin Ceniceros</string>
     <string name="clock">clock</string>
-    <string name="sample_time">45 MINS AGO</string>
+    <string name="sample_time">45 mins ago</string>
     <string name="sample_date">Jan 31, \'11</string>
     <string name="profile">Profile</string>
     <string name="sample_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
@@ -42,10 +42,10 @@
     <string name="sample_comment">Can you not please?</string>
     <string name="index_own_pre">Your Patriot Index is \u0020</string>
     <string name="sample_area">130 KM<sup><small>2</small></sup></string>
-    <string name="security4">• Hyperlocal Citizen Surveillance</string>
-    <string name="security3">• News Correction System</string>
-    <string name="security2">• 102,794 Informers</string>
-    <string name="security1">• 44,586 CCTVs</string>
+    <string name="security4">Hyperlocal Citizen Surveillance</string>
+    <string name="security3">News Correction System</string>
+    <string name="security2">102,794 Informers</string>
+    <string name="security1">44,586 CCTVs</string>
     <string name="security_amp_privacy"><![CDATA[Security & Privacy]]></string>
     <string name="camps_raided">Camps Raided</string>
     <string name="territory_gained">Territory Gained</string>
@@ -54,9 +54,9 @@
     <string name="_837">837</string>
     <string name="rebels_killed">Rebels Killed</string>
     <string name="counter_insurgency">Counter Insurgency</string>
-    <string name="ration3">• 1 can Vegetable Stew</string>
-    <string name="ration2">• 500 ml Water</string>
-    <string name="ration1">• 125 gms Bread</string>
+    <string name="ration3">1 can Vegetable Stew</string>
+    <string name="ration2">500 ml Water</string>
+    <string name="ration1">125 gms Bread</string>
     <string name="food_rations">Food Rations</string>
     <string name="export_revenue">Export Revenue</string>
     <string name="money">P$ 11.94 Billion</string>
@@ -70,4 +70,5 @@
     <string name="positive_con2">Reported 21 Citizens</string>
     <string name="negetive_con1">Disrespected El Presidente online</string>
     <string name="your_patriot_index_is_385">Your Patriot Index is -385</string>
+    <string name="toolbar_vigilance">Vigilance</string>
 </resources>

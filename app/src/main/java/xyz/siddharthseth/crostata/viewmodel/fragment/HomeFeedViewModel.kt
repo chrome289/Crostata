@@ -35,8 +35,8 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferencesService = SharedPrefrencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())
-    private var noOfPosts: Int = 15
-    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
+    private var noOfPosts: Int = 3
+    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
     var mutablePost: SingleLivePost = SingleLivePost()
     private var postList: ArrayList<Post> = ArrayList()
@@ -47,14 +47,13 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     override val greyUnselected: Int
         get() = ContextCompat.getColor(getApplication(), R.color.greyUnselected)
-    override val upVoteColorTint: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.upVoteSelected)
-    override val downVoteColorTint: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.downVoteSelected)
+    override val voteColorTint: Int
+        get() = ContextCompat.getColor(getApplication(), R.color.voteSelected)
     override val commentColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.commentSelected)
     override val reportColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.reportSelected)
+    var isLoading: Boolean = false
 
 
     override fun clearPostedImageGlide(imageView: ImageView) {
@@ -75,17 +74,14 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                 .addHeader("authorization", token)
                 .build())
 
-        Log.v(TAG, "width like ---" + imageView.width)
+        // Log.v(TAG, "width like ---" + imageView.width)
         GlideApp.with(context)
                 .load(glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .downsample(DownsampleStrategy.FIT_CENTER)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .priority(Priority.LOW)
                 .fitCenter()
                 .override(1080)
                 .into(imageView)
-        //.getSize({ width, height -> Log.v(TAG, "glide size $width * $height") })
     }
 
     override fun loadProfileImage(creatorId: String, imageView: ImageView) {
@@ -137,12 +133,14 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         if (isInitialized)
             return Observable.from(postList)
         else
-            return getNextPosts()
+            return fetchPosts()
     }
 
-    private fun getNextPosts(): Observable<Post> {
-        // initColorTints()
+    private fun fetchPosts(): Observable<Post> {
         val birthId = sharedPreferencesService.getUserDetails(getApplication())
+        isLoading = true
+        Log.v(TAG, "making a request for posts")
+
         return contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
                 .subscribeOn(Schedulers.io())
                 .flatMap({ nextPosts ->
@@ -152,6 +150,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                     postList.addAll(nextPosts)
                     postList.sort()
                     lastTimestamp = postList[postList.size - 1].getTimestamp()
+                    isLoading = false
                     return@flatMap Observable.from(nextPosts)
                 })
                 .flatMap(
@@ -163,5 +162,9 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                         }
                         , { post: Post, imageMetadata: ImageMetadata -> post.metadata = imageMetadata;return@flatMap post }
                 )
+    }
+
+    fun getNextPosts(): Observable<Post> {
+        return fetchPosts()
     }
 }

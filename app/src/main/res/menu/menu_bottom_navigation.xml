@@ -23,4 +23,12 @@
         android:orderInCategory="2"
         android:title="@string/toolbar_profile"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/vigilance"
+        android:enabled="true"
+        android:icon="@drawable/ic_supervisor_account"
+        android:orderInCategory="3"
+        android:title="@string/toolbar_vigilance"
+        app:showAsAction="ifRoom" />
 </menu>
