@@ -3,9 +3,10 @@ package xyz.siddharthseth.crostata.view.ui.fragment
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,11 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
+import xyz.siddharthseth.crostata.view.adapter.ProfileCommentAdapter
+import xyz.siddharthseth.crostata.view.adapter.ProfilePostAdapter
 import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ProfileFragment : Fragment() {
@@ -21,10 +26,9 @@ class ProfileFragment : Fragment() {
     private var mListener: OnProfileFragmentInteractionListener? = null
     lateinit var profileViewModel: ProfileViewModel
     var isInitialized = false
-    var isDetailWindowOpen = false
 
-    /* lateinit var profileCommentAdapter: ProfileCommentAdapter
-     lateinit var profilePostAdapter: ProfilePostAdapter*/
+    lateinit var profileCommentAdapter: ProfileCommentAdapter
+    lateinit var profilePostAdapter: ProfilePostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,7 @@ class ProfileFragment : Fragment() {
         if (!isInitialized) {
             profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
-            /* profileCommentAdapter = ProfileCommentAdapter(profileViewModel)
+            profileCommentAdapter = ProfileCommentAdapter(profileViewModel)
              profileCommentAdapter.setHasStableIds(true)
              profileCommentRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
              profileCommentRecyclerView.adapter = profileCommentAdapter
@@ -51,7 +55,7 @@ class ProfileFragment : Fragment() {
              profilePostAdapter = ProfilePostAdapter(profileViewModel)
              profilePostAdapter.setHasStableIds(true)
              profilePostRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-             profilePostRecyclerView.adapter = profilePostAdapter*/
+            profilePostRecyclerView.adapter = profilePostAdapter
 
             profileViewModel.getInfo()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -60,13 +64,23 @@ class ProfileFragment : Fragment() {
 
                         profileName.text = subject.name.capitalize()
 
-                        patriotIndex.text = subject.patriotIndex.toString()
+                        rank.text = subject.rank.toString()
                         postTotal.text = subject.posts.toString()
                         commentTotal.text = subject.comments.toString()
 
+                        patriotIndex.text = getString(R.string.profile_patriot_index, subject.patriotIndex)
+
+                        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+                        val outputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
+                        val date = inputFormat.parse(subject.dob)
+
+                        dateOfBirth.text = getString(R.string.profile_dob, outputFormat.format(date))
+                        gender.text = if (subject.gender == 0) "Male" else "Female"
+                        profession.text = subject.profession.toLowerCase().capitalize()
+
                     }, { err -> err.printStackTrace() })
 
-            /* profileViewModel.getComments()
+            profileViewModel.getComments()
                      .observeOn(AndroidSchedulers.mainThread())
                      .subscribe({
                          profileCommentAdapter.commentList.add(it)
@@ -80,32 +94,35 @@ class ProfileFragment : Fragment() {
                          profilePostAdapter.postList.add(it)
                          profilePostAdapter
                                  .notifyItemInserted(profilePostAdapter.postList.size - 1)
-                     }, { err -> err.printStackTrace() })*/
+                     }, { err -> err.printStackTrace() })
 
-            showPosts.setOnClickListener { showPosts() }
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(tab: TabLayout.Tab?) {
 
-            showComments.setOnClickListener { showComments() }
-/*
-            infoLayout.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-            profilePostParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-            profilePostRecyclerView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)*/
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                }
+
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    if (tab.position == 0)
+                        showPosts()
+                    else
+                        showComments()
+                }
+            })
         }
     }
 
     private fun showPosts() {
-        val constraintSet = ConstraintSet()
-        val theParent: ConstraintLayout = view!!.findViewById(R.id.theParent)
-        constraintSet.clone(theParent)
-        constraintSet.connect(infoLayout.id, ConstraintSet.TOP, theParent.id, ConstraintSet.TOP)
-        constraintSet.clear(infoLayout.id, ConstraintSet.BOTTOM)
-        constraintSet.applyTo(theParent)
         profilePostParent.visibility = View.VISIBLE
-        isDetailWindowOpen = true
+        profileCommentParent.visibility = View.GONE
     }
 
     private fun showComments() {
         profileCommentParent.visibility = View.VISIBLE
-        isDetailWindowOpen = true
+        profilePostParent.visibility = View.GONE
     }
 
     override fun onAttach(context: Context?) {

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
@@ -27,11 +26,11 @@ class MainActivity : AppCompatActivity()
         , VigilanceFragment.OnFragmentInteractionListener {
 
     override fun bottomNavigationVisible(isVisible: Boolean) {
-        if (bottomNavigationView.isShown && !isVisible) {
-            bottomNavigationView.visibility = View.GONE
-        } else if (isVisible) {
-            bottomNavigationView.visibility = View.VISIBLE
-        }
+        /* if (bottomNavigationView.isShown && !isVisible) {
+             bottomNavigationView. = View.GONE
+         } else if (isVisible) {
+             bottomNavigationView.visibility = View.VISIBLE
+         }*/
     }
 
     override fun addNewPost() {
@@ -62,6 +61,7 @@ class MainActivity : AppCompatActivity()
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        // bottomNavigationView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
             Log.v(TAG, item.order.toString())
             when (item.itemId) {

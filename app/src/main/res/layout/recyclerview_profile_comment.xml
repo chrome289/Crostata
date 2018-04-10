@@ -78,40 +78,44 @@
         android:layout_marginEnd="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="12dp"
+        android:layout_weight="0"
         android:background="@color/greyLightest"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/content_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:id="@+id/contentImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:background="@color/white"
             android:contentDescription="@string/content_image"
+            android:scaleType="centerCrop"
             android:src="@drawable/home_feed_content_placeholder"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/textPost"
-            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/content_name" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/content_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:maxLines="1"
             android:text="@string/sample_name"
             android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/content_image"
+            app:layout_constraintStart_toEndOf="@+id/contentImage"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textPost"
             android:layout_width="0dp"
-            android:layout_height="36dp"
+            android:layout_height="32dp"
             android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:fontFamily="@font/roboto"

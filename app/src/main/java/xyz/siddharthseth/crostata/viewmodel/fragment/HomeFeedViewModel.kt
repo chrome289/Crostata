@@ -35,7 +35,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferencesService = SharedPrefrencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())
-    private var noOfPosts: Int = 3
+    private var noOfPosts: Int = 10
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
     var mutablePost: SingleLivePost = SingleLivePost()

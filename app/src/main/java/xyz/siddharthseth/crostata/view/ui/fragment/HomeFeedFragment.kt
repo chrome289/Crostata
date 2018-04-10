@@ -145,7 +145,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var homeFeedAdapter: HomeFeedAdapter
     private var isInitialized: Boolean = false
-    private val toleranceEndlessScroll = 1
+    private val toleranceEndlessScroll = 3
 
     companion object {
         fun newInstance(): HomeFeedFragment {

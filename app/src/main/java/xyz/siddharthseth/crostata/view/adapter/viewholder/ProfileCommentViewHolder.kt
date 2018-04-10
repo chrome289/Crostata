@@ -10,7 +10,7 @@ import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 class ProfileCommentViewHolder(itemView: View, private val profileViewModel: ProfileViewModel)
     : RecyclerView.ViewHolder(itemView) {
 
-    private var listenerPost: ProfileViewModel = profileViewModel
+    private var listenerComment: ProfileViewModel = profileViewModel
     val TAG: String = javaClass.simpleName
 
     fun init(comment: Comment) {
@@ -21,16 +21,16 @@ class ProfileCommentViewHolder(itemView: View, private val profileViewModel: Pro
         profileViewModel.loadProfileImage(itemView.profileImage, true)
 
         if (comment.post.contentType == "IT") {
-            itemView.content_image.visibility = View.VISIBLE
-            profileViewModel.loadPostedImage(itemView.content_image, comment.post)
+            itemView.contentImage.visibility = View.VISIBLE
+            profileViewModel.loadPostedImage(itemView.contentImage, comment.post)
             clearView()
         } else {
-            itemView.content_image.visibility = View.GONE
-            itemView.content_image.requestLayout()
+            itemView.contentImage.visibility = View.GONE
+            itemView.contentImage.requestLayout()
         }
     }
 
     private fun clearView() {
-        listenerPost.clearPostedImageGlide(itemView.content_image)
+        listenerComment.clearPostedImageGlide(itemView.contentImage)
     }
 }

@@ -37,12 +37,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/sample_name"
-        app:layout_constraintBottom_toBottomOf="@+id/patriotIndex"
+        app:layout_constraintBottom_toBottomOf="@+id/rank"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="@+id/patriotIndex" />
+        app:layout_constraintTop_toTopOf="@+id/rank" />
 
     <TextView
-        android:id="@+id/patriotIndex"
+        android:id="@+id/rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
