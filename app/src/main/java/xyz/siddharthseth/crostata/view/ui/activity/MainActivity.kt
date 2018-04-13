@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
@@ -45,6 +46,11 @@ class MainActivity : AppCompatActivity()
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_main, menu)
+        return true
+    }
+
     override fun openFullPost(post: Post) {
         val intent = Intent(this, ViewPostActivity::class.java)
         intent.putExtra("post", post)
@@ -59,6 +65,8 @@ class MainActivity : AppCompatActivity()
         setContentView(activity_main)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+
+        setSupportActionBar(toolbar)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         // bottomNavigationView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
@@ -152,8 +160,10 @@ class MainActivity : AppCompatActivity()
             else -> {
                 val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)
                 homeFeedFragment = if (fragment == null) {
+                    Log.v(TAG, "new instance")
                     HomeFeedFragment.newInstance()
                 } else {
+                    Log.v(TAG, "past instance")
                     fragment as HomeFeedFragment
                 }
                 return homeFeedFragment

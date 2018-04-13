@@ -27,7 +27,7 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
          return crostataApiService.imageMetadata(token, postId)
      }*/
 
-    fun getComments(token: String, postId: String, noOfComments: Int, lastTimestamp: Float): Observable<List<Comment>> {
+    fun getComments(token: String, postId: String, noOfComments: Int, lastTimestamp: Long): Observable<List<Comment>> {
         return crostataApiService.getComments(token, postId, noOfComments, lastTimestamp)
     }
 

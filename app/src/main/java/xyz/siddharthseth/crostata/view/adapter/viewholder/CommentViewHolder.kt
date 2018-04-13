@@ -20,7 +20,7 @@ class CommentViewHolder(view: View, viewPostViewModel: ViewPostActivityViewModel
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
     fun init(comment: Comment) {
-        itemView.nameTextView.text = comment.name.toUpperCase()
+        itemView.nameTextView.text = comment.name
 
         listener.loadProfileImage(comment.birthId, itemView.profileImage)
 

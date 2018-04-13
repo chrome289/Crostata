@@ -16,6 +16,31 @@
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
 
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Our Achievements"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:text="Year 2017-18"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView27" />
+
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/jobsLayout"
                 android:layout_width="match_parent"
@@ -27,7 +52,7 @@
                 android:elevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/textView28">
 
                 <TextView
                     android:id="@+id/textView6"
@@ -69,10 +94,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/roboto_light"
+                        android:fontFamily="@font/roboto"
                         android:text="@string/percent"
-                        android:textAppearance="@android:style/TextAppearance.Material.Display1"
-                        android:textColor="#424242"
+                        android:textSize="32sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
@@ -133,7 +157,8 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/roboto_light"
                             android:text="@string/weight"
-                            android:textColor="#000"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -143,9 +168,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:fontFamily="@font/roboto"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="@string/production"
-                            android:textColor="#9e9e9e"
+                            android:textColor="#424242"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView9d"
@@ -172,7 +197,8 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/roboto_light"
                             android:text="@string/money"
-                            android:textColor="#000"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -182,9 +208,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:fontFamily="@font/roboto"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="@string/export_revenue"
-                            android:textColor="#9e9e9e"
+                            android:textColor="#424242"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView4"
@@ -252,9 +278,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/ration1"
-                        android:textColor="#212121"
+                        android:textColor="#616161"
                         app:layout_constraintEnd_toEndOf="@+id/textView10"
                         app:layout_constraintStart_toStartOf="@+id/textView10"
                         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -265,9 +291,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/ration2"
-                        android:textColor="#212121"
+                        android:textColor="#616161"
                         app:layout_constraintEnd_toEndOf="@+id/textView10"
                         app:layout_constraintStart_toStartOf="@+id/textView10"
                         app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -278,9 +304,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/ration3"
-                        android:textColor="#212121"
+                        android:textColor="#616161"
                         app:layout_constraintEnd_toEndOf="@+id/textView10"
                         app:layout_constraintStart_toStartOf="@+id/textView10"
                         app:layout_constraintTop_toBottomOf="@+id/textView12" />
@@ -343,10 +369,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:fontFamily="@font/roboto_light"
+                        android:fontFamily="@font/roboto"
                         android:text="@string/_837"
-                        android:textAppearance="@android:style/TextAppearance.Material.Display1"
-                        android:textColor="#424242"
+                        android:textSize="32sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
@@ -407,7 +432,8 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/roboto_light"
                             android:text="@string/_7_174"
-                            android:textColor="#000"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -417,9 +443,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:fontFamily="@font/roboto"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="@string/rebels_jailed"
-                            android:textColor="#9e9e9e"
+                            android:textColor="#424242"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView9"
@@ -446,9 +472,10 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/roboto_light"
                             android:text="@string/sample_area"
-                            android:textColor="#000"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
                             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                         <TextView
@@ -456,9 +483,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:fontFamily="@font/roboto"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="@string/territory_gained"
-                            android:textColor="#9e9e9e"
+                            android:textColor="#424242"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView4"
@@ -485,7 +512,8 @@
                             android:layout_gravity="center_horizontal"
                             android:fontFamily="@font/roboto_light"
                             android:text="@string/_123"
-                            android:textColor="#000"
+                            android:textColor="#212121"
+                            android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -495,9 +523,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:fontFamily="@font/roboto"
+                            android:fontFamily="@font/roboto_medium"
                             android:text="@string/camps_raided"
-                            android:textColor="#9e9e9e"
+                            android:textColor="#424242"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="@+id/textView4"
@@ -569,9 +597,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/security1"
-                        android:textColor="#212121"
+                        android:textColor="#616161"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.8"
                         app:layout_constraintStart_toStartOf="parent"
@@ -583,9 +611,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/security2"
-                        android:textColor="#212121"
+                        android:textColor="#616161"
                         app:layout_constraintEnd_toEndOf="@+id/textView15"
                         app:layout_constraintStart_toStartOf="@+id/textView15"
                         app:layout_constraintTop_toBottomOf="@+id/textView15" />
@@ -596,9 +624,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/security3"
-                        android:textColor="#212121" />
+                        android:textColor="#616161" />
 
                     <TextView
                         android:id="@+id/textView18"
@@ -606,9 +634,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/security4"
-                        android:textColor="#212121" />
+                        android:textColor="#616161" />
 
                 </LinearLayout>
 

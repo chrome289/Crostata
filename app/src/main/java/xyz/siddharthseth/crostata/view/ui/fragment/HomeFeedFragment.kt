@@ -71,7 +71,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         Log.v(TAG, "onResume")
-        if (!isInitialized || recyclerView.adapter.itemCount == 0) {
+        if (!isInitialized) {
             homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
 
             homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
@@ -88,26 +88,26 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
                         onError.printStackTrace()
                     })
 
-
-            recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            recyclerView.adapter = homeFeedAdapter
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    //pagination
-                    checkMorePostsNeeded(recyclerView, dy)
-
-                    //hide/show bottom bar
-                    if (dy > 0)
-                        mListener?.bottomNavigationVisible(false)
-                    else if (dy < 0)
-                        mListener?.bottomNavigationVisible(true)
-                }
-            })
-
-            //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
-
             isInitialized = true
         }
+
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        recyclerView.adapter = homeFeedAdapter
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                //pagination
+                checkMorePostsNeeded(recyclerView, dy)
+
+                //hide/show bottom bar
+                if (dy > 0)
+                    mListener?.bottomNavigationVisible(false)
+                else if (dy < 0)
+                    mListener?.bottomNavigationVisible(true)
+            }
+        })
+
+        //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
+
     }
 
     private fun checkMorePostsNeeded(recyclerView: RecyclerView, dy: Int) {

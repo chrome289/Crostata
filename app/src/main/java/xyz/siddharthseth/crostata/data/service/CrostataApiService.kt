@@ -62,7 +62,7 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("postId") postId: String,
             @Query("noOfComments") noOfComments: Int,
-            @Query("lastTimestamp") lastTimestamp: Float
+            @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Comment>>
 
     @GET("/api/subject/charts")

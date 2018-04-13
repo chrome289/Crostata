@@ -30,7 +30,7 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
     val TAG: String = javaClass.simpleName
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var noOfComments: Int = 10
-    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
+    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
 
     fun clearPostedImageGlide(imageView: ImageView) {
@@ -96,7 +96,7 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
                     commentList.sort()
                     Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.size)
                     lastTimestamp = if (commentList.size > 0) commentList[commentList.size - 1].getTimestamp()
-                    else Calendar.getInstance().timeInMillis / 1000.0f
+                    else Calendar.getInstance().timeInMillis
                     return@flatMap Observable.from(it)
                 }
     }
