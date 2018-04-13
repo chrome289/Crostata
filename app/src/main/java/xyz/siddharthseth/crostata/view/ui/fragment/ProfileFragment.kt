@@ -48,19 +48,19 @@ class ProfileFragment : Fragment() {
             profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
             profileCommentAdapter = ProfileCommentAdapter(profileViewModel)
-             profileCommentAdapter.setHasStableIds(true)
-             profileCommentRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-             profileCommentRecyclerView.adapter = profileCommentAdapter
+            profileCommentAdapter.setHasStableIds(true)
+            profileCommentRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            profileCommentRecyclerView.adapter = profileCommentAdapter
 
-             profilePostAdapter = ProfilePostAdapter(profileViewModel)
-             profilePostAdapter.setHasStableIds(true)
-             profilePostRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            profilePostAdapter = ProfilePostAdapter(profileViewModel)
+            profilePostAdapter.setHasStableIds(true)
+            profilePostRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             profilePostRecyclerView.adapter = profilePostAdapter
 
             profileViewModel.getInfo()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ subject: Subject ->
-                        profileViewModel.loadProfileImage(profileImage, false)
+                        profileViewModel.loadProfileImage(profileImage, 256, false)
 
                         profileName.text = subject.name.capitalize()
 
@@ -81,28 +81,26 @@ class ProfileFragment : Fragment() {
                     }, { err -> err.printStackTrace() })
 
             profileViewModel.getComments()
-                     .observeOn(AndroidSchedulers.mainThread())
-                     .subscribe({
-                         profileCommentAdapter.commentList.add(it)
-                         profileCommentAdapter
-                                 .notifyItemInserted(profileCommentAdapter.commentList.size - 1)
-                     }, { err -> err.printStackTrace() })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        profileCommentAdapter.commentList.add(it)
+                        profileCommentAdapter
+                                .notifyItemInserted(profileCommentAdapter.commentList.size - 1)
+                    }, { err -> err.printStackTrace() })
 
-             profileViewModel.getPosts()
-                     .observeOn(AndroidSchedulers.mainThread())
-                     .subscribe({
-                         profilePostAdapter.postList.add(it)
-                         profilePostAdapter
-                                 .notifyItemInserted(profilePostAdapter.postList.size - 1)
-                     }, { err -> err.printStackTrace() })
+            profileViewModel.getPosts()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        profilePostAdapter.postList.add(it)
+                        profilePostAdapter
+                                .notifyItemInserted(profilePostAdapter.postList.size - 1)
+                    }, { err -> err.printStackTrace() })
 
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab) {
@@ -112,17 +110,19 @@ class ProfileFragment : Fragment() {
                         showComments()
                 }
             })
+
         }
     }
 
     private fun showPosts() {
-        profilePostParent.visibility = View.VISIBLE
-        profileCommentParent.visibility = View.GONE
+        profilePostRecyclerView.visibility = View.VISIBLE
+        profileCommentRecyclerView.visibility = View.GONE
+
     }
 
     private fun showComments() {
-        profileCommentParent.visibility = View.VISIBLE
-        profilePostParent.visibility = View.GONE
+        profileCommentRecyclerView.visibility = View.VISIBLE
+        profilePostRecyclerView.visibility = View.GONE
     }
 
     override fun onAttach(context: Context?) {

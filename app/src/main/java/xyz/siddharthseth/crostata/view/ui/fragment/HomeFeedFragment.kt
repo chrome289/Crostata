@@ -86,7 +86,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
                         homeFeedAdapter.notifyItemInserted(homeFeedAdapter.postList.size - 1)
                     }, { onError ->
                         onError.printStackTrace()
-                        Log.v(TAG, "error   " + onError.stackTrace + "   " + onError.localizedMessage + "    " + onError.cause)
                     })
 
 

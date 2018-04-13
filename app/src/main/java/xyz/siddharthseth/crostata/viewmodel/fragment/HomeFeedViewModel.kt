@@ -19,7 +19,6 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
-import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -49,8 +48,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         get() = ContextCompat.getColor(getApplication(), R.color.greyUnselected)
     override val voteColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.voteSelected)
-    override val commentColorTint: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.commentSelected)
     override val reportColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.reportSelected)
     var isLoading: Boolean = false
@@ -66,10 +63,11 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
         val dimen = 1080
         val quality = 70
-        val postId = post.postId
+        val imageId = post.imageId
 
+        Log.v(TAG, "imageID-" + post.imageId + " type-" + post.contentType)
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?postId=$postId&dimen=$dimen&quality=$quality"
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -88,6 +86,8 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         val context: Context = getApplication()
         val dimen = 128
         val quality = 70
+
+        Log.v(TAG, "imageID-" + creatorId + " type-")
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
                 "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
@@ -147,21 +147,23 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                     //Thread.sleep(5000)
                     if (!isInitialized)
                         isInitialized = true
+                    for (post in nextPosts)
+                        post.votes = post.upVotes - post.downVotes
                     postList.addAll(nextPosts)
                     postList.sort()
                     lastTimestamp = postList[postList.size - 1].getTimestamp()
                     isLoading = false
                     return@flatMap Observable.from(nextPosts)
                 })
-                .flatMap(
-                        { post: Post ->
-                            if (post.contentType == "TO")
-                                return@flatMap Observable.just(ImageMetadata())
-                            else
-                                return@flatMap contentRepository.getImageMetadata(token, post.postId)
-                        }
-                        , { post: Post, imageMetadata: ImageMetadata -> post.metadata = imageMetadata;return@flatMap post }
-                )
+        /* .flatMap(
+                 { post: Post ->
+                     if (post.contentType == "TO")
+                         return@flatMap Observable.just(ImageMetadata())
+                     else
+                         return@flatMap contentRepository.getImageMetadata(token, post._id)
+                 }
+                 , { post: Post, imageMetadata: ImageMetadata -> post.metadata = imageMetadata;return@flatMap post }
+         )*/
     }
 
     fun getNextPosts(): Observable<Post> {

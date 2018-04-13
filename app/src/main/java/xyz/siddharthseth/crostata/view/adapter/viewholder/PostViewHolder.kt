@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
@@ -23,7 +24,6 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
     private val voteColor = ColorStateList.valueOf(listenerPost.voteColorTint)
-    val commentColor: ColorStateList? = ColorStateList.valueOf(listenerPost.commentColorTint)
     val reportColor: ColorStateList? = ColorStateList.valueOf(listenerPost.reportColorTint)
     private val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
 
@@ -38,11 +38,15 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
             itemView.imageView.visibility = View.VISIBLE
             listenerPost.loadPostedImage(post, itemView.imageView)
             itemView.imageView.requestLayout()
+            itemView.imageView.setOnClickListener {
+                listenerPost.openFullPost(post)
+            }
         }
 
         listenerPost.loadProfileImage(post.creatorId, itemView.profileImage)
 
         itemView.textPost.text = post.text
+        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
@@ -50,6 +54,11 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
         itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis).capitalize()
 
         itemView.votesTotal.text = post.votes.toString()
+        itemView.votesTotal.setTextColor(
+                if (post.opinion == 0) greyColor
+                else voteColor
+        )
+        Log.v(TAG, "post.opinion " + post.opinion)
 
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
@@ -61,14 +70,20 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
                 (if (post.opinion == -1) voteColor
                 else greyColor)
 
+        itemView.commentsTotal.text = post.comments.toString()
         itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }
 
-        //Log.v(TAG, post.postId + " loaded")
+        if (post.creatorId == LoggedSubject.birthId) {
+            itemView.reportButton.visibility = View.GONE
+        } else {
+            itemView.reportButton.visibility = View.VISIBLE
+            itemView.reportButton.setOnClickListener { }
+        }
     }
 
     private fun handleVoteClick(post: Post, newValue: Int) {
         if (post.opinion == newValue) {
-            listenerPost.onClearVote(post.postId).subscribe(
+            listenerPost.onClearVote(post._id).subscribe(
                     { voteTotal: VoteTotal ->
                         Log.v(TAG, "success :" + voteTotal.success)
                         if (voteTotal.success) {
@@ -79,7 +94,7 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
                     }
                     , { error -> error.printStackTrace() })
         } else {
-            listenerPost.onVoteButtonClick(post.postId, newValue)
+            listenerPost.onVoteButtonClick(post._id, newValue)
                     .subscribe(
                             { voteTotal: VoteTotal ->
                                 Log.v(TAG, "success :" + voteTotal.success)

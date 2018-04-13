@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity()
     override fun openFullPost(post: Post) {
         val intent = Intent(this, ViewPostActivity::class.java)
         intent.putExtra("post", post)
-        intent.putExtra("transitionName", post.postId)
+        intent.putExtra("transitionName", post._id)
 
         startActivity(intent)
         //  overridePendingTransition(R.anim.slide_up, R.anim.blank)

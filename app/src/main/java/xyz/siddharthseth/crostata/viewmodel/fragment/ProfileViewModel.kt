@@ -10,7 +10,6 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import rx.Observable
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
@@ -25,50 +24,19 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    val token = SharedPrefrencesService().getToken(application)
-    val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
-    val TAG: String = javaClass.simpleName
-    val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
+    private val token = SharedPrefrencesService().getToken(application)
+    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
+    private val TAG: String = javaClass.simpleName
+    private val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
     private var size: Int = 5
     private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
-    var commentList = ArrayList<Comment>()
-    var postList = ArrayList<Post>()
+    private var commentList = ArrayList<Comment>()
+    private var postList = ArrayList<Post>()
     private var isInitialized = false
 
     fun getInfo(): Observable<Subject> {
         return contentRepository.getSubjectInfo(token, birthId)
                 .subscribeOn(Schedulers.io())
-    }
-
-    fun loadProfileImage(imageView: ImageView, isCircle: Boolean) {
-        val context: Context = getApplication()
-        val dimen = 1024
-        val quality = 70
-        //TODO birthid hardcoded
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=062912952&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        if (isCircle) {
-            GlideApp.with(context)
-                    .load(glideUrl)
-                    .placeholder(R.drawable.home_feed_content_placeholder)
-                    .centerInside()
-                    .circleCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .priority(Priority.IMMEDIATE)
-                    .into(imageView)
-        } else {
-            GlideApp.with(context)
-                    .load(glideUrl)
-                    .placeholder(R.drawable.home_feed_content_placeholder)
-                    .centerInside()
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .priority(Priority.IMMEDIATE)
-                    .into(imageView)
-        }
     }
 
     fun getComments(): Observable<Comment> {
@@ -99,26 +67,53 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .flatMap { return@flatMap Observable.from(it) }
     }
 
-    fun loadPostedImage(imageView: ImageView, post: Post) {
+
+    fun loadProfileImage(imageView: ImageView, dimen: Int, isCircle: Boolean) {
         val context: Context = getApplication()
-
-        val dimen = 1080
         val quality = 70
-        val postId = post.imageId
-
+        //TODO birthid hardcoded
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?postId=$postId&dimen=$dimen&quality=$quality"
+                "/api/subject/profileImage?birthId=062912952&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
 
-        Log.v(TAG, "width like ---" + imageView.width)
+        if (isCircle) {
+            GlideApp.with(context)
+                    .load(glideUrl)
+                    .placeholder(R.drawable.home_feed_content_placeholder)
+                    .centerInside()
+                    .circleCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView)
+        } else {
+            GlideApp.with(context)
+                    .load(glideUrl)
+                    .placeholder(R.drawable.home_feed_content_placeholder)
+                    .centerInside()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView)
+        }
+    }
+
+    fun loadPostedImage(imageView: ImageView, post: Post, dimen: Int) {
+        val context: Context = getApplication()
+
+        val quality = 70
+        val imageId = post.imageId
+
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        Log.v(TAG, "token-" + token)
         GlideApp.with(context)
                 .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .downsample(DownsampleStrategy.FIT_CENTER)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .priority(Priority.LOW)
+                .placeholder(R.drawable.palmyra)
                 .fitCenter()
                 .override(1080)
                 .into(imageView)

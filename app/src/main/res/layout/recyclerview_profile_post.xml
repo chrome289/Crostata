@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
+    android:layout_marginBottom="6dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="6dp"
     android:background="@color/white"
     android:elevation="1dp"
     android:orientation="vertical">
@@ -37,11 +37,13 @@
             android:id="@+id/nameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:fontFamily="@font/roboto_bold"
             android:text="@string/sample_name"
             android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,10 +51,12 @@
             android:id="@+id/timeTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="@string/sample_time"
             android:textColor="@color/greyUnselected"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
             app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
 
@@ -81,7 +85,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_image"
         android:src="@drawable/farmer"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/opinion"
@@ -91,6 +95,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_weight="0"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <ImageButton
@@ -156,11 +161,11 @@
             android:src="@drawable/ic_insert_comment"
             android:tint="@color/greyUnselected"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/commentTextView"
+            app:layout_constraintEnd_toStartOf="@+id/commentsTotal"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/commentTextView"
+            android:id="@+id/commentsTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -173,7 +178,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
     </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="@color/greyLightest" />
 
 </LinearLayout>

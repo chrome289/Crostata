@@ -12,7 +12,6 @@ interface PostRecyclerViewListener {
     fun loadProfileImage(creatorId: String, imageView: ImageView)
     fun onClearVote(postId: String): Observable<VoteTotal>
     val voteColorTint: Int
-    val commentColorTint: Int
     val reportColorTint: Int
     val greyUnselected: Int
     fun openFullPost(post: Post)

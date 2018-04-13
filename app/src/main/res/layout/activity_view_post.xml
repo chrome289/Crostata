@@ -283,7 +283,7 @@
                 android:layout_weight="0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentTextView"
+                app:layout_constraintTop_toBottomOf="@+id/commentsTotal"
                 tools:listitem="@layout/recyclerview_comment_card">
 
             </android.support.v7.widget.RecyclerView>

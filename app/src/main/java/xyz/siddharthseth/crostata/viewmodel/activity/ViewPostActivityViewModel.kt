@@ -38,15 +38,16 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
         GlideApp.with(context).clear(imageView as View)
     }
 
-    fun loadPostedImage(post: Post, imageView: ImageView) {
+    fun loadPostedImage(imageView: ImageView) {
         val context: Context = getApplication()
 
+        Log.v(TAG, "imageId-" + post.imageId)
         val dimen = 1080
         val quality = 70
-        val postId = post.postId
+        val imageId = post.imageId
 
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?postId=$postId&dimen=$dimen&quality=$quality"
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -68,7 +69,7 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
         val dimen = 128
         val quality = 70
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
+                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -85,7 +86,7 @@ class ViewPostActivityViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun getComments(): Observable<Comment> {
-        return contentRepository.getComments(token, post.postId, noOfComments, lastTimestamp)
+        return contentRepository.getComments(token, post._id, noOfComments, lastTimestamp)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
                     if (!isInitialized)

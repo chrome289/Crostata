@@ -4,7 +4,6 @@ import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.ChartEntry
-import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
@@ -24,9 +23,9 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.deleteVote(token, postId, birthId)
     }
 
-    fun getImageMetadata(token: String, postId: String): Observable<ImageMetadata> {
-        return crostataApiService.imageMetadata(token, postId)
-    }
+    /* fun getImageMetadata(token: String, postId: String): Observable<ImageMetadata> {
+         return crostataApiService.imageMetadata(token, postId)
+     }*/
 
     fun getComments(token: String, postId: String, noOfComments: Int, lastTimestamp: Float): Observable<List<Comment>> {
         return crostataApiService.getComments(token, postId, noOfComments, lastTimestamp)

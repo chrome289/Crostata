@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:gravity="center"
@@ -82,6 +82,7 @@
             android:id="@+id/constraintLayout2"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/signIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +104,6 @@
                 android:id="@+id/birthId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_weight="0"
@@ -158,7 +158,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/birthId"
-                app:layout_constraintVertical_bias=".4"
+                app:layout_constraintVertical_bias=".3"
                 app:layout_constraintWidth_max="300dp" />
 
         </android.support.constraint.ConstraintLayout>
@@ -207,28 +207,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/loadingFrame"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#aaffffff"
-        android:elevation="2dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/form"
-        app:layout_constraintEnd_toEndOf="@+id/form"
-        app:layout_constraintStart_toStartOf="@+id/form"
-        app:layout_constraintTop_toTopOf="@+id/form">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationView"
+        <LinearLayout
+            android:id="@+id/loadingFrame"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            app:lottie_loop="true" />
-    </LinearLayout>
+            android:background="#a0ffffff"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/form"
+            app:layout_constraintEnd_toEndOf="@+id/form"
+            app:layout_constraintStart_toStartOf="@+id/form"
+            app:layout_constraintTop_toTopOf="@+id/form">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animationView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:lottie_loop="true" />
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

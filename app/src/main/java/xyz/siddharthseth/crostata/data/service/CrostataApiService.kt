@@ -10,7 +10,6 @@ import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.ChartEntry
-import xyz.siddharthseth.crostata.data.model.retrofit.ImageMetadata
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
@@ -52,11 +51,11 @@ interface CrostataApiService {
             @Query("birthId") birthId: String
     ): Observable<VoteTotal>
 
-    @GET("/api/content/imageMetadata")
+    /*@GET("/api/content/imageMetadata")
     fun imageMetadata(
             @Header("authorization") token: String,
             @Query("postId") postId: String
-    ): Observable<ImageMetadata>
+    ): Observable<ImageMetadata>*/
 
     @GET("/api/opinion/comments")
     fun getComments(

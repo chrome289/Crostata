@@ -11,4 +11,7 @@ class Subject {
     val posts: Int = 0
     val comments: Int = 0
     val rank: Int = 0
+    val moneyDonated: Long = 0
+    val reportsMade: Int = 0
+    val reportsAgainst: Int = 0
 }

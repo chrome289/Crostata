@@ -3,20 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/theParent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/greyLightest"
+    android:orientation="vertical"
     tools:context="xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/infoLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -25,46 +26,42 @@
                 android:id="@+id/profileImage"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 android:background="@color/greyLightest"
                 android:contentDescription="@string/profile_image"
                 android:scaleType="centerCrop"
                 android:src="@drawable/home_feed_content_placeholder"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/profileName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:text="@string/sample_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/profileImage"
-                app:layout_constraintTop_toTopOf="@+id/profileImage"
-                app:layout_constraintVertical_bias=".2" />
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="@+id/profileImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
-                app:layout_constraintTop_toBottomOf="@+id/profileName"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintTop_toTopOf="@+id/profileImage">
 
+
+                <TextView
+                    android:id="@+id/profileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/sample_name"
+                    android:textColor="#424242"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/postTotal"
@@ -72,13 +69,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto"
                     android:text="24"
                     android:textColor="#424242"
-                    android:textSize="12sp"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@+id/commentTotal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/commentTotal" />
 
                 <TextView
                     android:id="@+id/postHeading"
@@ -86,8 +83,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
                     android:text="Posts"
-                    android:textAppearance="@android:style/TextAppearance.Material.Caption"
+                    android:textColor="#9e9e9e"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/postTotal"
@@ -99,14 +97,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
                     android:layout_weight="1"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto"
                     android:text="1478"
                     android:textColor="#424242"
-                    android:textSize="12sp"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
                 <TextView
                     android:id="@+id/commentHeading"
@@ -114,8 +113,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
                     android:text="Comments"
-                    android:textAppearance="@android:style/TextAppearance.Material.Caption"
+                    android:textColor="#9e9e9e"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/commentTotal"
@@ -129,13 +129,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto"
                     android:text="@string/_837"
-                    android:textColor="#616161"
-                    android:textSize="12sp"
+                    android:textColor="#424242"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/commentTotal"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/commentHeading"
+                    app:layout_constraintTop_toTopOf="@+id/commentTotal" />
 
                 <TextView
                     android:id="@+id/rankHeading"
@@ -143,8 +144,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
                     android:text="Rank"
-                    android:textAppearance="@android:style/TextAppearance.Material.Caption"
+                    android:textColor="#9e9e9e"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/rank"
@@ -153,124 +155,120 @@
 
             </android.support.constraint.ConstraintLayout>
 
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/secInfoLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/infoLayout">
-
-            <ImageView
-                android:id="@+id/imageView12"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_security"
-                android:tint="#bdbdbd"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/patriotIndex"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/secInfoLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:gravity="center_vertical"
-                android:text="@string/profile_patriot_index"
-                android:textColor="#616161"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView12"
-                app:layout_constraintTop_toTopOf="@+id/imageView12" />
-
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="8dp"
-                android:padding="1dp"
-                android:src="@drawable/gender"
-                android:tint="#bdbdbd"
-                app:layout_constraintEnd_toEndOf="@+id/imageView12"
-                app:layout_constraintStart_toStartOf="@+id/imageView12"
-                app:layout_constraintTop_toBottomOf="@+id/imageView12" />
-
-            <TextView
-                android:id="@+id/gender"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/roboto_medium"
-                android:gravity="center_vertical"
-                android:text="@string/profile_gender"
-                android:textColor="#616161"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView9"
-                app:layout_constraintTop_toTopOf="@+id/imageView9" />
-
-            <ImageView
-                android:id="@+id/imageView10"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_today"
-                android:tint="#bdbdbd"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="@+id/imageView9"
-                app:layout_constraintStart_toStartOf="@+id/imageView9"
-                app:layout_constraintTop_toBottomOf="@+id/imageView9" />
-
-            <TextView
-                android:id="@+id/dateOfBirth"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:gravity="center_vertical"
-                android:text="@string/profile_dob"
-                android:textColor="#616161"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView10"
-                app:layout_constraintEnd_toEndOf="@+id/gender"
-                app:layout_constraintStart_toStartOf="@+id/gender"
-                app:layout_constraintTop_toTopOf="@+id/imageView10" />
-
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_work"
-                android:tint="#bdbdbd"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/imageView10"
-                app:layout_constraintStart_toStartOf="@+id/imageView10"
-                app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profileImage"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage">
 
-            <TextView
-                android:id="@+id/profession"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:gravity="center_vertical"
-                android:text="@string/profile_profession"
-                android:textColor="#616161"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView11"
-                app:layout_constraintEnd_toEndOf="@+id/dateOfBirth"
-                app:layout_constraintStart_toStartOf="@+id/dateOfBirth"
-                app:layout_constraintTop_toTopOf="@+id/imageView11" />
+                <ImageView
+                    android:id="@+id/imageView12"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_security"
+                    android:tint="#bdbdbd"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/patriotIndex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_patriot_index"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView12"
+                    app:layout_constraintStart_toEndOf="@+id/imageView12"
+                    app:layout_constraintTop_toTopOf="@+id/imageView12" />
+
+                <ImageView
+                    android:id="@+id/imageView9"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:padding="1dp"
+                    android:src="@drawable/gender"
+                    android:tint="#bdbdbd"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView12"
+                    app:layout_constraintStart_toStartOf="@+id/imageView12"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView12" />
+
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_gender"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+                    app:layout_constraintStart_toEndOf="@+id/imageView9"
+                    app:layout_constraintTop_toTopOf="@+id/imageView9" />
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_today"
+                    android:tint="#bdbdbd"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView9"
+                    app:layout_constraintStart_toStartOf="@+id/imageView9"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
+                <TextView
+                    android:id="@+id/dateOfBirth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_dob"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView10"
+                    app:layout_constraintStart_toStartOf="@+id/gender"
+                    app:layout_constraintTop_toTopOf="@+id/imageView10" />
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_work"
+                    android:tint="#bdbdbd"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView10"
+                    app:layout_constraintStart_toStartOf="@+id/imageView10"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+
+                <TextView
+                    android:id="@+id/profession"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:gravity="center_vertical"
+                    android:text="@string/profile_profession"
+                    android:textColor="#616161"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+                    app:layout_constraintStart_toStartOf="@+id/dateOfBirth"
+                    app:layout_constraintTop_toTopOf="@+id/imageView11" />
+            </android.support.constraint.ConstraintLayout>
+
         </android.support.constraint.ConstraintLayout>
 
 
@@ -278,73 +276,57 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/secInfoLayout"
-            app:tabSelectedTextColor="@color/colorAccent">
+            app:layout_constraintTop_toBottomOf="@+id/secInfoLayout">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/showPosts"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Posts" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/showComments"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Comments" />
 
         </android.support.design.widget.TabLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/profilePostParent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/greyLightest"
-            android:elevation="4dp"
-            android:nestedScrollingEnabled="false"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/profilePostRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
+                android:nestedScrollingEnabled="false"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/recyclerview_profile_post" />
-        </android.support.constraint.ConstraintLayout>
+                tools:listitem="@layout/recyclerview_profile_post">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/profileCommentParent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/greyLightest"
-            android:elevation="4dp"
-            android:nestedScrollingEnabled="false"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout">
+            </android.support.v7.widget.RecyclerView>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/profileCommentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/recyclerview_profile_comment" />
-
         </android.support.constraint.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

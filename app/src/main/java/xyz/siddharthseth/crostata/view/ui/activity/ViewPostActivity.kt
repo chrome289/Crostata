@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.activity_view_post.*
@@ -51,12 +52,11 @@ class ViewPostActivity : AppCompatActivity() {
             viewPostActivityViewModel.clearPostedImageGlide(imageView)
         } else {
             imageView.visibility = View.VISIBLE
-            imageView.transitionName = "imageView" + viewPostActivityViewModel.post.postId
-            viewPostActivityViewModel.loadPostedImage(viewPostActivityViewModel.post, imageView)
+
+            Log.v(TAG, "imageId-" + viewPostActivityViewModel.post.imageId)
+            viewPostActivityViewModel.loadPostedImage(imageView)
             imageView.requestLayout()
         }
-        textPost.transitionName = "textPost" + viewPostActivityViewModel.post.postId
-        header.transitionName = "header" + viewPostActivityViewModel.post.postId
 
         viewPostActivityViewModel.loadProfileImage(viewPostActivityViewModel.post.creatorId, profileImage)
 
