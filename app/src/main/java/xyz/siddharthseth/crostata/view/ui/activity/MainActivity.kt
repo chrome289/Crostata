@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.util.CustomFragmentBackStack
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
@@ -25,14 +26,6 @@ class MainActivity : AppCompatActivity()
         , ProfileFragment.OnProfileFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener
         , VigilanceFragment.OnFragmentInteractionListener {
-
-    override fun bottomNavigationVisible(isVisible: Boolean) {
-        /* if (bottomNavigationView.isShown && !isVisible) {
-             bottomNavigationView. = View.GONE
-         } else if (isVisible) {
-             bottomNavigationView.visibility = View.VISIBLE
-         }*/
-    }
 
     override fun addNewPost() {
         startActivity(Intent(this, AddPostActivity::class.java))
@@ -57,7 +50,6 @@ class MainActivity : AppCompatActivity()
         intent.putExtra("transitionName", post._id)
 
         startActivity(intent)
-        //  overridePendingTransition(R.anim.slide_up, R.anim.blank)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,27 +61,25 @@ class MainActivity : AppCompatActivity()
         setSupportActionBar(toolbar)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        // bottomNavigationView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
             Log.v(TAG, item.order.toString())
-            when (item.itemId) {
-                R.id.home -> {
-                    openFragment(getFragment(R.id.home))
-                    mainActivityViewModel.addToFragmentStack(R.id.home)
-                }
+            val fragmentEntry: CustomFragmentBackStack.FragmentEntry = when (item.itemId) {
                 R.id.community -> {
-                    openFragment(getFragment(R.id.community))
-                    mainActivityViewModel.addToFragmentStack(R.id.community)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.community), R.id.community)
                 }
                 R.id.profile -> {
-                    openFragment(getFragment(R.id.profile))
-                    mainActivityViewModel.addToFragmentStack(R.id.profile)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile), R.id.profile)
                 }
                 R.id.vigilance -> {
-                    openFragment(getFragment(R.id.vigilance))
-                    mainActivityViewModel.addToFragmentStack(R.id.vigilance)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.vigilance), R.id.vigilance)
+                }
+                else -> {
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.home), R.id.home)
                 }
             }
+            mainActivityViewModel.addToFragmentStack(fragmentEntry)
+            openFragment(fragmentEntry.fragment)
+            CustomFragmentBackStack.printStack()
             true
         }
         bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
@@ -97,24 +87,24 @@ class MainActivity : AppCompatActivity()
 
 
     override fun onBackPressed() {
-        Log.v(TAG, "fragmentCustomStack.size  " + mainActivityViewModel.fragmentCustomStack.size)
-        if (mainActivityViewModel.fragmentCustomStack.size == 0) {
+        Log.v(TAG, "fragmentCustomStack.size  " + CustomFragmentBackStack.getSize())
+        if (CustomFragmentBackStack.getSize() == 0) {
             super.onBackPressed()
         } else {
-            mainActivityViewModel.fragmentCustomStack.removeAt(mainActivityViewModel.fragmentCustomStack.size - 1)
-            if (mainActivityViewModel.fragmentCustomStack.size > 0) {
-                val fragmentId = mainActivityViewModel.fragmentCustomStack.last()
-                mainActivityViewModel.addToBackStack = false
-                bottomNavigationView.selectedItemId = fragmentId
-            } else {
+            CustomFragmentBackStack.popFragment()
+            if (CustomFragmentBackStack.getSize() == 0) {
                 super.onBackPressed()
+            } else {
+                val fragmentEntry = CustomFragmentBackStack.getLastFragmentEntry()
+                bottomNavigationView.selectedItemId = fragmentEntry.fragmentId
+
+                openFragment(fragmentEntry.fragment)
+                CustomFragmentBackStack.printStack()
             }
         }
-
     }
 
     private fun openFragment(fragment: Fragment) {
-        Log.v(TAG, "openFragment")
         val transaction = supportFragmentManager.beginTransaction()
         /*if (mainActivityViewModel.isInitialized) {
             transaction.setCustomAnimations(R.anim.shift_up, 0)
@@ -122,16 +112,14 @@ class MainActivity : AppCompatActivity()
         mainActivityViewModel.isInitialized = true
         //}
         transaction.replace(R.id.frame, fragment)
-                .setReorderingAllowed(true)
                 .commit()
-        Log.v(TAG, "done")
     }
 
 
     private fun getFragment(fragmentId: Int): Fragment {
         when (fragmentId) {
             R.id.community -> {
-                val fragment = supportFragmentManager.findFragmentByTag(CommunityFragment::class.java.name)
+                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.community)
                 communityFragment = if (fragment == null) {
                     CommunityFragment.newInstance()
                 } else {
@@ -140,7 +128,7 @@ class MainActivity : AppCompatActivity()
                 return communityFragment
             }
             R.id.profile -> {
-                val fragment = supportFragmentManager.findFragmentByTag(ProfileFragment::class.java.name)
+                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.profile)
                 profileFragment = if (fragment == null) {
                     ProfileFragment.newInstance()
                 } else {
@@ -149,7 +137,7 @@ class MainActivity : AppCompatActivity()
                 return profileFragment
             }
             R.id.vigilance -> {
-                val fragment = supportFragmentManager.findFragmentByTag(VigilanceFragment::class.java.name)
+                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.vigilance)
                 vigilanceFragment = if (fragment == null) {
                     VigilanceFragment.newInstance()
                 } else {
@@ -158,12 +146,10 @@ class MainActivity : AppCompatActivity()
                 return vigilanceFragment
             }
             else -> {
-                val fragment = supportFragmentManager.findFragmentByTag(HomeFeedFragment::class.java.name)
-                homeFeedFragment = if (fragment == null) {
-                    Log.v(TAG, "new instance")
+                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.home)
+                homeFeedFragment = if (fragment == null)
                     HomeFeedFragment.newInstance()
-                } else {
-                    Log.v(TAG, "past instance")
+                else {
                     fragment as HomeFeedFragment
                 }
                 return homeFeedFragment

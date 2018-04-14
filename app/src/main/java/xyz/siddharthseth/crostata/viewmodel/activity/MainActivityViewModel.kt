@@ -4,13 +4,13 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.util.CustomFragmentBackStack
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+
     var lastSelectedId = R.id.home
     var isInitialized = false
-    val TAG: String? = this::class.java.simpleName
-    val fragmentCustomStack = ArrayList<Int>()
-    var addToBackStack: Boolean = true
+    val TAG: String = this::class.java.simpleName
 
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()
@@ -23,17 +23,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         return ""
     }
 
-    internal fun addToFragmentStack(fragmentId: Int) {
-        if (addToBackStack) {
-            val position = fragmentCustomStack.indexOf(fragmentId)
-            if (position > -1)
-                fragmentCustomStack.removeAt(position)
-            fragmentCustomStack.add(fragmentId)
-            var string = ""
-            for (value in fragmentCustomStack)
-                string += value.toString() + "--"
-        } else
-            addToBackStack = true
-        lastSelectedId = fragmentId
+    fun addToFragmentStack(fragmentEntry: CustomFragmentBackStack.FragmentEntry) {
+        CustomFragmentBackStack.pushFragment(fragmentEntry)
+        lastSelectedId = fragmentEntry.fragmentId
     }
+
 }

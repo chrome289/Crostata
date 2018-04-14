@@ -24,7 +24,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     interface OnFragmentInteractionListener {
         fun openFullPost(post: Post)
         fun addNewPost()
-        fun bottomNavigationVisible(isVisible: Boolean)
     }
 
     override fun onClick(v: View?) {
@@ -98,11 +97,11 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
                 //pagination
                 checkMorePostsNeeded(recyclerView, dy)
 
-                //hide/show bottom bar
-                if (dy > 0)
-                    mListener?.bottomNavigationVisible(false)
-                else if (dy < 0)
-                    mListener?.bottomNavigationVisible(true)
+                /* //hide/show bottom bar
+                 if (dy > 0)
+                     mListener?.bottomNavigationVisible(false)
+                 else if (dy < 0)
+                     mListener?.bottomNavigationVisible(true)*/
             }
         })
 
@@ -138,7 +137,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         mListener = null
     }
 
-    private val TAG = "HomeFeedFragment"
     private lateinit var postSubscription: Subscription
     private lateinit var homeFeedViewModel: HomeFeedViewModel
     private var mListener: OnFragmentInteractionListener? = null
@@ -147,7 +145,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     private val toleranceEndlessScroll = 3
 
     companion object {
+        private val TAG: String = HomeFeedFragment::class.java.simpleName
         fun newInstance(): HomeFeedFragment {
+            Log.v(TAG, "new fragment requested")
             return HomeFeedFragment()
         }
     }
