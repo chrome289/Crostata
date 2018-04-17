@@ -20,11 +20,17 @@ class ProfilePostViewHolder(itemView: View, val profileViewModel: ProfileViewMod
         if (post.contentType == "IT") {
             itemView.imageView.visibility = View.VISIBLE
             profileViewModel.loadPostedImage(itemView.imageView, post, 1080)
+            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
         } else {
             itemView.imageView.visibility = View.GONE
             itemView.imageView.requestLayout()
             clearView()
         }
+
+        itemView.profileName.text = post.creatorName
+
+        itemView.textPost.text = post.text
+        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
     }
 
     private fun clearView() {

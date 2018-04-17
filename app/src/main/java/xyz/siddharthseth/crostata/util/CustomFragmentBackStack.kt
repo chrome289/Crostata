@@ -2,6 +2,7 @@ package xyz.siddharthseth.crostata.util
 
 import android.support.v4.app.Fragment
 import android.util.Log
+import xyz.siddharthseth.crostata.R
 
 class CustomFragmentBackStack {
 
@@ -18,15 +19,33 @@ class CustomFragmentBackStack {
                 val fragmentEntry = backStack[position]
                 if (fragmentEntry.fragmentId == fragmentId) {
                     backStack.removeAt(position)
+                    removeChildrenFragments(position)
                     break
                 }
             }
             return true
         }
 
+        private fun removeChildrenFragments(position: Int) {
+            val listIterator = backStack.listIterator()
+            while (listIterator.hasNext()) {
+                if (listIterator.nextIndex() >= position) {
+                    val element = listIterator.next()
+                    if (element.fragmentId == R.id.viewPost
+                            || element.fragmentId == R.id.profile2) {
+                        listIterator.remove()
+                    }
+                } else {
+                    listIterator.next()
+                }
+            }
+        }
+
         fun pushFragment(fragmentEntry: FragmentEntry) {
             backStack.add(fragmentEntry)
-            removeFragmentById(fragmentEntry.fragmentId)
+            if (fragmentEntry.fragmentId != R.id.viewPost
+                    && fragmentEntry.fragmentId != R.id.profile2)
+                removeFragmentById(fragmentEntry.fragmentId)
         }
 
         fun popFragment() {

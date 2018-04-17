@@ -30,6 +30,7 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
     fun init(post: Post) {
 
         itemView.nameTextView.text = post.creatorName.toUpperCase()
+        itemView.nameTextView.setOnClickListener { listenerPost.openProfile(post.creatorId) }
 
         if (post.contentType == "TO") {
             itemView.imageView.visibility = View.GONE
@@ -39,6 +40,7 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
             listenerPost.loadPostedImage(post, itemView.imageView)
             itemView.imageView.requestLayout()
             itemView.imageView.setOnClickListener {
+                Log.v(TAG, "itemview click listener")
                 listenerPost.openFullPost(post)
             }
         }

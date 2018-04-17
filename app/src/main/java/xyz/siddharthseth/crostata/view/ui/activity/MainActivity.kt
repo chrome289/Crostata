@@ -11,13 +11,11 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.util.CustomFragmentBackStack
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
-import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.VigilanceFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.*
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
 
@@ -25,7 +23,22 @@ class MainActivity : AppCompatActivity()
         , HomeFeedFragment.OnFragmentInteractionListener
         , ProfileFragment.OnProfileFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener
-        , VigilanceFragment.OnFragmentInteractionListener {
+        , VigilanceFragment.OnFragmentInteractionListener
+        , ViewPostFragment.OnFragmentInteractionListener {
+
+    override fun openProfile(birthId: String) {
+        val bundle = Bundle()
+        bundle.putString("birthId", birthId)
+        if (LoggedSubject.birthId == birthId)
+            bundle.putBoolean("isOpeningSelf", true)
+        else
+            bundle.putBoolean("isOpeningSelf", false)
+
+        val fragmentEntry = CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile2, bundle), R.id.profile2)
+        mainActivityViewModel.addToFragmentStack(fragmentEntry)
+        openFragment(fragmentEntry.fragment)
+        CustomFragmentBackStack.printStack()
+    }
 
     override fun addNewPost() {
         startActivity(Intent(this, AddPostActivity::class.java))
@@ -36,6 +49,7 @@ class MainActivity : AppCompatActivity()
     private lateinit var profileFragment: ProfileFragment
     private lateinit var communityFragment: CommunityFragment
     private lateinit var vigilanceFragment: VigilanceFragment
+    private lateinit var viewPostFragment: ViewPostFragment
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
@@ -45,11 +59,22 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun openFullPost(post: Post) {
-        val intent = Intent(this, ViewPostActivity::class.java)
-        intent.putExtra("post", post)
-        intent.putExtra("transitionName", post._id)
+        Log.v(TAG, "activity click listener")
+        val bundle = Bundle()
+        bundle.putParcelable("post", post)
 
-        startActivity(intent)
+        val fragmentEntry = CustomFragmentBackStack.FragmentEntry(getFragment(R.id.viewPost, bundle), R.id.viewPost)
+        mainActivityViewModel.addToFragmentStack(fragmentEntry)
+        openFragment(fragmentEntry.fragment)
+
+        CustomFragmentBackStack.printStack()
+    }
+
+    private fun setViewPostToolbar() {
+        val toolbar = supportActionBar
+        if (toolbar != null) {
+            toolbar.title = "Comments"
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,16 +90,19 @@ class MainActivity : AppCompatActivity()
             Log.v(TAG, item.order.toString())
             val fragmentEntry: CustomFragmentBackStack.FragmentEntry = when (item.itemId) {
                 R.id.community -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.community), R.id.community)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.community, null), R.id.community)
                 }
                 R.id.profile -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile), R.id.profile)
+                    val bundle = Bundle()
+                    bundle.putString("birthId", LoggedSubject.birthId)
+                    bundle.putBoolean("isOpeningSelf", true)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile, bundle), R.id.profile)
                 }
                 R.id.vigilance -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.vigilance), R.id.vigilance)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.vigilance, null), R.id.vigilance)
                 }
                 else -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.home), R.id.home)
+                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.home, null), R.id.home)
                 }
             }
             mainActivityViewModel.addToFragmentStack(fragmentEntry)
@@ -105,18 +133,14 @@ class MainActivity : AppCompatActivity()
     }
 
     private fun openFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        /*if (mainActivityViewModel.isInitialized) {
-            transaction.setCustomAnimations(R.anim.shift_up, 0)
-        } else {*/
         mainActivityViewModel.isInitialized = true
-        //}
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame, fragment)
                 .commit()
     }
 
 
-    private fun getFragment(fragmentId: Int): Fragment {
+    private fun getFragment(fragmentId: Int, bundle: Bundle?): Fragment {
         when (fragmentId) {
             R.id.community -> {
                 val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.community)
@@ -129,8 +153,12 @@ class MainActivity : AppCompatActivity()
             }
             R.id.profile -> {
                 val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.profile)
-                profileFragment = if (fragment == null) {
-                    ProfileFragment.newInstance()
+                if (fragment == null) {
+                    if (bundle != null) {
+                        val birthId: String = bundle.getString("birthId")
+                        val isOpeningSelf: Boolean = bundle.getBoolean("isOpeningSelf")
+                        profileFragment = ProfileFragment.newInstance(birthId, isOpeningSelf)
+                    }
                 } else {
                     fragment as ProfileFragment
                 }
@@ -145,6 +173,22 @@ class MainActivity : AppCompatActivity()
                 }
                 return vigilanceFragment
             }
+            R.id.viewPost -> {
+                if (bundle != null) {
+                    val post: Post = bundle.getParcelable("post")
+                    viewPostFragment = ViewPostFragment.newInstance(post)
+                }
+                return viewPostFragment
+            }
+            R.id.profile2 -> {
+                if (bundle != null) {
+                    val birthId: String = bundle.getString("birthId")
+                    val isOpeningSelf: Boolean = bundle.getBoolean("isOpeningSelf")
+                    profileFragment = ProfileFragment.newInstance(birthId, isOpeningSelf)
+                }
+                return profileFragment
+            }
+
             else -> {
                 val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.home)
                 homeFeedFragment = if (fragment == null)

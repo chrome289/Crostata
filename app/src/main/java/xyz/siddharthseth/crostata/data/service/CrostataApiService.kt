@@ -81,7 +81,7 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
             @Query("noOfComments") noOfComments: Int,
-            @Query("lastTimestamp") lastTimestamp: Float
+            @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Comment>>
 
     @GET("/api/subject/posts")
@@ -89,7 +89,7 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
             @Query("size") noOfPosts: Int,
-            @Query("lastTimestamp") lastTimestamp: Float
+            @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Post>>
 
     companion object {

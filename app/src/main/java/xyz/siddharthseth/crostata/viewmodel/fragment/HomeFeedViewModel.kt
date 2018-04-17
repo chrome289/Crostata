@@ -17,8 +17,9 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
+import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
@@ -37,11 +38,19 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var noOfPosts: Int = 10
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
+
     var mutablePost: SingleLivePost = SingleLivePost()
+    var mutableBirthId: SingleBirthId = SingleBirthId()
     private var postList: ArrayList<Post> = ArrayList()
 
     override fun openFullPost(post: Post) {
+        Log.v(TAG, "viewmodel click listener")
         mutablePost.value = post
+    }
+
+    override fun openProfile(birthId: String) {
+        Log.v(TAG, "setting birthid")
+        mutableBirthId.value = birthId
     }
 
     override val greyUnselected: Int

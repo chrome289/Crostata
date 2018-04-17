@@ -6,15 +6,20 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface PostRecyclerViewListener {
-    fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal>
     fun onCommentButtonClick(postId: String)
     fun onReportButtonClick(postId: String)
+
+    fun clearPostedImageGlide(imageView: ImageView)
+    fun loadPostedImage(post: Post, imageView: ImageView)
     fun loadProfileImage(creatorId: String, imageView: ImageView)
+
     fun onClearVote(postId: String): Observable<VoteTotal>
+    fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal>
+
     val voteColorTint: Int
     val reportColorTint: Int
     val greyUnselected: Int
+
     fun openFullPost(post: Post)
-    fun clearPostedImageGlide(imageView: ImageView)
-    fun loadPostedImage(post: Post, imageView: ImageView)
+    fun openProfile(birthId: String)
 }

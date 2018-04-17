@@ -23,6 +23,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     interface OnFragmentInteractionListener {
         fun openFullPost(post: Post)
+        fun openProfile(birthId: String)
         fun addNewPost()
     }
 
@@ -46,7 +47,15 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     private val observer: Observer<Post> = Observer {
         Log.v(TAG, "observer called")
         if (it != null) {
+            Log.v(TAG, "fragment click listener")
             mListener?.openFullPost(it)
+        }
+    }
+
+    private val observerBirthId: Observer<String> = Observer {
+        Log.v(TAG, "birthid observer called")
+        if (it != null) {
+            mListener?.openProfile(it)
         }
     }
 
@@ -55,6 +64,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onstop")
         postSubscription.unsubscribe()
         homeFeedViewModel.mutablePost.removeObserver(observer)
+        homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
     }
 
     override fun onAttach(context: Context?) {
@@ -76,8 +86,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
             homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
             homeFeedAdapter.setHasStableIds(true)
 
-            homeFeedViewModel.mutablePost.observe(this, observer)
-
             postSubscription = homeFeedViewModel.getPosts()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ post ->
@@ -89,6 +97,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
             isInitialized = true
         }
+
+        homeFeedViewModel.mutablePost.observe(this, observer)
+        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
 
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = homeFeedAdapter

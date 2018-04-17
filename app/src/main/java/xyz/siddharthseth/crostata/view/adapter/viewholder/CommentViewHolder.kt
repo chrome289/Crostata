@@ -6,12 +6,12 @@ import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
 import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.util.recyclerView.CommentRecyclerViewListener
-import xyz.siddharthseth.crostata.viewmodel.activity.ViewPostActivityViewModel
+import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CommentViewHolder(view: View, viewPostViewModel: ViewPostActivityViewModel)
+class CommentViewHolder(view: View, viewPostViewModel: ViewPostViewModel)
     : RecyclerView.ViewHolder(view) {
 
     private val TAG = javaClass.simpleName

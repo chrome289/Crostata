@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.viewmodel.activity
+package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -22,7 +22,7 @@ import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 import xyz.siddharthseth.crostata.util.recyclerView.CommentRecyclerViewListener
 import java.util.*
 
-class ViewPostActivityViewModel(application: Application) : AndroidViewModel(application), CommentRecyclerViewListener {
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentRecyclerViewListener {
     var post: Post = Post()
     private var commentList = ArrayList<Comment>()
     private val sharedPreferencesService = SharedPrefrencesService()

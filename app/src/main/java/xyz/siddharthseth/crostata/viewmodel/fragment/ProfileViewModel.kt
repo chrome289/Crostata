@@ -16,6 +16,7 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
@@ -27,12 +28,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val token = SharedPrefrencesService().getToken(application)
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val TAG: String = javaClass.simpleName
-    private val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
+    lateinit var birthId: String
     private var size: Int = 5
-    private var lastTimestamp: Float = Calendar.getInstance().timeInMillis / 1000.0f
+    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var commentList = ArrayList<Comment>()
     private var postList = ArrayList<Post>()
     private var isInitialized = false
+    val mutablePost: SingleLivePost = SingleLivePost()
 
     fun getInfo(): Observable<Subject> {
         return contentRepository.getSubjectInfo(token, birthId)
@@ -71,9 +73,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun loadProfileImage(imageView: ImageView, dimen: Int, isCircle: Boolean) {
         val context: Context = getApplication()
         val quality = 70
-        //TODO birthid hardcoded
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=062912952&dimen=$dimen&quality=$quality"
+                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -110,7 +111,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .addHeader("authorization", token)
                 .build())
 
-        Log.v(TAG, "token-" + token)
+        // Log.v(TAG, "token-$token")
         GlideApp.with(context)
                 .load(glideUrl)
                 .placeholder(R.drawable.palmyra)
@@ -122,5 +123,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun clearPostedImageGlide(contentImage: ImageView?) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(contentImage as View)
+    }
+
+    fun openFullPost(post: Post) {
+        Log.v(TAG, "viewmodel click listener")
+        mutablePost.value = post
     }
 }
