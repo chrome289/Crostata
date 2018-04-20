@@ -31,17 +31,49 @@ import kotlin.collections.ArrayList
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , PostRecyclerViewListener {
 
-    private val TAG = javaClass.simpleName
-    private val sharedPreferencesService = SharedPrefrencesService()
-    private val contentRepository = ContentRepositoryProvider.getContentRepository()
-    private var token: String = sharedPreferencesService.getToken(getApplication())
-    private var noOfPosts: Int = 10
-    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
-    private var isInitialized = false
+    override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
+        val context: Context = getApplication()
+        val quality = 70
+        val imageId = post.imageId
 
-    var mutablePost: SingleLivePost = SingleLivePost()
-    var mutableBirthId: SingleBirthId = SingleBirthId()
-    private var postList: ArrayList<Post> = ArrayList()
+        //Log.v(TAG, "imageID-" + post.imageId + " type-" + post.contentType)
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        // Log.v(TAG, "width like ---" + imageView.width)
+        GlideApp.with(context)
+                .load(glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .priority(Priority.LOW)
+                .fitCenter()
+                .override(1080)
+                .into(imageView)
+    }
+
+    override fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView) {
+        val context: Context = getApplication()
+        val quality = 70
+
+        Log.v(TAG, "imageID-$creatorId type-")
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        GlideApp.with(context)
+                .load(glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .downsample(DownsampleStrategy.CENTER_INSIDE)
+                .centerInside()
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .priority(Priority.IMMEDIATE)
+                .into(imageView)
+    }
 
     override fun openFullPost(post: Post) {
         Log.v(TAG, "viewmodel click listener")
@@ -59,59 +91,10 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         get() = ContextCompat.getColor(getApplication(), R.color.voteSelected)
     override val reportColorTint: Int
         get() = ContextCompat.getColor(getApplication(), R.color.reportSelected)
-    var isLoading: Boolean = false
-
 
     override fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
-    }
-
-    override fun loadPostedImage(post: Post, imageView: ImageView) {
-        val context: Context = getApplication()
-
-        val dimen = 1080
-        val quality = 70
-        val imageId = post.imageId
-
-        Log.v(TAG, "imageID-" + post.imageId + " type-" + post.contentType)
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        // Log.v(TAG, "width like ---" + imageView.width)
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .priority(Priority.LOW)
-                .fitCenter()
-                .override(1080)
-                .into(imageView)
-    }
-
-    override fun loadProfileImage(creatorId: String, imageView: ImageView) {
-        val context: Context = getApplication()
-        val dimen = 128
-        val quality = 70
-
-        Log.v(TAG, "imageID-" + creatorId + " type-")
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .downsample(DownsampleStrategy.CENTER_INSIDE)
-                .centerInside()
-                .circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .priority(Priority.IMMEDIATE)
-                .into(imageView)
     }
 
     override fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
@@ -138,11 +121,25 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    private val TAG = javaClass.simpleName
+    private val sharedPreferencesService = SharedPrefrencesService()
+    private val contentRepository = ContentRepositoryProvider.getContentRepository()
+    private var token: String = sharedPreferencesService.getToken(getApplication())
+    private var noOfPosts: Int = 10
+    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
+    private var isInitialized = false
+    var isLoading: Boolean = false
+    private var postList: ArrayList<Post> = ArrayList()
+
+    var mutablePost: SingleLivePost = SingleLivePost()
+    var mutableBirthId: SingleBirthId = SingleBirthId()
+
+
     fun getPosts(): Observable<Post> {
-        if (isInitialized)
-            return Observable.from(postList)
+        return if (isInitialized)
+            Observable.from(postList)
         else
-            return fetchPosts()
+            fetchPosts()
     }
 
     private fun fetchPosts(): Observable<Post> {

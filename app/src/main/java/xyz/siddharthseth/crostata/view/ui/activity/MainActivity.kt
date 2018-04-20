@@ -13,7 +13,8 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.util.CustomFragmentBackStack
+import xyz.siddharthseth.crostata.util.backstack.BackStackListener
+import xyz.siddharthseth.crostata.util.backstack.BackStackManager
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.*
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
@@ -24,34 +25,39 @@ class MainActivity : AppCompatActivity()
         , ProfileFragment.OnProfileFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener
         , VigilanceFragment.OnFragmentInteractionListener
-        , ViewPostFragment.OnFragmentInteractionListener {
+        , SelfProfileFragment.OnSelfProfileFragmentInteractionListener
+        , ViewPostFragment.OnFragmentInteractionListener, BackStackListener {
+
+    private val TAG = javaClass.simpleName
+    private var homeFeedFragment: HomeFeedFragment? = null
+    private var selfProfileFragment: SelfProfileFragment? = null
+    private var profileFragment: ProfileFragment? = null
+    private var communityFragment: CommunityFragment? = null
+    private var vigilanceFragment: VigilanceFragment? = null
+    private var viewPostFragment: ViewPostFragment? = null
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+    private lateinit var customFragmentManager: BackStackManager
+
+    override fun finishActivity() {
+        finish()
+    }
+
+    override fun tabReselected() {}
 
     override fun openProfile(birthId: String) {
         val bundle = Bundle()
-        bundle.putString("birthId", birthId)
-        if (LoggedSubject.birthId == birthId)
-            bundle.putBoolean("isOpeningSelf", true)
-        else
-            bundle.putBoolean("isOpeningSelf", false)
-
-        val fragmentEntry = CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile2, bundle), R.id.profile2)
-        mainActivityViewModel.addToFragmentStack(fragmentEntry)
-        openFragment(fragmentEntry.fragment)
-        CustomFragmentBackStack.printStack()
+        if (LoggedSubject.birthId == birthId) {
+            bottomNavigationView.selectedItemId = R.id.profile
+        } else {
+            bundle.putString("birthId", birthId)
+            customFragmentManager.addChildFragment(getFragment(R.id.selfProfile, bundle), R.id.frame)
+        }
     }
 
     override fun addNewPost() {
         startActivity(Intent(this, AddPostActivity::class.java))
     }
-
-    private val TAG = "MainActivity"
-    private lateinit var homeFeedFragment: HomeFeedFragment
-    private lateinit var profileFragment: ProfileFragment
-    private lateinit var communityFragment: CommunityFragment
-    private lateinit var vigilanceFragment: VigilanceFragment
-    private lateinit var viewPostFragment: ViewPostFragment
-
-    private lateinit var mainActivityViewModel: MainActivityViewModel
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_main, menu)
@@ -63,11 +69,8 @@ class MainActivity : AppCompatActivity()
         val bundle = Bundle()
         bundle.putParcelable("post", post)
 
-        val fragmentEntry = CustomFragmentBackStack.FragmentEntry(getFragment(R.id.viewPost, bundle), R.id.viewPost)
-        mainActivityViewModel.addToFragmentStack(fragmentEntry)
-        openFragment(fragmentEntry.fragment)
-
-        CustomFragmentBackStack.printStack()
+        val fragment = getFragment(R.id.viewPost, bundle)
+        customFragmentManager.addChildFragment(fragment, R.id.frame)
     }
 
     private fun setViewPostToolbar() {
@@ -82,121 +85,98 @@ class MainActivity : AppCompatActivity()
         setContentView(activity_main)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        customFragmentManager = BackStackManager(this, supportFragmentManager)
 
         setSupportActionBar(toolbar)
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        bottomNavigationView.setOnNavigationItemSelectedListener { item: MenuItem ->
-            Log.v(TAG, item.order.toString())
-            val fragmentEntry: CustomFragmentBackStack.FragmentEntry = when (item.itemId) {
-                R.id.community -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.community, null), R.id.community)
-                }
-                R.id.profile -> {
-                    val bundle = Bundle()
-                    bundle.putString("birthId", LoggedSubject.birthId)
-                    bundle.putBoolean("isOpeningSelf", true)
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.profile, bundle), R.id.profile)
-                }
-                R.id.vigilance -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.vigilance, null), R.id.vigilance)
-                }
-                else -> {
-                    CustomFragmentBackStack.FragmentEntry(getFragment(R.id.home, null), R.id.home)
-                }
+        bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
+        bottomNavigationView.selectedItemId = R.id.home
+    }
+
+    private fun getBottomNavigationListener(item: MenuItem): Boolean {
+        Log.v(TAG, item.order.toString())
+        val fragment = when (item.itemId) {
+            R.id.community -> {
+                getFragment(R.id.community, null)
             }
-            mainActivityViewModel.addToFragmentStack(fragmentEntry)
-            openFragment(fragmentEntry.fragment)
-            CustomFragmentBackStack.printStack()
-            true
+            R.id.profile -> {
+                getFragment(R.id.profile, null)
+            }
+            R.id.vigilance -> {
+                getFragment(R.id.vigilance, null)
+            }
+            else -> {
+                getFragment(R.id.home, null)
+            }
         }
-        bottomNavigationView.selectedItemId = mainActivityViewModel.lastSelectedId
+        customFragmentManager.addRootFragment(fragment, item.itemId.toString(), R.id.frame)
+        return true
     }
 
 
     override fun onBackPressed() {
-        Log.v(TAG, "fragmentCustomStack.size  " + CustomFragmentBackStack.getSize())
-        if (CustomFragmentBackStack.getSize() == 0) {
-            super.onBackPressed()
-        } else {
-            CustomFragmentBackStack.popFragment()
-            if (CustomFragmentBackStack.getSize() == 0) {
-                super.onBackPressed()
-            } else {
-                val fragmentEntry = CustomFragmentBackStack.getLastFragmentEntry()
-                bottomNavigationView.selectedItemId = fragmentEntry.fragmentId
-
-                openFragment(fragmentEntry.fragment)
-                CustomFragmentBackStack.printStack()
-            }
+        val fragment = customFragmentManager.onBackPressed()
+        if (fragment != null) {
+            //Log.v(TAG, fragment.tag!!.toInt().toString() + " " + R.id.home)
+            bottomNavigationView.setOnNavigationItemSelectedListener { true }
+            bottomNavigationView.selectedItemId = fragment.tag!!.toInt()
+            bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
         }
     }
-
-    private fun openFragment(fragment: Fragment) {
-        mainActivityViewModel.isInitialized = true
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.frame, fragment)
-                .commit()
-    }
-
 
     private fun getFragment(fragmentId: Int, bundle: Bundle?): Fragment {
         when (fragmentId) {
             R.id.community -> {
-                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.community)
-                communityFragment = if (fragment == null) {
-                    CommunityFragment.newInstance()
+                return if (communityFragment == null) {
+                    communityFragment = CommunityFragment.newInstance()
+                    communityFragment as CommunityFragment
                 } else {
-                    fragment as CommunityFragment
+
+                    communityFragment as CommunityFragment
                 }
-                return communityFragment
             }
             R.id.profile -> {
-                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.profile)
-                if (fragment == null) {
-                    if (bundle != null) {
-                        val birthId: String = bundle.getString("birthId")
-                        val isOpeningSelf: Boolean = bundle.getBoolean("isOpeningSelf")
-                        profileFragment = ProfileFragment.newInstance(birthId, isOpeningSelf)
-                    }
+                return if (profileFragment == null) {
+                    profileFragment = ProfileFragment.newInstance()
+                    profileFragment as ProfileFragment
                 } else {
-                    fragment as ProfileFragment
+
+                    profileFragment as ProfileFragment
                 }
-                return profileFragment
             }
             R.id.vigilance -> {
-                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.vigilance)
-                vigilanceFragment = if (fragment == null) {
-                    VigilanceFragment.newInstance()
+                return if (vigilanceFragment == null) {
+                    vigilanceFragment = VigilanceFragment.newInstance()
+                    vigilanceFragment as VigilanceFragment
                 } else {
-                    fragment as VigilanceFragment
+
+                    vigilanceFragment as VigilanceFragment
                 }
-                return vigilanceFragment
             }
             R.id.viewPost -> {
                 if (bundle != null) {
                     val post: Post = bundle.getParcelable("post")
                     viewPostFragment = ViewPostFragment.newInstance(post)
                 }
-                return viewPostFragment
+                return viewPostFragment as ViewPostFragment
             }
-            R.id.profile2 -> {
+            R.id.selfProfile -> {
                 if (bundle != null) {
                     val birthId: String = bundle.getString("birthId")
-                    val isOpeningSelf: Boolean = bundle.getBoolean("isOpeningSelf")
-                    profileFragment = ProfileFragment.newInstance(birthId, isOpeningSelf)
+                    selfProfileFragment = SelfProfileFragment.newInstance(birthId)
                 }
-                return profileFragment
+                return selfProfileFragment as SelfProfileFragment
             }
 
             else -> {
-                val fragment: Fragment? = CustomFragmentBackStack.getFragmentEntryById(R.id.home)
-                homeFeedFragment = if (fragment == null)
-                    HomeFeedFragment.newInstance()
-                else {
-                    fragment as HomeFeedFragment
+                return if (homeFeedFragment == null) {
+                    homeFeedFragment = HomeFeedFragment.newInstance()
+                    homeFeedFragment as HomeFeedFragment
+                } else {
+
+                    homeFeedFragment as HomeFeedFragment
                 }
-                return homeFeedFragment
             }
         }
     }

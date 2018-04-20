@@ -4,14 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/greyLightest"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
 
@@ -128,7 +129,7 @@
                 android:padding="2dp"
                 android:rotation="180"
                 android:scaleType="centerInside"
-                android:src="@drawable/down_arrow"
+                android:src="@drawable/arrow"
                 android:tint="@color/greyUnselected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +161,7 @@
                 android:contentDescription="@string/down_vote_button"
                 android:padding="2dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/down_arrow"
+                android:src="@drawable/arrow"
                 android:tint="@color/greyUnselected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/votesTotal"
@@ -171,7 +172,6 @@
             android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
             android:orientation="horizontal"
@@ -215,9 +215,10 @@
             android:id="@+id/commentHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:paddingBottom="8dp"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
+            android:paddingTop="8dp"
             android:text="@string/comments"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="20sp"
@@ -230,7 +231,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/commentsTotal"

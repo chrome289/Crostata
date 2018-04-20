@@ -65,7 +65,7 @@ class Post() : Comparable<Post>, Parcelable {
     var downVotes = 0
     var comments = 0
     var votes = 0
-    var isCensored = false
+    private var isCensored = false
     var opinion = 0
     var imageId = ""
 
@@ -85,7 +85,6 @@ class Post() : Comparable<Post>, Parcelable {
         imageId = parcel.readString()
     }
 
-    //var metadata: ImageMetadata = ImageMetadata()
     companion object CREATOR : Parcelable.Creator<Post> {
         override fun createFromParcel(parcel: Parcel): Post {
             return Post(parcel)
@@ -95,5 +94,4 @@ class Post() : Comparable<Post>, Parcelable {
             return arrayOfNulls(size)
         }
     }
-
 }

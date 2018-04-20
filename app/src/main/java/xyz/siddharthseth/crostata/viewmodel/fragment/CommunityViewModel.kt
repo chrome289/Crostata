@@ -22,7 +22,7 @@ import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
 class CommunityViewModel(application: Application) : AndroidViewModel(application) {
 
     val token = SharedPrefrencesService().getToken(application)
-    val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
+    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     val TAG: String = javaClass.simpleName
     val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
 
@@ -38,7 +38,7 @@ class CommunityViewModel(application: Application) : AndroidViewModel(applicatio
         val quality = 70
         //TODO birthid hardcoded
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=062912952&dimen=$dimen&quality=$quality"
+                "/api/subject/profileImage?birthId=$birthId2&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())

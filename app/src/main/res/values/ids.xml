@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="selfProfile" type="id">5</item>
     <item name="viewPost" type="id">6</item>
-    <item name="profile2" type="id">8</item>
 </resources>

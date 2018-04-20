@@ -10,8 +10,8 @@ interface PostRecyclerViewListener {
     fun onReportButtonClick(postId: String)
 
     fun clearPostedImageGlide(imageView: ImageView)
-    fun loadPostedImage(post: Post, imageView: ImageView)
-    fun loadProfileImage(creatorId: String, imageView: ImageView)
+    fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView)
+    fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView)
 
     fun onClearVote(postId: String): Observable<VoteTotal>
     fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal>

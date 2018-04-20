@@ -82,6 +82,8 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onResume")
         if (!isInitialized) {
             homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
+            homeFeedViewModel.mutablePost.observe(this, observer)
+            homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
 
             homeFeedAdapter = HomeFeedAdapter(homeFeedViewModel)
             homeFeedAdapter.setHasStableIds(true)
@@ -98,9 +100,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
             isInitialized = true
         }
 
-        homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
-
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = homeFeedAdapter
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -115,9 +114,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
                      mListener?.bottomNavigationVisible(true)*/
             }
         })
-
         //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
-
     }
 
     private fun checkMorePostsNeeded(recyclerView: RecyclerView, dy: Int) {

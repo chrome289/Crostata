@@ -12,7 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_self_profile.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
@@ -24,32 +24,32 @@ import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class ProfileFragment : Fragment() {
-
-    private var mListener: OnProfileFragmentInteractionListener? = null
+class SelfProfileFragment : Fragment() {
+    lateinit var birthId: String
+    val TAG: String = javaClass.simpleName
+    private var mListener: OnSelfProfileFragmentInteractionListener? = null
     private lateinit var profileViewModel: ProfileViewModel
     private var isInitialized = false
-    val TAG: String = javaClass.simpleName
 
     private lateinit var profileCommentAdapter: ProfileCommentAdapter
     private lateinit var profilePostAdapter: ProfilePostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
+        arguments?.let {
+            birthId = arguments!!.getString("birthId")
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_self_profile, container, false)
     }
 
     private val observer: Observer<Post> = Observer {
         Log.v(TAG, "observer called")
         if (it != null) {
-            Log.v(TAG, "fragment click listener")
+            Log.v(TAG, "fragment click mListener")
             mListener?.openFullPost(it)
         }
     }
@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
 
         if (!isInitialized) {
             profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-            profileViewModel.birthId = LoggedSubject.birthId
+            profileViewModel.birthId = birthId
             Log.v(TAG, "loading birthid " + profileViewModel.birthId)
 
             isInitialized = true
@@ -158,12 +158,12 @@ class ProfileFragment : Fragment() {
         profilePostRecyclerView.visibility = View.GONE
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
-        mListener = if (context is OnProfileFragmentInteractionListener) {
-            context
+        if (context is OnSelfProfileFragmentInteractionListener) {
+            mListener = context
         } else {
-            throw RuntimeException((context!!.toString() + " must implement OnFragmentInteractionListener"))
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 
@@ -172,17 +172,17 @@ class ProfileFragment : Fragment() {
         mListener = null
     }
 
-
-    interface OnProfileFragmentInteractionListener {
+    interface OnSelfProfileFragmentInteractionListener {
         fun openProfile(birthId: String)
         fun openFullPost(post: Post)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                ProfileFragment().apply {
+        fun newInstance(birthId: String) =
+                SelfProfileFragment().apply {
                     arguments = Bundle().apply {
+                        this.putString("birthId", birthId)
                     }
                 }
     }

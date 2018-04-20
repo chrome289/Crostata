@@ -37,7 +37,6 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".view.ui.activity.AddPostActivity" />
-        <activity android:name=".view.ui.fragment.ViewPostFragment" />
     </application>
 
 </manifest>

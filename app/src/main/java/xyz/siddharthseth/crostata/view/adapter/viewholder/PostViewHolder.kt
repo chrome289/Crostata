@@ -29,26 +29,20 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
 
     fun init(post: Post) {
 
-        itemView.nameTextView.text = post.creatorName.toUpperCase()
-        itemView.nameTextView.setOnClickListener { listenerPost.openProfile(post.creatorId) }
+        itemView.profileName.text = post.creatorName
+        itemView.profileName.setOnClickListener { listenerPost.openProfile(post.creatorId) }
 
         if (post.contentType == "TO") {
             itemView.imageView.visibility = View.GONE
             clearView()
         } else {
             itemView.imageView.visibility = View.VISIBLE
-            listenerPost.loadPostedImage(post, itemView.imageView)
+            listenerPost.loadPostedImage(post, 1080, itemView.imageView)
+            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
             itemView.imageView.requestLayout()
-            itemView.imageView.setOnClickListener {
-                Log.v(TAG, "itemview click listener")
-                listenerPost.openFullPost(post)
-            }
         }
 
-        listenerPost.loadProfileImage(post.creatorId, itemView.profileImage)
-
-        itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
+        listenerPost.loadProfileImage(post.creatorId, 128, true, itemView.profileImage)
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
@@ -60,7 +54,6 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
                 if (post.opinion == 0) greyColor
                 else voteColor
         )
-        Log.v(TAG, "post.opinion " + post.opinion)
 
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
@@ -81,7 +74,11 @@ class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
             itemView.reportButton.visibility = View.VISIBLE
             itemView.reportButton.setOnClickListener { }
         }
+
+        itemView.textPost.text = post.text
+        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
     }
+
 
     private fun handleVoteClick(post: Post, newValue: Int) {
         if (post.opinion == newValue) {

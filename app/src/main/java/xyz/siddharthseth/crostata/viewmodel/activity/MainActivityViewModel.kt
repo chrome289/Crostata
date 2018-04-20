@@ -4,11 +4,9 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.util.CustomFragmentBackStack
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    var lastSelectedId = R.id.home
     var isInitialized = false
     val TAG: String = this::class.java.simpleName
 
@@ -22,10 +20,4 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
         return ""
     }
-
-    fun addToFragmentStack(fragmentEntry: CustomFragmentBackStack.FragmentEntry) {
-        CustomFragmentBackStack.pushFragment(fragmentEntry)
-        lastSelectedId = fragmentEntry.fragmentId
-    }
-
 }

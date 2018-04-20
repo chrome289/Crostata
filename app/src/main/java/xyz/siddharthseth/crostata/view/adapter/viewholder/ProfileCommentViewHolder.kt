@@ -18,11 +18,11 @@ class ProfileCommentViewHolder(itemView: View, private val profileViewModel: Pro
         Log.v(TAG, "comments " + comment.post.creatorName)
         itemView.content_name.text = comment.post.creatorName
 
-        profileViewModel.loadProfileImage(itemView.profileImage, 128, true)
+        profileViewModel.loadProfileImage(comment.birthId, 128, true, itemView.profileImage)
 
         if (comment.post.contentType == "IT") {
             itemView.contentImage.visibility = View.VISIBLE
-            profileViewModel.loadPostedImage(itemView.contentImage, comment.post, 256)
+            profileViewModel.loadPostedImage(comment.post, 256, itemView.contentImage)
         } else {
             itemView.contentImage.visibility = View.GONE
             itemView.contentImage.requestLayout()

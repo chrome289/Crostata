@@ -3,19 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
     android:background="@color/white"
-    android:elevation="1dp"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
@@ -30,11 +25,10 @@
             android:src="@drawable/home_feed_content_placeholder"
             app:layout_constraintBottom_toBottomOf="@+id/timeTextView"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/nameTextView" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/nameTextView"
+            android:id="@+id/profileName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -57,8 +51,8 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/reportButton"
-            app:layout_constraintStart_toStartOf="@+id/nameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+            app:layout_constraintStart_toStartOf="@+id/profileName"
+            app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
         <TextView
             android:id="@+id/reportButton"
@@ -80,13 +74,12 @@
         android:id="@+id/textPost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:fontFamily="@font/roboto"
         android:gravity="start|center_vertical"
         android:maxLines="3"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
         android:text="@string/sample_text"
         android:textColor="#616161"
         android:textSize="16sp" />
@@ -95,7 +88,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_image"
         android:src="@drawable/farmer"
@@ -105,12 +98,13 @@
         android:id="@+id/opinion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="0"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
 
         <ImageButton
             android:id="@+id/upVoteButton"
@@ -123,7 +117,7 @@
             android:padding="2dp"
             android:rotation="180"
             android:scaleType="centerInside"
-            android:src="@drawable/down_arrow"
+            android:src="@drawable/arrow"
             android:tint="@color/greyUnselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -156,7 +150,7 @@
             android:contentDescription="@string/down_vote_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/down_arrow"
+            android:src="@drawable/arrow"
             android:tint="@color/greyUnselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/votesTotal"
@@ -164,14 +158,13 @@
 
         <ImageButton
             android:id="@+id/commentButton"
-            android:layout_width="wrap_content"
+            android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
             android:layout_weight="0"
             android:background="#00ffffff"
             android:contentDescription="@string/comment_button"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_insert_comment"
             android:tint="@color/greyUnselected"
@@ -193,7 +186,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
     </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="@color/greyLightest" />
 
 </LinearLayout>
