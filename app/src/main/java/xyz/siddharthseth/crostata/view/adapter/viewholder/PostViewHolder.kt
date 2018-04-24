@@ -1,113 +1,92 @@
 package xyz.siddharthseth.crostata.view.adapter.viewholder
 
-import android.content.res.ColorStateList
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
-import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
-import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
-import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
-import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
-import java.text.SimpleDateFormat
-import java.util.*
+import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
 
-class PostViewHolder(view: View, homeFeedViewModel: HomeFeedViewModel)
-    : RecyclerView.ViewHolder(view) {
+class PostViewHolder(view: View, private val postItemListener: PostItemListener)
+    : RecyclerView.ViewHolder(view), View.OnClickListener {
+
+    override fun onClick(v: View?) {
+        if (v != null) {
+            when (v.id) {
+                R.id.imageView, R.id.commentButton, R.id.textPost -> {
+                    postItemListener.openFullPost(adapterPosition)
+                }
+                R.id.reportButton -> {
+
+                }
+                R.id.downVoteButton -> {
+                    postItemListener.handleVote(adapterPosition, 1)
+                }
+                R.id.upVoteButton -> {
+                    postItemListener.handleVote(adapterPosition, -1)
+                }
+            }
+        }
+    }
 
     private var TAG = javaClass.simpleName
-
-    private var listenerPost: PostRecyclerViewListener = homeFeedViewModel
-    private val calendar = Calendar.getInstance()
-    private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
-
-    private val voteColor = ColorStateList.valueOf(listenerPost.voteColorTint)
-    val reportColor: ColorStateList? = ColorStateList.valueOf(listenerPost.reportColorTint)
-    private val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
+    private val voteColor = postItemListener.voteColorTint
+    private val reportColor = postItemListener.reportColorTint
+    private val extraDarkGrey = postItemListener.extraDarkGrey
 
     fun init(post: Post) {
 
         itemView.profileName.text = post.creatorName
-        itemView.profileName.setOnClickListener { listenerPost.openProfile(post.creatorId) }
+        itemView.profileName.setOnClickListener { postItemListener.openProfile(post.creatorId) }
 
-        if (post.contentType == "TO") {
-            itemView.imageView.visibility = View.GONE
-            clearView()
-        } else {
-            itemView.imageView.visibility = View.VISIBLE
-            listenerPost.loadPostedImage(post, 1080, itemView.imageView)
-            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
-            itemView.imageView.requestLayout()
-        }
+        itemView.timeTextView.text = post.timeCreatedText
 
-        listenerPost.loadProfileImage(post.creatorId, 128, true, itemView.profileImage)
-
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
-        calendar.time = inputFormat.parse(post.timeCreated)
-
-        itemView.timeTextView.text = TimeAgo.using(calendar.timeInMillis).capitalize()
-
-        itemView.votesTotal.text = post.votes.toString()
+        itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
-                if (post.opinion == 0) greyColor
+                if (post.opinion == 0) extraDarkGrey
                 else voteColor
         )
 
-        itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
-        itemView.upVoteButton.imageTintList =
-                (if (post.opinion == 1) voteColor
-                else greyColor)
+        itemView.commentsTotal.text = "${post.comments} comments"
 
-        itemView.downVoteButton.setOnClickListener { handleVoteClick(post, -1) }
-        itemView.downVoteButton.imageTintList =
-                (if (post.opinion == -1) voteColor
-                else greyColor)
+        /* itemView.upVoteButton.setOnClickListener { this.onClick(it) }
+         itemView.upVoteButton.imageTintList =
+                 (if (post.opinion == 1) voteColor
+                 else greyColor)
 
-        itemView.commentsTotal.text = post.comments.toString()
-        itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }
+         itemView.downVoteButton.setOnClickListener { }
+         itemView.downVoteButton.imageTintList =
+                 (if (post.opinion == -1) voteColor
+                 else greyColor)
 
-        if (post.creatorId == LoggedSubject.birthId) {
-            itemView.reportButton.visibility = View.GONE
-        } else {
-            itemView.reportButton.visibility = View.VISIBLE
-            itemView.reportButton.setOnClickListener { }
-        }
+         itemView.commentButton.setOnClickListener { this.onClick(it) }
+
+         if (post.creatorId == LoggedSubject.birthId) {
+             itemView.reportButton.visibility = View.GONE
+         } else {
+             itemView.reportButton.visibility = View.VISIBLE
+             itemView.reportButton.setOnClickListener { this.onClick(it) }
+         }*/
 
         itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
+        itemView.textPost.setOnClickListener { this.onClick(it) }
     }
 
-
-    private fun handleVoteClick(post: Post, newValue: Int) {
-        if (post.opinion == newValue) {
-            listenerPost.onClearVote(post._id).subscribe(
-                    { voteTotal: VoteTotal ->
-                        Log.v(TAG, "success :" + voteTotal.success)
-                        if (voteTotal.success) {
-                            post.opinion = 0
-                            post.votes = voteTotal.total
-                            this.init(post)
-                        }
-                    }
-                    , { error -> error.printStackTrace() })
+    fun loadImages(post: Post) {
+        if (post.contentType == "TO") {
+            itemView.imageView.visibility = View.GONE
+            postItemListener.clearPostedImageGlide(itemView.imageView)
         } else {
-            listenerPost.onVoteButtonClick(post._id, newValue)
-                    .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.votes = voteTotal.total
-                                    post.opinion = newValue
-                                    this.init(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
+            itemView.imageView.visibility = View.VISIBLE
+            postItemListener.loadPostedImage(post, 640, itemView.imageView)
+            itemView.imageView.setOnClickListener(this)
+            //itemView.imageView.requestLayout()
         }
+        postItemListener.loadProfileImage(post.creatorId, 128, false, itemView.profileImage)
     }
 
-    private fun clearView() {
-        listenerPost.clearPostedImageGlide(itemView.imageView)
+    fun clearImages() {
+        postItemListener.clearPostedImageGlide(itemView.imageView)
+        postItemListener.clearPostedImageGlide(itemView.profileImage)
     }
 }

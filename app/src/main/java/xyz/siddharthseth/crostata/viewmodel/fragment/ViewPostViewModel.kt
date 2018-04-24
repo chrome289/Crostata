@@ -19,10 +19,10 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.util.recyclerView.CommentRecyclerViewListener
+import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
 import java.util.*
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentRecyclerViewListener {
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener {
     var post: Post = Post()
     private var commentList = ArrayList<Comment>()
     private val sharedPreferencesService = SharedPrefrencesService()

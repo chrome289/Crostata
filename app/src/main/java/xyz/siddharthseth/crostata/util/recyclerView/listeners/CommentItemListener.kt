@@ -1,7 +1,7 @@
-package xyz.siddharthseth.crostata.util.recyclerView
+package xyz.siddharthseth.crostata.util.recyclerView.listeners
 
 import android.widget.ImageView
 
-interface CommentRecyclerViewListener {
+interface CommentItemListener {
     fun loadProfileImage(birthId: String, profileImage: ImageView)
 }

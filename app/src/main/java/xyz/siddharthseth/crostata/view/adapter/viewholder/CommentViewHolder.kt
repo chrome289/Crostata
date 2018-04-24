@@ -5,7 +5,7 @@ import android.view.View
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_comment_card.view.*
 import xyz.siddharthseth.crostata.data.model.Comment
-import xyz.siddharthseth.crostata.util.recyclerView.CommentRecyclerViewListener
+import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,7 +15,7 @@ class CommentViewHolder(view: View, viewPostViewModel: ViewPostViewModel)
     : RecyclerView.ViewHolder(view) {
 
     private val TAG = javaClass.simpleName
-    private var listener: CommentRecyclerViewListener = viewPostViewModel
+    private var listener: CommentItemListener = viewPostViewModel
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 

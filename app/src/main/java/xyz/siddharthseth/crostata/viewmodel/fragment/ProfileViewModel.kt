@@ -3,6 +3,7 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
+import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Comment
@@ -24,15 +26,44 @@ import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.util.recyclerView.PostRecyclerViewListener
+import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ProfileViewModel(application: Application) : AndroidViewModel(application), PostRecyclerViewListener {
+class ProfileViewModel(application: Application) : AndroidViewModel(application), PostItemListener {
 
-    override fun openFullPost(post: Post) {
+    override fun handleVote(index: Int, value: Int) {
+        val post = postList[index]
+        if (post.opinion == value) {
+            onClearVote(post._id)
+                    .subscribe(
+                            { voteTotal: VoteTotal ->
+                                Log.v(TAG, "success :" + voteTotal.success)
+                                if (voteTotal.success) {
+                                    post.opinion = 0
+                                    post.votes = voteTotal.total
+                                    updatePostItem(post, index)
+                                }
+                            }
+                            , { error -> error.printStackTrace() })
+        } else {
+            onVoteButtonClick(post._id, value)
+                    .subscribe(
+                            { voteTotal: VoteTotal ->
+                                Log.v(TAG, "success :" + voteTotal.success)
+                                if (voteTotal.success) {
+                                    post.votes = voteTotal.total
+                                    post.opinion = value
+                                    updatePostItem(post, index)
+                                }
+                            }
+                            , { error -> error.printStackTrace() })
+        }
+    }
+
+    override fun openFullPost(index: Int) {
         Log.v(TAG, "viewmodel click listener")
-        mutablePost.value = post
+        mutablePost.value = postList[index]
     }
 
     override fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView) {
@@ -102,16 +133,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val greyUnselected: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.greyUnselected)
-    override val voteColorTint: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.voteSelected)
-    override val reportColorTint: Int
-        get() = ContextCompat.getColor(getApplication(), R.color.reportSelected)
+    override val extraDarkGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+    override val voteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.voteSelected))
+    override val reportColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
     override fun openProfile(birthId: String) {
         Log.v(TAG, "setting birthid")
@@ -161,5 +188,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
                 .subscribeOn(Schedulers.io())
                 .flatMap { return@flatMap Observable.from(it) }
+    }
+
+    private fun updatePostItem(post: Post, index: Int) {
+        postList[index] = post
+        // val diffUtil = DiffUtil.calculateDiff(DiffUtilCallback(homeFeedAdapter.postList, postList))
+        //diffUtil.dispatchUpdatesTo(homeFeedAdapter)
+    }
+
+    private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
+        Log.v(TAG, "upVoteButtonClick")
+        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
+        return contentRepository.submitVote(token, postId, birthId, value)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
     }
 }

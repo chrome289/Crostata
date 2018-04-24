@@ -17,6 +17,6 @@ class DiffUtilCallback(private val postList: ArrayList<Post>, private val newPos
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return postList[oldItemPosition]._id == newPosts[newItemPosition]._id
+        return postList[oldItemPosition] == newPosts[newItemPosition]
     }
 }

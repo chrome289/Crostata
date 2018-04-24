@@ -12,4 +12,5 @@
     <color name="greyUnselected">#9e9e9e</color>
     <color name="greyLighter">#e0e0e0</color>
     <color name="greyLightest">#fafafa</color>
+    <color name="extraDarkGrey">#757575</color>
 </resources>

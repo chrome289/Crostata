@@ -1,11 +1,12 @@
-package xyz.siddharthseth.crostata.util.recyclerView
+package xyz.siddharthseth.crostata.util.recyclerView.listeners
 
+import android.content.res.ColorStateList
 import android.widget.ImageView
 import rx.Observable
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
-interface PostRecyclerViewListener {
+interface PostItemListener {
     fun onCommentButtonClick(postId: String)
     fun onReportButtonClick(postId: String)
 
@@ -14,12 +15,12 @@ interface PostRecyclerViewListener {
     fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView)
 
     fun onClearVote(postId: String): Observable<VoteTotal>
-    fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal>
 
-    val voteColorTint: Int
-    val reportColorTint: Int
-    val greyUnselected: Int
+    val voteColorTint: ColorStateList
+    val reportColorTint: ColorStateList
+    val extraDarkGrey: ColorStateList
 
-    fun openFullPost(post: Post)
+    fun openFullPost(index: Int)
+    fun handleVote(index: Int, value: Int)
     fun openProfile(birthId: String)
 }

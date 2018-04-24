@@ -1,14 +1,11 @@
 package xyz.siddharthseth.crostata.view.adapter.viewholder
 
-import android.content.res.ColorStateList
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.recyclerview_profile_post.view.*
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,10 +19,9 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    private val voteColor = ColorStateList.valueOf(listenerPost.voteColorTint)
-    val reportColor: ColorStateList? = ColorStateList.valueOf(listenerPost.reportColorTint)
-    private val greyColor = ColorStateList.valueOf(listenerPost.greyUnselected)
-
+    private val voteColor = listenerPost.voteColorTint
+    private val reportColor = listenerPost.reportColorTint
+    private val extraDarkGrey = listenerPost.extraDarkGrey
 
     fun init(post: Post) {
 
@@ -39,7 +35,7 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
         } else {
             itemView.imageView.visibility = View.VISIBLE
             profileViewModel.loadPostedImage(post, 1080, itemView.imageView)
-            itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
+            //  itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
             itemView.imageView.requestLayout()
         }
 
@@ -50,7 +46,7 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
 
         itemView.votesTotal.text = post.votes.toString()
         itemView.votesTotal.setTextColor(
-                if (post.opinion == 0) greyColor
+                if (post.opinion == 0) extraDarkGrey
                 else voteColor
         )
         // Log.v(TAG, "post.opinion " + post.opinion)
@@ -58,15 +54,15 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
                 (if (post.opinion == 1) voteColor
-                else greyColor)
+                else extraDarkGrey)
 
         itemView.downVoteButton.setOnClickListener { handleVoteClick(post, -1) }
         itemView.downVoteButton.imageTintList =
                 (if (post.opinion == -1) voteColor
-                else greyColor)
+                else extraDarkGrey)
 
         itemView.commentsTotal.text = post.comments.toString()
-        itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }
+        // itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }
 
         if (post.creatorId == LoggedSubject.birthId) {
             itemView.reportButton.visibility = View.GONE
@@ -76,37 +72,38 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
         }
 
         itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { listenerPost.openFullPost(post) }
+        //itemView.textPost.setOnClickListener { listenerPost.openFullPost(post)
+
     }
 
     private fun handleVoteClick(post: Post, newValue: Int) {
-        if (post.opinion == newValue) {
-            listenerPost.onClearVote(post._id).subscribe(
-                    { voteTotal: VoteTotal ->
-                        Log.v(TAG, "success :" + voteTotal.success)
-                        if (voteTotal.success) {
-                            post.opinion = 0
-                            post.votes = voteTotal.total
-                            this.init(post)
-                        }
-                    }
-                    , { error -> error.printStackTrace() })
-        } else {
-            listenerPost.onVoteButtonClick(post._id, newValue)
-                    .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.votes = voteTotal.total
-                                    post.opinion = newValue
-                                    this.init(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
-        }
+        /* if (post.opinion == newValue) {
+             listenerPost.onClearVote(post._id).subscribe(
+                     { voteTotal: VoteTotal ->
+                         Log.v(TAG, "success :" + voteTotal.success)
+                         if (voteTotal.success) {
+                             post.opinion = 0
+                             post.votes = voteTotal.total
+                             this.init(post)
+                         }
+                     }
+                     , { error -> error.printStackTrace() })
+         } else {
+             listenerPost.onVoteButtonClick(post._id, newValue)
+                     .subscribe(
+                             { voteTotal: VoteTotal ->
+                                 Log.v(TAG, "success :" + voteTotal.success)
+                                 if (voteTotal.success) {
+                                     post.votes = voteTotal.total
+                                     post.opinion = newValue
+                                     this.init(post)
+                                 }
+                             }
+                             , { error -> error.printStackTrace() })
+         }*/
     }
 
     private fun clearView() {
-        listenerPost.clearPostedImageGlide(itemView.imageView)
+        // listenerPost.clearPostedImageGlide(itemView.imageView)
     }
 }
