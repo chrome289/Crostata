@@ -1,35 +1,24 @@
 package xyz.siddharthseth.crostata.data.model
 
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
 
 class Comment : Comparable<Comment> {
     override fun compareTo(other: Comment): Int {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
-        val calendar = Calendar.getInstance()
-        val calendar2 = Calendar.getInstance()
-
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")
 
-        calendar.time = inputFormat.parse(this.timeCreated)
-        calendar2.time = inputFormat.parse(other.timeCreated)
+        calendar.time = date
+        calendar2.time = other.date
 
         return when {
             (calendar2.timeInMillis - calendar.timeInMillis) > 0 -> 1
             (calendar2.timeInMillis - calendar.timeInMillis) < 0 -> -1
             else -> 0
         }
-    }
-
-    fun getTimestamp(): Long {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
-
-        val calendar = Calendar.getInstance()
-        calendar.time = inputFormat.parse(this.timeCreated)
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
-
-        return calendar.timeInMillis
     }
 
     var _id: String = ""
@@ -40,4 +29,49 @@ class Comment : Comparable<Comment> {
     var isGenerated = false
     var isCensored = false
     var post: Post = Post()
+
+    lateinit var glideUrlProfileThumb: GlideUrl
+    lateinit var timeCreatedText: String
+    lateinit var date: Date
+
+
+    fun getTimestamp(): Long {
+        calendar.timeZone = TimeZone.getTimeZone("UTC")
+        calendar.time = date
+
+        return calendar.timeInMillis
+    }
+
+    private fun setDate() {
+        date = inputFormat.parse(timeCreated)
+    }
+
+    private fun setTimeCreatedText() {
+        calendar.timeZone = TimeZone.getTimeZone("UTC")
+        calendar.time = date
+
+        timeCreatedText = TimeAgo.using(calendar.timeInMillis).capitalize()
+    }
+
+    private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
+        glideUrlProfileThumb = GlideUrl(baseUrl +
+                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+    }
+
+    fun initExtraInfo(baseUrl: String, token: String) {
+        val dimen2 = 64
+        val quality = 80
+        setDate()
+        setTimeCreatedText()
+        setGlideUrlProfileThumb(baseUrl, dimen2, quality, token)
+    }
+
+    companion object {
+        private val calendar = Calendar.getInstance()
+        private val calendar2 = Calendar.getInstance()
+        private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+    }
 }

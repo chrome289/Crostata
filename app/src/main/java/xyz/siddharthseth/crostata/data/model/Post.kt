@@ -2,6 +2,8 @@ package xyz.siddharthseth.crostata.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
@@ -82,7 +84,6 @@ class Post() : Comparable<Post>, Parcelable {
         return result
     }
 
-
     var _id: String = ""
     var creatorName = ""
     var creatorId = ""
@@ -96,9 +97,12 @@ class Post() : Comparable<Post>, Parcelable {
     var opinion = 0
     var imageId = ""
 
-    var votes = 0
-    var timeCreatedText: String = ""
-    var date: Date = Date()
+    var votes: Int = 0
+    lateinit var timeCreatedText: String
+    lateinit var date: Date
+    lateinit var glideUrl: GlideUrl
+    lateinit var glideUrlThumb: GlideUrl
+    lateinit var glideUrlProfileThumb: GlideUrl
 
 
     constructor(parcel: Parcel) : this() {
@@ -120,22 +124,62 @@ class Post() : Comparable<Post>, Parcelable {
         date = parcel.readSerializable() as Date
     }
 
-    fun setDate() {
-        date = inputFormat.parse(timeCreated)
-    }
-
     fun getTimestamp(): Long {
-        calendar.time = date
         calendar.timeZone = TimeZone.getTimeZone("UTC")
+        calendar.time = date
 
         return calendar.timeInMillis
     }
 
-    fun setTimeCreatedText() {
+    private fun setDate() {
+        date = inputFormat.parse(timeCreated)
+    }
+
+    private fun setTimeCreatedText() {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = date
 
         timeCreatedText = TimeAgo.using(calendar.timeInMillis).capitalize()
+    }
+
+    private fun setGlideUrl(baseUrl: String, dimen: Int, quality: Int, token: String) {
+        glideUrl = GlideUrl(baseUrl +
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+    }
+
+    private fun setGlideUrlThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
+        glideUrlThumb = GlideUrl(baseUrl +
+                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+    }
+
+    private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
+        glideUrlProfileThumb = GlideUrl(baseUrl +
+                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+    }
+
+    fun initExtraInfo(baseUrl: String, token: String) {
+        votes = upVotes - downVotes
+        setDate()
+        setTimeCreatedText()
+        setGlideUrls(baseUrl, token)
+    }
+
+    private fun setGlideUrls(baseUrl: String, token: String) {
+        val dimen = 640
+        val dimen2 = 64
+        val quality = 80
+        setGlideUrl(baseUrl, dimen, quality, token)
+        setGlideUrlThumb(baseUrl, dimen2, quality, token)
+        setGlideUrlProfileThumb(baseUrl, dimen2, quality, token)
     }
 
     companion object CREATOR : Parcelable.Creator<Post> {

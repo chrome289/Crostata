@@ -6,7 +6,8 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="white">#ffffff</color>
-    <color name="voteSelected">#ff9800</color>
+    <color name="upVoteSelected">#2962ff</color>
+    <color name="downVoteSelected">#e53a36</color>
     <color name="commentSelected">#90caf9</color>
     <color name="reportSelected">#e53935</color>
     <color name="greyUnselected">#9e9e9e</color>

@@ -19,25 +19,26 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
     private val calendar = Calendar.getInstance()
     private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
 
-    private val voteColor = listenerPost.voteColorTint
+    private val upVoteColor = profileViewModel.upVoteColorTint
+    private val downVoteColor = profileViewModel.downVoteColorTint
     private val reportColor = listenerPost.reportColorTint
     private val extraDarkGrey = listenerPost.extraDarkGrey
 
     fun init(post: Post) {
 
         itemView.profileName.text = post.creatorName.toUpperCase()
-        profileViewModel.loadProfileImage(post.creatorId, 128, true, itemView.profileImage)
+        /* profileViewModel.loadProfileImage(post.creatorId, 128, true, itemView.profileImage)
 
-        // Log.v(TAG, post.contentType + "ww")
-        if (post.contentType == "TO") {
-            itemView.imageView.visibility = View.GONE
-            clearView()
-        } else {
-            itemView.imageView.visibility = View.VISIBLE
-            profileViewModel.loadPostedImage(post, 1080, itemView.imageView)
-            //  itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
-            itemView.imageView.requestLayout()
-        }
+         // Log.v(TAG, post.contentType + "ww")
+         if (post.contentType == "TO") {
+             itemView.imageView.visibility = View.GONE
+             clearView()
+         } else {
+             itemView.imageView.visibility = View.VISIBLE
+             profileViewModel.loadPostedImage(post, 1080, itemView.imageView)
+             //  itemView.imageView.setOnClickListener { listenerPost.openFullPost(post) }
+             itemView.imageView.requestLayout()
+         }*/
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = inputFormat.parse(post.timeCreated)
@@ -47,10 +48,11 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
         itemView.votesTotal.text = post.votes.toString()
         itemView.votesTotal.setTextColor(
                 if (post.opinion == 0) extraDarkGrey
-                else voteColor
+                else if (post.opinion == 1) upVoteColor
+                else downVoteColor
         )
         // Log.v(TAG, "post.opinion " + post.opinion)
-
+/*
         itemView.upVoteButton.setOnClickListener { handleVoteClick(post, 1) }
         itemView.upVoteButton.imageTintList =
                 (if (post.opinion == 1) voteColor
@@ -59,7 +61,7 @@ class ProfilePostViewHolder(itemView: View, private val profileViewModel: Profil
         itemView.downVoteButton.setOnClickListener { handleVoteClick(post, -1) }
         itemView.downVoteButton.imageTintList =
                 (if (post.opinion == -1) voteColor
-                else extraDarkGrey)
+                else extraDarkGrey)*/
 
         itemView.commentsTotal.text = post.comments.toString()
         // itemView.commentButton.setOnClickListener { listenerPost.openFullPost(post) }

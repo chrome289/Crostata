@@ -30,8 +30,8 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     }
 
     private var TAG = javaClass.simpleName
-    private val voteColor = postItemListener.voteColorTint
-    private val reportColor = postItemListener.reportColorTint
+    private val upVoteColor = postItemListener.upVoteColorTint
+    private val downVoteColor = postItemListener.downVoteColorTint
     private val extraDarkGrey = postItemListener.extraDarkGrey
 
     fun init(post: Post) {
@@ -44,7 +44,8 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
         itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
                 if (post.opinion == 0) extraDarkGrey
-                else voteColor
+                else if (post.opinion == 1) upVoteColor
+                else downVoteColor
         )
 
         itemView.commentsTotal.text = "${post.comments} comments"
@@ -82,7 +83,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             itemView.imageView.setOnClickListener(this)
             //itemView.imageView.requestLayout()
         }
-        postItemListener.loadProfileImage(post.creatorId, 128, false, itemView.profileImage)
+        postItemListener.loadProfileImage(post, 128, itemView.profileImage)
     }
 
     fun clearImages() {

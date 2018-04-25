@@ -1,5 +1,6 @@
 package xyz.siddharthseth.crostata.view.ui.fragment
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
@@ -12,27 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.fragment_view_post.*
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
+import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ViewPostFragment : Fragment() {
-    private val calendar = Calendar.getInstance()
-    private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
-    private lateinit var commentSubscription: Subscription
-    private lateinit var adapter: ViewPostCommentAdapter
-
-    private lateinit var viewPostViewModel: ViewPostViewModel
-    val TAG: String? = javaClass.simpleName
-    private var listener: OnFragmentInteractionListener? = null
-    private lateinit var post: Post
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -46,13 +34,38 @@ class ViewPostFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_view_post, container, false)
     }
 
+    private val observer: Observer<Post> = Observer {
+        Log.v(TAG, "observer called")
+        if (it != null) {
+            initView()
+        }
+    }
+
+    private val observerBirthId: Observer<String> = Observer {
+        Log.v(TAG, "birthid observer called")
+        if (it != null) {
+            listener?.openProfile(it)
+        }
+    }
+    private val observerCommentCount: Observer<Int> = Observer {
+        if (it != null) {
+            setCommentTextView()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
         viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
-        viewPostViewModel.post = post
+        viewPostViewModel.glide = GlideApp.with(this)
+        viewPostViewModel.mutablePost.observe(this, observer)
+        viewPostViewModel.mutableBirthId.observe(this, observerBirthId)
+        viewPostViewModel.commentCount.observe(this, observerCommentCount)
 
-        initializeView()
+        if (!isInitialized) {
+            viewPostViewModel.initPost(post)
+            isInitialized = true
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -69,9 +82,25 @@ class ViewPostFragment : Fragment() {
         listener = null
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        viewPostViewModel.mutablePost.removeObserver(observer)
+        viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
+        viewPostViewModel.commentCount.removeObserver(observerCommentCount)
+    }
+
     interface OnFragmentInteractionListener {
         fun openProfile(birthId: String)
     }
+
+    private val calendar = Calendar.getInstance()
+    private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+    private lateinit var viewPostViewModel: ViewPostViewModel
+    private val TAG: String? = javaClass.simpleName
+    private var listener: OnFragmentInteractionListener? = null
+    private lateinit var post: Post
+    private var isInitialized = false
 
     companion object {
         @JvmStatic
@@ -83,49 +112,40 @@ class ViewPostFragment : Fragment() {
                 }
     }
 
-    private fun initializeView() {
+    private fun initView() {
+        val post = viewPostViewModel.mutablePost.value!!
+        profileName.text = post.creatorName
+        profileName.setOnClickListener { listener?.openProfile(post.creatorId) }
 
-        nameTextView.text = viewPostViewModel.post.creatorName.toUpperCase()
-        nameTextView.setOnClickListener { listener?.openProfile(post.creatorId) }
-
-        if (viewPostViewModel.post.contentType == "TO") {
+        if (post.contentType == "TO") {
             imageView.visibility = View.GONE
             viewPostViewModel.clearPostedImageGlide(imageView)
         } else {
             imageView.visibility = View.VISIBLE
 
-            Log.v(TAG, "imageId-" + viewPostViewModel.post.imageId)
-            viewPostViewModel.loadPostedImage(imageView)
+            Log.v(TAG, "imageId-" + post.imageId)
+            viewPostViewModel.loadPostedImage(post, 640, imageView)
             imageView.requestLayout()
         }
 
-        viewPostViewModel.loadProfileImage(viewPostViewModel.post.creatorId, profileImage)
+        viewPostViewModel.loadProfileImage(post, 128, profileImage)
 
-        textPost.text = viewPostViewModel.post.text
+        textPost.text = post.text
 
         calendar.timeZone = TimeZone.getTimeZone("UTC")
-        calendar.time = inputFormat.parse(viewPostViewModel.post.timeCreated)
+        calendar.time = inputFormat.parse(post.timeCreated)
 
         timeTextView.text = TimeAgo.using(calendar.timeInMillis).toUpperCase()
 
-
-        adapter = ViewPostCommentAdapter(viewPostViewModel)
-        adapter.setHasStableIds(true)
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = viewPostViewModel.adapter
 
-        commentSubscription = viewPostViewModel.getComments()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ comment: Comment ->
-                    adapter.commentList.add(comment)
-                    setCommentTextView()
-                    adapter.notifyItemInserted(adapter.commentList.size - 1)
-                }, { error -> error.printStackTrace() })
+        viewPostViewModel.getComments()
 
         setCommentTextView()
     }
 
     private fun setCommentTextView() {
-        commentHeader.text = if (adapter.commentList.size > 0) "Comments" else "No Comments"
+        commentHeader.text = if (viewPostViewModel.commentCount.value!!.toInt() > 0) "Comments" else "No Comments"
     }
 }

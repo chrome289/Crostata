@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_self_profile.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.view.adapter.ProfileCommentAdapter
@@ -93,7 +92,7 @@ class SelfProfileFragment : Fragment() {
         profileViewModel.getInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ subject: Subject ->
-                    profileViewModel.loadProfileImage(LoggedSubject.birthId, 256, true, profileImage)
+                    //  profileViewModel.loadProfileImage(LoggedSubject.birthId, 256, true, profileImage)
 
                     profileName.text = subject.name.capitalize()
 

@@ -2,102 +2,207 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import android.content.res.ColorStateList
+import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Comment
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
+import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
+import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
+import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.util.recyclerView.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener {
-    var post: Post = Post()
-    private var commentList = ArrayList<Comment>()
-    private val sharedPreferencesService = SharedPrefrencesService()
-    private var token: String = sharedPreferencesService.getToken(getApplication())
-    val TAG: String = javaClass.simpleName
-    private val contentRepository = ContentRepositoryProvider.getContentRepository()
-    private var noOfComments: Int = 10
-    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
-    private var isInitialized = false
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener {
 
-    fun clearPostedImageGlide(imageView: ImageView) {
+    override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
+        glide.load(post.glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .thumbnail(glide.load(post.glideUrlThumb).priority(Priority.IMMEDIATE).fitCenter())
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(imageView)
+    }
+
+    override fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView) {
+        glide.load(post.glideUrlProfileThumb)
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(imageView)
+    }
+
+    override fun loadProfileImage(comment: Comment, dimen: Int, imageView: ImageView) {
+        glide.load(comment.glideUrlProfileThumb)
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(imageView)
+    }
+
+    override fun onCommentButtonClick(postId: String) {
+
+    }
+
+    override fun onClearVote(postId: String): Observable<VoteTotal> {
+        Log.v(TAG, "upVoteButtonClick")
+        val birthId = LoggedSubject.birthId
+        return contentRepository.clearVote(token, postId, birthId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+    }
+
+    override fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
     }
 
-    fun loadPostedImage(imageView: ImageView) {
-        val context: Context = getApplication()
+    override val extraDarkGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+    override val upVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
+    override val downVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
+    override val reportColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
-        Log.v(TAG, "imageId-" + post.imageId)
-        val dimen = 1080
-        val quality = 70
-        val imageId = post.imageId
-
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        Log.v(TAG, "width like ---" + imageView.width)
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .downsample(DownsampleStrategy.FIT_CENTER)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .priority(Priority.LOW)
-                .fitCenter()
-                .override(1080)
-                .into(imageView)
+    override fun openFullPost(index: Int) {
+        //nah
     }
 
-    override fun loadProfileImage(birthId: String, profileImage: ImageView) {
-        val context: Context = getApplication()
-        val dimen = 128
-        val quality = 70
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.home_feed_content_placeholder)
-                .downsample(DownsampleStrategy.CENTER_INSIDE)
-                .centerInside()
-                .circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .priority(Priority.IMMEDIATE)
-                .into(profileImage)
+    override fun handleVote(index: Int, value: Int) {
+        val post: Post = mutablePost.value!!
+        if (post.opinion == value) {
+            onClearVote(post._id)
+                    .subscribe(
+                            { voteTotal: VoteTotal ->
+                                Log.v(TAG, "success :" + voteTotal.success)
+                                if (voteTotal.success) {
+                                    post.opinion = 0
+                                    post.votes = voteTotal.total
+                                    updatePostItem(post)
+                                }
+                            }
+                            , { error -> error.printStackTrace() })
+        } else {
+            onVoteButtonClick(post._id, value)
+                    .subscribe(
+                            { voteTotal: VoteTotal ->
+                                Log.v(TAG, "success :" + voteTotal.success)
+                                if (voteTotal.success) {
+                                    post.votes = voteTotal.total
+                                    post.opinion = value
+                                    updatePostItem(post)
+                                }
+                            }
+                            , { error -> error.printStackTrace() })
+        }
     }
 
-    fun getComments(): Observable<Comment> {
-        return contentRepository.getComments(token, post._id, noOfComments, lastTimestamp)
+    override fun onReportButtonClick(postId: String) {}
+
+    override fun openProfile(birthId: String) {
+        Log.v(TAG, "setting birthid")
+        mutableBirthId.value = birthId
+    }
+
+    private fun updatePostItem(post: Post) {
+        mutablePost.value = post
+    }
+
+    private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
+        Log.v(TAG, "upVoteButtonClick")
+        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
+        return contentRepository.submitVote(token, postId, birthId, value)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+    }
+
+    private var commentList = ArrayList<Comment>()
+    private val sharedPreferencesService = SharedPrefrencesService()
+    private var token: String = sharedPreferencesService.getToken(getApplication())
+    private val TAG: String = javaClass.simpleName
+    private val contentRepository = ContentRepositoryProvider.getContentRepository()
+    private var noOfComments: Int = 10
+    private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
+    private var isInitialized = false
+    private var isLoading = false
+    internal var adapter: ViewPostCommentAdapter = ViewPostCommentAdapter(this)
+    lateinit var glide: GlideRequests
+
+    internal var mutableBirthId: SingleBirthId = SingleBirthId()
+    var mutablePost: SingleLivePost = SingleLivePost()
+    var commentCount = MutableLiveData<Int>()
+
+    init {
+        adapter.setHasStableIds(true)
+        commentCount.value = 0
+    }
+
+    fun getComments() {
+        isLoading = true
+        var hasNewItems = false
+        val post: Post = mutablePost.value!!
+        contentRepository.getComments(token, post._id, noOfComments, lastTimestamp)
                 .subscribeOn(Schedulers.io())
-                .flatMap {
+                .flatMap { nextComments ->
                     if (!isInitialized)
                         isInitialized = true
-                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.size)
-                    commentList.addAll(it)
-                    commentList.sort()
-                    Log.v(TAG, "commentList " + commentList.size + " it.commments " + it.size)
-                    lastTimestamp = if (commentList.size > 0) commentList[commentList.size - 1].getTimestamp()
-                    else Calendar.getInstance().timeInMillis
-                    return@flatMap Observable.from(it)
+                    val context: Context = getApplication()
+                    for (comment in nextComments) {
+                        comment.initExtraInfo(context.getString(R.string.server_url), token)
+                    }
+                    return@flatMap Observable.from(nextComments)
                 }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ comment: Comment ->
+                    commentList.add(comment)
+                    hasNewItems = true
+                }, { error -> error.printStackTrace() }
+                        , {
+                    Log.v(TAG, "oncomplete called " + adapter.commentList.size)
+                    if (hasNewItems) {
+                        val diffUtil = DiffUtil.calculateDiff(
+                                CommentDiffUtilCallback(adapter.commentList, commentList))
+                        commentList.sort()
+                        adapter.commentList.clear()
+                        adapter.commentList.addAll(commentList)
+                        lastTimestamp = commentList[commentList.size - 1].getTimestamp()
+                        isLoading = false
+                        commentCount.value = adapter.itemCount
+                        diffUtil.dispatchUpdatesTo(adapter)
+                    }
+                })
+    }
+
+    fun initPost(post: Post) {
+        val context: Context = getApplication()
+        post.initExtraInfo(context.getString(R.string.server_url), token)
+        mutablePost.value = post
     }
 }

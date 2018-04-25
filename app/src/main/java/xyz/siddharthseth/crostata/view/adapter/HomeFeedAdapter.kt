@@ -13,7 +13,7 @@ import java.util.*
 class HomeFeedAdapter(private val postItemListener: PostItemListener) : RecyclerView.Adapter<PostViewHolder>() {
 
     var postList = ArrayList<Post>()
-    var TAG: String = javaClass.simpleName
+    private val TAG: String = javaClass.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         Log.v(TAG, "onCreateViewHolder")
@@ -29,6 +29,7 @@ class HomeFeedAdapter(private val postItemListener: PostItemListener) : Recycler
         Log.v(TAG, "onBindViewHolder")
         holder.init(postList[holder.adapterPosition])
         holder.loadImages(postList[holder.adapterPosition])
+        Log.v(TAG, "onBindViewHolder")
     }
 
     override fun onViewRecycled(holder: PostViewHolder) {

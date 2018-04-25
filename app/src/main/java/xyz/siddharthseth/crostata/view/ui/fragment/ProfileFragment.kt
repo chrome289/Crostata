@@ -93,7 +93,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.getInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ subject: Subject ->
-                    profileViewModel.loadProfileImage(LoggedSubject.birthId, 256, true, profileImage)
+                    //  profileViewModel.loadProfileImage(LoggedSubject.birthId, 256, true, profileImage)
 
                     profileName.text = subject.name.capitalize()
 

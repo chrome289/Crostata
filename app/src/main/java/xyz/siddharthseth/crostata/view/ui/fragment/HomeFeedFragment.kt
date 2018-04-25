@@ -103,21 +103,23 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         val modelProvider = MyPreloadModelProvider()
         val preLoader = RecyclerViewPreloader<GlideUrl>(GlideApp.with(activity?.applicationContext!!), modelProvider, sizeProvider, 5)
 
-        recyclerView.addOnScrollListener(preLoader)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = homeFeedViewModel.homeFeedAdapter
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                //pagination
-                if (dy > 0) {
-                    checkMorePostsNeeded(recyclerView)
+        if (!isInitialized) {
+            recyclerView.addOnScrollListener(preLoader)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.layoutManager = manager
+            recyclerView.adapter = homeFeedViewModel.homeFeedAdapter
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    //pagination
+                    if (dy > 0) {
+                        checkMorePostsNeeded(recyclerView)
+                    }
                 }
-            }
-        })
+            })
 
-        homeFeedViewModel.getPosts()
-
+            homeFeedViewModel.getPosts()
+            isInitialized = true
+        }
         //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
     }
 

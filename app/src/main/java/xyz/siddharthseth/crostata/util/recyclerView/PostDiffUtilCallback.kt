@@ -3,7 +3,7 @@ package xyz.siddharthseth.crostata.util.recyclerView
 import android.support.v7.util.DiffUtil
 import xyz.siddharthseth.crostata.data.model.Post
 
-class DiffUtilCallback(private val postList: ArrayList<Post>, private val newPosts: ArrayList<Post>) : DiffUtil.Callback() {
+class PostDiffUtilCallback(private val postList: ArrayList<Post>, private val newPosts: ArrayList<Post>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return postList[oldItemPosition]._id == newPosts[newItemPosition]._id
     }

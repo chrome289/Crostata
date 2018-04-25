@@ -31,6 +31,22 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application), PostItemListener {
+    override fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView) {
+        val context: Context = getApplication()
+        val quality = 70
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+        GlideApp.with(context)
+                .load(glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .priority(Priority.IMMEDIATE)
+                .into(imageView)
+    }
 
     override fun handleVote(index: Int, value: Int) {
         val post = postList[index]
@@ -64,35 +80,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     override fun openFullPost(index: Int) {
         Log.v(TAG, "viewmodel click listener")
         mutablePost.value = postList[index]
-    }
-
-    override fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView) {
-        val context: Context = getApplication()
-        val quality = 70
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        if (isCircle) {
-            GlideApp.with(context)
-                    .load(glideUrl)
-                    .placeholder(R.drawable.home_feed_content_placeholder)
-                    .centerInside()
-                    .circleCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .priority(Priority.IMMEDIATE)
-                    .into(imageView)
-        } else {
-            GlideApp.with(context)
-                    .load(glideUrl)
-                    .placeholder(R.drawable.home_feed_content_placeholder)
-                    .centerInside()
-                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .priority(Priority.IMMEDIATE)
-                    .into(imageView)
-        }
     }
 
     override fun clearPostedImageGlide(imageView: ImageView) {
@@ -135,8 +122,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     override val extraDarkGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
-    override val voteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.voteSelected))
+    override val upVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
+    override val downVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
@@ -192,7 +181,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     private fun updatePostItem(post: Post, index: Int) {
         postList[index] = post
-        // val diffUtil = DiffUtil.calculateDiff(DiffUtilCallback(homeFeedAdapter.postList, postList))
+        // val diffUtil = DiffUtil.calculateDiff(PostDiffUtilCallback(homeFeedAdapter.postList, postList))
         //diffUtil.dispatchUpdatesTo(homeFeedAdapter)
     }
 

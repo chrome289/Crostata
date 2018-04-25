@@ -11,8 +11,6 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -24,7 +22,7 @@ import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
-import xyz.siddharthseth.crostata.util.recyclerView.DiffUtilCallback
+import xyz.siddharthseth.crostata.util.recyclerView.PostDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
 import java.util.*
@@ -34,85 +32,23 @@ import kotlin.collections.ArrayList
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , PostItemListener {
 
-    override fun handleVote(index: Int, value: Int) {
-        val post = postList[index]
-        if (post.opinion == value) {
-            onClearVote(post._id)
-                    .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.opinion = 0
-                                    post.votes = voteTotal.total
-                                    updatePostItem(post, index)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
-        } else {
-            onVoteButtonClick(post._id, value)
-                    .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.votes = voteTotal.total
-                                    post.opinion = value
-                                    updatePostItem(post, index)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
-        }
-    }
-
-    private fun updatePostItem(post: Post, index: Int) {
-        postList[index] = post
-        val diffUtil = DiffUtil.calculateDiff(DiffUtilCallback(homeFeedAdapter.postList, postList))
-        diffUtil.dispatchUpdatesTo(homeFeedAdapter)
-    }
+    override fun handleVote(index: Int, value: Int) {}
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
-        val context: Context = getApplication()
-        val imageId = post.imageId
-
-        val quality = 80
-        Log.v(TAG, "imageID-" + post.imageId + " type-" + post.contentType)
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        val dimenThumb = 48
-        val qualityThumb = 50
-        val glideUrlThumb = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimenThumb&quality=$qualityThumb"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        glide.load(glideUrl)
+        glide.load(post.glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .thumbnail(glide.load(glideUrlThumb).priority(Priority.IMMEDIATE).fitCenter())
-                .override(dimen, dimen / 2)
-                .centerCrop()
+                .thumbnail(glide.load(post.glideUrlThumb).priority(Priority.IMMEDIATE).fitCenter())
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fallback(R.drawable.home_feed_content_placeholder)
                 .into(imageView)
     }
 
-    override fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView) {
-        val context: Context = getApplication()
-        val quality = 60
-
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        glide.load(glideUrl)
+    override fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView) {
+        glide.load(post.glideUrlProfileThumb)
                 .priority(Priority.LOW)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .fitCenter()
+                .circleCrop()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .fallback(R.drawable.home_feed_content_placeholder)
                 .into(imageView)
@@ -130,8 +66,10 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     override val extraDarkGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
-    override val voteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.voteSelected))
+    override val upVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
+    override val downVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
@@ -140,20 +78,12 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun onClearVote(postId: String): Observable<VoteTotal> {
-        Log.v(TAG, "upVoteButtonClick")
-        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
-        return contentRepository.clearVote(token, postId, birthId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+        return Observable.empty()
     }
 
-    override fun onCommentButtonClick(postId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onCommentButtonClick(postId: String) {}
 
-    override fun onReportButtonClick(postId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onReportButtonClick(postId: String) {}
 
     private val TAG = javaClass.simpleName
     private val sharedPreferencesService = SharedPrefrencesService()
@@ -197,10 +127,9 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                 .flatMap { nextPosts ->
                     if (!isInitialized)
                         isInitialized = true
+                    val context: Context = getApplication()
                     for (post in nextPosts) {
-                        post.votes = post.upVotes - post.downVotes
-                        post.setTimeCreatedText()
-                        post.setDate()
+                        post.initExtraInfo(context.getString(R.string.server_url), token)
                     }
                     return@flatMap Observable.from(nextPosts)
                 }
@@ -215,7 +144,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                             Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
                             if (hasNewItems) {
                                 val diffUtil = DiffUtil.calculateDiff(
-                                        DiffUtilCallback(homeFeedAdapter.postList, postList))
+                                        PostDiffUtilCallback(homeFeedAdapter.postList, postList))
                                 postList.sort()
                                 homeFeedAdapter.postList.clear()
                                 homeFeedAdapter.postList.addAll(postList)
@@ -225,22 +154,5 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                             }
                         }
                 )
-        /* .flatMap(
-                 { post: Post ->
-                     if (post.contentType == "TO")
-                         return@flatMap Observable.just(ImageMetadata())
-                     else
-                         return@flatMap contentRepository.getImageMetadata(token, post._id)
-                 }
-                 , { post: Post, imageMetadata: ImageMetadata -> post.metadata = imageMetadata;return@flatMap post }
-         )*/
-    }
-
-    private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
-        Log.v(TAG, "upVoteButtonClick")
-        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
-        return contentRepository.submitVote(token, postId, birthId, value)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
     }
 }

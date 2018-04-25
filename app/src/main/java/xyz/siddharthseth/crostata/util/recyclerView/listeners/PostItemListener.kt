@@ -12,11 +12,12 @@ interface PostItemListener {
 
     fun clearPostedImageGlide(imageView: ImageView)
     fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView)
-    fun loadProfileImage(creatorId: String, dimen: Int, isCircle: Boolean, imageView: ImageView)
+    fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView)
 
     fun onClearVote(postId: String): Observable<VoteTotal>
 
-    val voteColorTint: ColorStateList
+    val upVoteColorTint: ColorStateList
+    val downVoteColorTint: ColorStateList
     val reportColorTint: ColorStateList
     val extraDarkGrey: ColorStateList
 

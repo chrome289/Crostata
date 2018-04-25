@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 class CustomLayoutManager : LinearLayoutManager {
     private var extraLayoutSpace = -1
     private var context: Context? = null
+    var scrollState: Int = RecyclerView.SCROLL_STATE_IDLE
+    val TAG = javaClass.simpleName
 
     constructor(context: Context) : super(context) {
         this.context = context
@@ -29,6 +31,11 @@ class CustomLayoutManager : LinearLayoutManager {
         return if (extraLayoutSpace > 0) {
             extraLayoutSpace
         } else DEFAULT_EXTRA_LAYOUT_SPACE
+    }
+
+    override fun onScrollStateChanged(state: Int) {
+        super.onScrollStateChanged(state)
+        scrollState = state
     }
 
     companion object {

@@ -47,7 +47,6 @@ class CommunityViewModel(application: Application) : AndroidViewModel(applicatio
                 .load(glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
                 .downsample(DownsampleStrategy.CENTER_INSIDE)
-                .centerInside()
                 .circleCrop()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .priority(Priority.IMMEDIATE)
