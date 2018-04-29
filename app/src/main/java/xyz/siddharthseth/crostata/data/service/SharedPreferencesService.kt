@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 
-class SharedPrefrencesService {
+class SharedPreferencesService {
     fun saveToken(token: Token, context: Context): Boolean {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
         sharedPreferences.edit().putString("token", token.tokenValue).apply()
@@ -19,19 +19,12 @@ class SharedPrefrencesService {
 
     }
 
-    fun saveSubjectDetails(subject: LoggedSubject, context: Context): Boolean {
+    fun saveSubjectDetails(context: Context): Boolean {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
         sharedPreferences.edit()
-                .putString("birthId", subject.birthId)
-                .putString("password", subject.password)
+                .putString("birthId", LoggedSubject.birthId)
+                .putString("password", LoggedSubject.password)
                 .apply()
-
         return true
-    }
-
-    fun getUserDetails(context: Context): LoggedSubject {
-        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        return LoggedSubject.getInstance(sharedPreferences.getString("birthId", "")
-                , sharedPreferences.getString("password", ""))
     }
 }

@@ -15,19 +15,19 @@ import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface CrostataApiService {
 
-    @POST("/api/auth/login")
+    @POST("auth/login")
     @FormUrlEncoded
     fun signIn(
             @Field("birthId") birthId: String,
             @Field("password") password: String
     ): Observable<Response<Token>>
 
-    @POST("/api/auth/loginToken")
+    @POST("auth/loginToken")
     fun signInSilently(
             @Header("authorization") token: String
     ): Observable<Response<ResponseBody>>
 
-    @GET("/api/content/nextPosts")
+    @GET("content/nextPosts")
     fun getPosts(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
@@ -35,7 +35,7 @@ interface CrostataApiService {
             @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Post>>
 
-    @POST("/api/opinion/vote")
+    @POST("opinion/vote")
     @FormUrlEncoded
     fun addVote(
             @Header("authorization") token: String,
@@ -44,20 +44,20 @@ interface CrostataApiService {
             @Field("value") value: Int
     ): Observable<VoteTotal>
 
-    @DELETE("/api/opinion/vote")
+    @DELETE("opinion/vote")
     fun deleteVote(
             @Header("authorization") token: String,
             @Query("postId") postId: String,
             @Query("birthId") birthId: String
     ): Observable<VoteTotal>
 
-    /*@GET("/api/content/imageMetadata")
+    /*@GET("/content/imageMetadata")
     fun imageMetadata(
             @Header("authorization") token: String,
             @Query("postId") postId: String
     ): Observable<ImageMetadata>*/
 
-    @GET("/api/opinion/comments")
+    @GET("opinion/comments")
     fun getComments(
             @Header("authorization") token: String,
             @Query("postId") postId: String,
@@ -65,26 +65,26 @@ interface CrostataApiService {
             @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Comment>>
 
-    @GET("/api/subject/charts")
+    @GET("subject/charts")
     fun getPatriotChart(
             @Header("authorization") token: String
     ): Observable<List<ChartEntry>>
 
-    @GET("/api/subject/info")
+    @GET("subject/info")
     fun getSubjectInfo(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String
     ): Observable<xyz.siddharthseth.crostata.data.model.retrofit.Subject>
 
-    @GET("/api/subject/comments")
+    /*@GET("subject/comments")
     fun getProfileComments(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
             @Query("noOfComments") noOfComments: Int,
             @Query("lastTimestamp") lastTimestamp: Long
-    ): Observable<List<Comment>>
+    ): Observable<List<ProfileComment>>*/
 
-    @GET("/api/subject/posts")
+    @GET("subject/posts")
     fun getProfilePosts(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
@@ -92,12 +92,22 @@ interface CrostataApiService {
             @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Post>>
 
+    @POST("opinion/comment")
+    @FormUrlEncoded
+    fun addComment(
+            @Header("authorization") token: String,
+            @Field("postId") postId: String,
+            @Field("birthId") birthId: String,
+            @Field("text") comment: String,
+            @Field("generate") generate: Boolean
+    ): Observable<Comment>
+
     companion object {
         fun create(): CrostataApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("http://192.168.1.123:3000")
+                    .baseUrl("http://192.168.1.123:3000/api/v1/")
                     .build()
 
             return retrofit.create(CrostataApiService::class.java)

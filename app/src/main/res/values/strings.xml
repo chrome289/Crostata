@@ -29,7 +29,7 @@
     <string name="content_image">content image</string>
     <string name="down_vote_button">down vote button</string>
     <string name="brplogo">brpLogo</string>
-    <string name="server_url">http://192.168.1.123:3000</string>
+    <string name="server_url">http://192.168.1.123:3000/api/v1/</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="toolbar_add_post">New Post</string>
@@ -75,4 +75,9 @@
     <string name="profile_gender">Male</string>
     <string name="profile_dob">Born %1$s</string>
     <string name="profile_profession">Peasant</string>
+    <string name="add_post">Add Post</string>
+    <string name="ranked">Ranked %1$s</string>
+    <string name="all_posts">All Posts</string>
+    <string name="p_index">P Index</string>
+    <string name="_48">48</string>
 </resources>

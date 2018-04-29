@@ -2,6 +2,6 @@ package xyz.siddharthseth.crostata.data.model.retrofit
 
 
 class VoteTotal {
-    val success: Boolean = false
-    val total: Int = 0
+    var success: Boolean = false
+    var total: Int = 0
 }

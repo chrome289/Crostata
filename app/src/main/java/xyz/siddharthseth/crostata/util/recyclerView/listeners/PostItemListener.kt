@@ -7,8 +7,8 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface PostItemListener {
-    fun onCommentButtonClick(postId: String)
-    fun onReportButtonClick(postId: String)
+    fun onCommentButtonClick(comment: String): Observable<Boolean>
+    fun onReportButtonClick(post: Post)
 
     fun clearPostedImageGlide(imageView: ImageView)
     fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView)
@@ -20,8 +20,9 @@ interface PostItemListener {
     val downVoteColorTint: ColorStateList
     val reportColorTint: ColorStateList
     val extraDarkGrey: ColorStateList
+    val unSelectedGrey: ColorStateList
 
     fun openFullPost(index: Int)
-    fun handleVote(index: Int, value: Int)
+    fun handleVote(post: Post, value: Int)
     fun openProfile(birthId: String)
 }

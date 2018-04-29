@@ -1,7 +1,6 @@
 package xyz.siddharthseth.crostata.view.adapter
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
@@ -11,12 +10,10 @@ import xyz.siddharthseth.crostata.view.adapter.viewholder.PostViewHolder
 import java.util.*
 
 class HomeFeedAdapter(private val postItemListener: PostItemListener) : RecyclerView.Adapter<PostViewHolder>() {
-
     var postList = ArrayList<Post>()
-    private val TAG: String = javaClass.simpleName
+    val TAG: String = javaClass.simpleName
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        Log.v(TAG, "onCreateViewHolder")
         return PostViewHolder(
                 LayoutInflater
                         .from(parent.context)
@@ -26,10 +23,8 @@ class HomeFeedAdapter(private val postItemListener: PostItemListener) : Recycler
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        Log.v(TAG, "onBindViewHolder")
         holder.init(postList[holder.adapterPosition])
         holder.loadImages(postList[holder.adapterPosition])
-        Log.v(TAG, "onBindViewHolder")
     }
 
     override fun onViewRecycled(holder: PostViewHolder) {

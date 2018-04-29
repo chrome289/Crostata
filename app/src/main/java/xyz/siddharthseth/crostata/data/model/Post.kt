@@ -144,7 +144,7 @@ class Post() : Comparable<Post>, Parcelable {
 
     private fun setGlideUrl(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrl = GlideUrl(baseUrl +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                "content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -152,7 +152,7 @@ class Post() : Comparable<Post>, Parcelable {
 
     private fun setGlideUrlThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlThumb = GlideUrl(baseUrl +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
+                "content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -160,7 +160,7 @@ class Post() : Comparable<Post>, Parcelable {
 
     private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlProfileThumb = GlideUrl(baseUrl +
-                "/api/subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
+                "subject/profileImage?birthId=$creatorId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())
@@ -176,9 +176,10 @@ class Post() : Comparable<Post>, Parcelable {
     private fun setGlideUrls(baseUrl: String, token: String) {
         val dimen = 640
         val dimen2 = 64
+        val dimen3 = 8
         val quality = 80
         setGlideUrl(baseUrl, dimen, quality, token)
-        setGlideUrlThumb(baseUrl, dimen2, quality, token)
+        setGlideUrlThumb(baseUrl, dimen3, quality, token)
         setGlideUrlProfileThumb(baseUrl, dimen2, quality, token)
     }
 

@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.viewmodel.fragment.CommunityViewModel
 
 class CommunityFragment : Fragment() {
@@ -15,7 +15,7 @@ class CommunityFragment : Fragment() {
     private var mListener: OnFragmentInteractionListener? = null
     lateinit var communityViewModel: CommunityViewModel
     var isInitialized = false
-    val sharedPreferencesService: SharedPrefrencesService = SharedPrefrencesService()
+    val sharedPreferencesService: SharedPreferencesService = SharedPreferencesService()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

@@ -8,7 +8,7 @@ class CustomLayoutManager : LinearLayoutManager {
     private var extraLayoutSpace = -1
     private var context: Context? = null
     var scrollState: Int = RecyclerView.SCROLL_STATE_IDLE
-    val TAG = javaClass.simpleName
+    val TAG: String = javaClass.simpleName
 
     constructor(context: Context) : super(context) {
         this.context = context

@@ -5,4 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:nestedScrollingEnabled="false"
-    tools:context="xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment" />
+    tools:context="xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment"
+    tools:listitem="@layout/recyclerview_home_card" />

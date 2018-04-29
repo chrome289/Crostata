@@ -15,13 +15,14 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
 import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.recyclerView.PostDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
@@ -32,13 +33,13 @@ import kotlin.collections.ArrayList
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , PostItemListener {
 
-    override fun handleVote(index: Int, value: Int) {}
+    override fun handleVote(post: Post, value: Int) {}
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .thumbnail(glide.load(post.glideUrlThumb).priority(Priority.IMMEDIATE).fitCenter())
-                .fitCenter()
+                .thumbnail(glide.load(post.glideUrlThumb).priority(Priority.IMMEDIATE).centerCrop())
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fallback(R.drawable.home_feed_content_placeholder)
                 .into(imageView)
@@ -64,15 +65,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         mutableBirthId.value = birthId
     }
 
-    override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
-    override val upVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
-    override val downVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
-    override val reportColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
-
     override fun clearPostedImageGlide(imageView: ImageView) {
         glide.clear(imageView as View)
     }
@@ -81,25 +73,39 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         return Observable.empty()
     }
 
-    override fun onCommentButtonClick(postId: String) {}
+    override fun onCommentButtonClick(comment: String): Observable<Boolean> {
+        return Observable.empty()
+    }
 
-    override fun onReportButtonClick(postId: String) {}
+    override fun onReportButtonClick(post: Post) {}
+
+    override val extraDarkGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+    override val upVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
+    override val downVoteColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
+    override val reportColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
+    override val unSelectedGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
 
     private val TAG = javaClass.simpleName
-    private val sharedPreferencesService = SharedPrefrencesService()
+    private val sharedPreferencesService = SharedPreferencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())
     private var noOfPosts: Int = 10
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
-    internal var isLoading: Boolean = false
-    lateinit var glide: GlideRequests
     private var postList: ArrayList<Post> = ArrayList()
-    var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
 
+    var isLoading: Boolean = false
+    var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     var mutablePost: SingleLivePost = SingleLivePost()
     var mutableBirthId: SingleBirthId = SingleBirthId()
     var width: Int = 1080
+
+    lateinit var glide: GlideRequests
 
     init {
         homeFeedAdapter.setHasStableIds(true)
@@ -117,12 +123,12 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun fetchPosts() {
-        val birthId = sharedPreferencesService.getUserDetails(getApplication())
+        // val birthId = sharedPreferencesService.getUserDetails(getApplication())
         isLoading = true
         var hasNewItems = false
         Log.v(TAG, "making a request for posts")
 
-        contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, birthId.birthId)
+        contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, LoggedSubject.birthId)
                 .subscribeOn(Schedulers.io())
                 .flatMap { nextPosts ->
                     if (!isInitialized)

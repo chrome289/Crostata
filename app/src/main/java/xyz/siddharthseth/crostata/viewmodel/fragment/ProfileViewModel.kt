@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
+import android.support.v7.util.DiffUtil
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -16,40 +17,45 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.Comment
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
 import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
+import xyz.siddharthseth.crostata.util.recyclerView.PostDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application), PostItemListener {
-    override fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView) {
-        val context: Context = getApplication()
-        val quality = 70
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-        GlideApp.with(context)
-                .load(glideUrl)
+
+    override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
+        glide.load(post.glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .circleCrop()
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .priority(Priority.IMMEDIATE)
+                .thumbnail(glide.load(post.glideUrlThumb).priority(Priority.IMMEDIATE).centerCrop())
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .fallback(R.drawable.home_feed_content_placeholder)
                 .into(imageView)
     }
 
-    override fun handleVote(index: Int, value: Int) {
-        val post = postList[index]
+    override fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView) {
+        glide.load(post.glideUrlProfileThumb)
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(imageView)
+    }
+
+    override fun handleVote(post: Post, value: Int) {
         if (post.opinion == value) {
             onClearVote(post._id)
                     .subscribe(
@@ -58,7 +64,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                                 if (voteTotal.success) {
                                     post.opinion = 0
                                     post.votes = voteTotal.total
-                                    updatePostItem(post, index)
+                                    // updatePostItem(post)
                                 }
                             }
                             , { error -> error.printStackTrace() })
@@ -70,7 +76,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                                 if (voteTotal.success) {
                                     post.votes = voteTotal.total
                                     post.opinion = value
-                                    updatePostItem(post, index)
+                                    // updatePostItem(post)
                                 }
                             }
                             , { error -> error.printStackTrace() })
@@ -87,32 +93,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         GlideApp.with(context).clear(imageView as View)
     }
 
-    override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
-        val context: Context = getApplication()
-
-        val quality = 70
-        val imageId = post.imageId
-
-        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
-                "/api/content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
-                , LazyHeaders.Builder()
-                .addHeader("authorization", token)
-                .build())
-
-        // Log.v(TAG, "token-$token")
-        GlideApp.with(context)
-                .load(glideUrl)
-                .placeholder(R.drawable.palmyra)
-                .fitCenter()
-                .override(1080)
-                .into(imageView)
+    override fun onCommentButtonClick(comment: String): Observable<Boolean> {
+        return Observable.empty()
     }
 
-    override fun onCommentButtonClick(postId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onReportButtonClick(postId: String) {
+    override fun onReportButtonClick(post: Post) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -128,68 +113,108 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
+    override val unSelectedGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
 
     override fun openProfile(birthId: String) {
         Log.v(TAG, "setting birthid")
         mutableBirthId.value = birthId
     }
 
-    private val token = SharedPrefrencesService().getToken(application)
+    private val token = SharedPreferencesService().getToken(application)
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val TAG: String = javaClass.simpleName
     lateinit var birthId: String
     private var size: Int = 5
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
-    private var commentList = ArrayList<Comment>()
     private var postList = ArrayList<Post>()
     private var isInitialized = false
     val mutablePost: SingleLivePost = SingleLivePost()
     private var mutableBirthId: SingleBirthId = SingleBirthId()
+    lateinit var glide: GlideRequests
+
+    var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
+    private var hasNewItems = false
+    private var isLoading = false
+
+    init {
+        profilePostAdapter.setHasStableIds(true)
+    }
+
+    fun loadOwnProfileImage(dimen: Int, imageView: ImageView) {
+        val context: Context = getApplication()
+        val quality = 70
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+        GlideApp.with(context)
+                .load(glideUrl)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .priority(Priority.IMMEDIATE)
+                .into(imageView)
+    }
 
     fun getInfo(): Observable<Subject> {
         return contentRepository.getSubjectInfo(token, birthId)
                 .subscribeOn(Schedulers.io())
     }
 
-    fun getComments(): Observable<Comment> {
-        return if (isInitialized)
-            Observable.from(commentList)
-        else
-            getNextComments()
-    }
-
-
-    private fun getNextComments(): Observable<Comment> {
-        return contentRepository.getSubjectComments(token, birthId, size, lastTimestamp)
-                .subscribeOn(Schedulers.io())
-                .flatMap { return@flatMap Observable.from(it) }
-    }
-
-
-    fun getPosts(): Observable<Post> {
-        return if (isInitialized)
+    fun getPosts() {
+        if (isInitialized)
             Observable.from(postList)
         else
             getNextPosts()
     }
 
-    private fun getNextPosts(): Observable<Post> {
-        return contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
+    private fun getNextPosts() {
+        contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
                 .subscribeOn(Schedulers.io())
-                .flatMap { return@flatMap Observable.from(it) }
+                .flatMap { nextPosts ->
+                    if (!isInitialized)
+                        isInitialized = true
+                    val context: Context = getApplication()
+                    for (post in nextPosts) {
+                        post.initExtraInfo(context.getString(R.string.server_url), token)
+                    }
+                    return@flatMap Observable.from(nextPosts)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            postList.add(it)
+                            hasNewItems = true
+                        },
+                        { it.printStackTrace() },
+                        {
+                            Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
+                            if (hasNewItems) {
+                                updatePostAdapter()
+                                isLoading = false
+                            }
+                        }
+                )
     }
 
-    private fun updatePostItem(post: Post, index: Int) {
-        postList[index] = post
-        // val diffUtil = DiffUtil.calculateDiff(PostDiffUtilCallback(homeFeedAdapter.postList, postList))
-        //diffUtil.dispatchUpdatesTo(homeFeedAdapter)
+    private fun updatePostAdapter() {
+        val diffUtil = DiffUtil.calculateDiff(
+                PostDiffUtilCallback(profilePostAdapter.postList, postList))
+        postList.sort()
+        profilePostAdapter.postList.clear()
+        profilePostAdapter.postList.addAll(postList)
+        lastTimestamp = postList[postList.size - 1].getTimestamp()
+        diffUtil.dispatchUpdatesTo(profilePostAdapter)
     }
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
         Log.v(TAG, "upVoteButtonClick")
-        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
+        //val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
         return contentRepository.submitVote(token, postId, birthId, value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
     }
+
 }

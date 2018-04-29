@@ -3,6 +3,7 @@ package xyz.siddharthseth.crostata.viewmodel.activity
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.content.Context
 import android.util.Log
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -10,23 +11,20 @@ import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.providers.LoginRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.LoginRepository
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 
 
 class LoginActivityViewModel(application: Application) : AndroidViewModel(application) {
 
     private val TAG = "LoginActivityViewModel"
-    private val sharedPrefrencesService = SharedPrefrencesService()
+    private val sharedPreferencesService = SharedPreferencesService()
 
 
     fun signIn(birthId: String, password: String): Observable<Int> {
-
-        val subject = LoggedSubject.getInstance(birthId, password)
-
+        LoggedSubject.init(birthId, password)
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 
-
-        return loginRepository.signIn(subject)
+        return loginRepository.signIn()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .flatMap({ responseToken ->
@@ -36,8 +34,8 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                         Observable.just(4)
                     else {
                         if (token.success) {
-                            val isSavedLocally = sharedPrefrencesService.saveToken(token, getApplication())
-                                    && sharedPrefrencesService.saveSubjectDetails(subject, getApplication())
+                            val isSavedLocally = sharedPreferencesService.saveToken(token, getApplication())
+                                    && sharedPreferencesService.saveSubjectDetails(getApplication())
                             if (isSavedLocally)
                                 Observable.just(0)
                             else
@@ -53,16 +51,15 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
 
     fun signInSilently(token: String): Observable<Int> {
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
-
+        val context: Context = getApplication()
         return loginRepository.signInSilently(token)
                 .subscribeOn(Schedulers.io())
                 .flatMap({ response ->
                     Log.v(TAG, "here")
-                    if (response.isSuccessful)
+                    if (response.isSuccessful) {
                         Observable.just(0)
-                    else {
-                        val subject = sharedPrefrencesService.getUserDetails(getApplication())
-                        signIn(subject.birthId, subject.password)
+                    } else {
+                        signIn(LoggedSubject.birthId, LoggedSubject.password)
                     }
                 })
 

@@ -6,7 +6,7 @@ import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Comment : Comparable<Comment> {
+open class Comment : Comparable<Comment> {
     override fun compareTo(other: Comment): Int {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")
@@ -23,12 +23,12 @@ class Comment : Comparable<Comment> {
 
     var _id: String = ""
     var name: String = ""
+    var postId = ""
     var birthId = ""
     var text: String = ""
     var timeCreated = ""
     var isGenerated = false
     var isCensored = false
-    var post: Post = Post()
 
     lateinit var glideUrlProfileThumb: GlideUrl
     lateinit var timeCreatedText: String
@@ -55,7 +55,7 @@ class Comment : Comparable<Comment> {
 
     private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlProfileThumb = GlideUrl(baseUrl +
-                "/api/subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
+                "subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
                 .addHeader("authorization", token)
                 .build())

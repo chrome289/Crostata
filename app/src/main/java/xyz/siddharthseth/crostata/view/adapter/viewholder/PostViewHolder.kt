@@ -16,15 +16,6 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
                 R.id.imageView, R.id.commentButton, R.id.textPost -> {
                     postItemListener.openFullPost(adapterPosition)
                 }
-                R.id.reportButton -> {
-
-                }
-                R.id.downVoteButton -> {
-                    postItemListener.handleVote(adapterPosition, 1)
-                }
-                R.id.upVoteButton -> {
-                    postItemListener.handleVote(adapterPosition, -1)
-                }
             }
         }
     }
@@ -43,31 +34,14 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
         itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
-                if (post.opinion == 0) extraDarkGrey
-                else if (post.opinion == 1) upVoteColor
-                else downVoteColor
+                when {
+                    post.opinion == 0 -> extraDarkGrey
+                    post.opinion == 1 -> upVoteColor
+                    else -> downVoteColor
+                }
         )
 
         itemView.commentsTotal.text = "${post.comments} comments"
-
-        /* itemView.upVoteButton.setOnClickListener { this.onClick(it) }
-         itemView.upVoteButton.imageTintList =
-                 (if (post.opinion == 1) voteColor
-                 else greyColor)
-
-         itemView.downVoteButton.setOnClickListener { }
-         itemView.downVoteButton.imageTintList =
-                 (if (post.opinion == -1) voteColor
-                 else greyColor)
-
-         itemView.commentButton.setOnClickListener { this.onClick(it) }
-
-         if (post.creatorId == LoggedSubject.birthId) {
-             itemView.reportButton.visibility = View.GONE
-         } else {
-             itemView.reportButton.visibility = View.VISIBLE
-             itemView.reportButton.setOnClickListener { this.onClick(it) }
-         }*/
 
         itemView.textPost.text = post.text
         itemView.textPost.setOnClickListener { this.onClick(it) }
@@ -83,6 +57,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             itemView.imageView.setOnClickListener(this)
             //itemView.imageView.requestLayout()
         }
+        //Log.v(TAG, post.glideUrlProfileThumb.toStringUrl())
         postItemListener.loadProfileImage(post, 128, itemView.profileImage)
     }
 

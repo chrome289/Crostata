@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
@@ -28,16 +29,9 @@ class MainActivity : AppCompatActivity()
         , SelfProfileFragment.OnSelfProfileFragmentInteractionListener
         , ViewPostFragment.OnFragmentInteractionListener, BackStackListener {
 
-    private val TAG = javaClass.simpleName
-    private var homeFeedFragment: HomeFeedFragment? = null
-    private var selfProfileFragment: SelfProfileFragment? = null
-    private var profileFragment: ProfileFragment? = null
-    private var communityFragment: CommunityFragment? = null
-    private var vigilanceFragment: VigilanceFragment? = null
-    private var viewPostFragment: ViewPostFragment? = null
-
-    private lateinit var mainActivityViewModel: MainActivityViewModel
-    private lateinit var customFragmentManager: BackStackManager
+    override fun showNavBar(isShown: Boolean) {
+        bottomNavigationView.visibility = if (isShown) View.VISIBLE else View.GONE
+    }
 
     override fun finishActivity() {
         finish()
@@ -64,6 +58,22 @@ class MainActivity : AppCompatActivity()
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            when (item.itemId) {
+                R.id.addPost -> {
+                    addNewPost()
+                }
+                R.id.search -> {
+
+                }
+            }
+            return true
+        } else {
+            return false
+        }
+    }
+
     override fun openFullPost(post: Post) {
         Log.v(TAG, "activity click listener")
         val bundle = Bundle()
@@ -72,6 +82,18 @@ class MainActivity : AppCompatActivity()
         val fragment = getFragment(R.id.viewPost, bundle)
         customFragmentManager.addChildFragment(fragment, R.id.frame)
     }
+
+
+    private val TAG = javaClass.simpleName
+    private var homeFeedFragment: HomeFeedFragment? = null
+    private var selfProfileFragment: SelfProfileFragment? = null
+    private var profileFragment: ProfileFragment? = null
+    private var communityFragment: CommunityFragment? = null
+    private var vigilanceFragment: VigilanceFragment? = null
+    private var viewPostFragment: ViewPostFragment? = null
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+    private lateinit var customFragmentManager: BackStackManager
 
     private fun setViewPostToolbar() {
         val toolbar = supportActionBar
@@ -101,7 +123,7 @@ class MainActivity : AppCompatActivity()
                 getFragment(R.id.community, null)
             }
             R.id.profile -> {
-                getFragment(R.id.profile, null)
+                getFragment(R.id.selfProfile, null)
             }
             R.id.vigilance -> {
                 getFragment(R.id.vigilance, null)
@@ -162,10 +184,7 @@ class MainActivity : AppCompatActivity()
                 return viewPostFragment as ViewPostFragment
             }
             R.id.selfProfile -> {
-                if (bundle != null) {
-                    val birthId: String = bundle.getString("birthId")
-                    selfProfileFragment = SelfProfileFragment.newInstance(birthId)
-                }
+                selfProfileFragment = SelfProfileFragment.newInstance()
                 return selfProfileFragment as SelfProfileFragment
             }
 

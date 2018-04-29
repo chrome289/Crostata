@@ -2,9 +2,10 @@ package xyz.siddharthseth.crostata.util.recyclerView.listeners
 
 import android.widget.ImageView
 import xyz.siddharthseth.crostata.data.model.Comment
+import xyz.siddharthseth.crostata.data.model.Post
 
 interface CommentItemListener {
-    fun onReportButtonClick(postId: String)
+    fun onReportButtonClick(post: Post)
 
     fun openProfile(birthId: String)
 

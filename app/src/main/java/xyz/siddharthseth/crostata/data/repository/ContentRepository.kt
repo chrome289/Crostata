@@ -39,11 +39,15 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.getSubjectInfo(token, birthId)
     }
 
-    fun getSubjectComments(token: String, birthId: String, size: Int, lastTimestamp: Long): Observable<List<Comment>> {
+    /*fun getSubjectComments(token: String, birthId: String, size: Int, lastTimestamp: Long): Observable<List<ProfileComment>> {
         return crostataApiService.getProfileComments(token, birthId, size, lastTimestamp)
-    }
+    }*/
 
     fun getSubjectPosts(token: String, birthId: String, size: Int, lastTimestamp: Long): Observable<List<Post>> {
         return crostataApiService.getProfilePosts(token, birthId, size, lastTimestamp)
+    }
+
+    fun submitComment(token: String, postId: String, birthId: String, comment: String): Observable<Comment> {
+        return crostataApiService.addComment(token, postId, birthId, comment, false)
     }
 }

@@ -2,7 +2,6 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
@@ -25,7 +24,7 @@ import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.recyclerView.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
 import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
@@ -65,8 +64,25 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
                 .into(imageView)
     }
 
-    override fun onCommentButtonClick(postId: String) {
-
+    override fun onCommentButtonClick(comment: String): Observable<Boolean> {
+        val post: Post = mutablePost.value!!
+        val context: Context = getApplication()
+        isLoading = true
+        return contentRepository.submitComment(token, post._id, LoggedSubject.birthId, comment)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap {
+                    if (it != null) {
+                        it.initExtraInfo(context.getString(R.string.server_url), token)
+                        commentList.add(it)
+                        updateCommentAdapter()
+                        isLoading = false
+                        return@flatMap Observable.just(true)
+                    } else {
+                        isLoading = false
+                        Observable.just(false)
+                    }
+                }
     }
 
     override fun onClearVote(postId: String): Observable<VoteTotal> {
@@ -82,6 +98,8 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         GlideApp.with(context).clear(imageView as View)
     }
 
+    override val unSelectedGrey: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
     override val extraDarkGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
     override val upVoteColorTint: ColorStateList
@@ -95,8 +113,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         //nah
     }
 
-    override fun handleVote(index: Int, value: Int) {
-        val post: Post = mutablePost.value!!
+    override fun handleVote(post: Post, value: Int) {
         if (post.opinion == value) {
             onClearVote(post._id)
                     .subscribe(
@@ -124,7 +141,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    override fun onReportButtonClick(postId: String) {}
+    override fun onReportButtonClick(post: Post) {}
 
     override fun openProfile(birthId: String) {
         Log.v(TAG, "setting birthid")
@@ -137,14 +154,14 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
         Log.v(TAG, "upVoteButtonClick")
-        val birthId = SharedPrefrencesService().getUserDetails(getApplication()).birthId
-        return contentRepository.submitVote(token, postId, birthId, value)
+        //  val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
+        return contentRepository.submitVote(token, postId, LoggedSubject.birthId, value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
     }
 
     private var commentList = ArrayList<Comment>()
-    private val sharedPreferencesService = SharedPrefrencesService()
+    private val sharedPreferencesService = SharedPreferencesService()
     private var token: String = sharedPreferencesService.getToken(getApplication())
     private val TAG: String = javaClass.simpleName
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
@@ -157,11 +174,9 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     internal var mutableBirthId: SingleBirthId = SingleBirthId()
     var mutablePost: SingleLivePost = SingleLivePost()
-    var commentCount = MutableLiveData<Int>()
 
     init {
         adapter.setHasStableIds(true)
-        commentCount.value = 0
     }
 
     fun getComments() {
@@ -183,21 +198,27 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
                 .subscribe({ comment: Comment ->
                     commentList.add(comment)
                     hasNewItems = true
-                }, { error -> error.printStackTrace() }
+                }, { error ->
+                    error.printStackTrace()
+                    isLoading = false
+                }
                         , {
                     Log.v(TAG, "oncomplete called " + adapter.commentList.size)
                     if (hasNewItems) {
-                        val diffUtil = DiffUtil.calculateDiff(
-                                CommentDiffUtilCallback(adapter.commentList, commentList))
-                        commentList.sort()
-                        adapter.commentList.clear()
-                        adapter.commentList.addAll(commentList)
-                        lastTimestamp = commentList[commentList.size - 1].getTimestamp()
+                        updateCommentAdapter()
                         isLoading = false
-                        commentCount.value = adapter.itemCount
-                        diffUtil.dispatchUpdatesTo(adapter)
                     }
                 })
+    }
+
+    private fun updateCommentAdapter() {
+        val diffUtil = DiffUtil.calculateDiff(
+                CommentDiffUtilCallback(adapter.commentList, commentList))
+        commentList.sort()
+        adapter.commentList.clear()
+        adapter.commentList.addAll(commentList)
+        lastTimestamp = commentList[commentList.size - 1].getTimestamp()
+        diffUtil.dispatchUpdatesTo(adapter)
     }
 
     fun initPost(post: Post) {

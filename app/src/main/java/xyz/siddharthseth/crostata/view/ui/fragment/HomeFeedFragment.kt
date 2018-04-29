@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_home_feed.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.device.DeviceUtils
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.util.*
@@ -162,9 +162,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         override fun getPreloadItems(position: Int): MutableList<GlideUrl> {
             val post = homeFeedViewModel.homeFeedAdapter.postList[position]
             val glideUrl = GlideUrl(context!!.getString(R.string.server_url) +
-                    "/api/subject/profileImage?birthId=" + post.creatorId + "&dimen=640&quality=80"
+                    "subject/profileImage?birthId=" + post.creatorId + "&dimen=640&quality=80"
                     , LazyHeaders.Builder()
-                    .addHeader("authorization", SharedPrefrencesService().getToken(activity?.applicationContext!!))
+                    .addHeader("authorization", SharedPreferencesService().getToken(activity?.applicationContext!!))
                     .build())
             return if (TextUtils.isEmpty(glideUrl.toStringUrl())) {
                 Collections.emptyList()

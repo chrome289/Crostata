@@ -10,7 +10,7 @@
     <color name="downVoteSelected">#e53a36</color>
     <color name="commentSelected">#90caf9</color>
     <color name="reportSelected">#e53935</color>
-    <color name="greyUnselected">#9e9e9e</color>
+    <color name="greyUnselected">#bdbdbd</color>
     <color name="greyLighter">#e0e0e0</color>
     <color name="greyLightest">#fafafa</color>
     <color name="extraDarkGrey">#757575</color>

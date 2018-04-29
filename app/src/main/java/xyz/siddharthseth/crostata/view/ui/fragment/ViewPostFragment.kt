@@ -11,16 +11,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.marlonlom.utilities.timeago.TimeAgo
 import kotlinx.android.synthetic.main.fragment_view_post.*
+import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 class ViewPostFragment : Fragment() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -47,11 +46,6 @@ class ViewPostFragment : Fragment() {
             listener?.openProfile(it)
         }
     }
-    private val observerCommentCount: Observer<Int> = Observer {
-        if (it != null) {
-            setCommentTextView()
-        }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -60,12 +54,12 @@ class ViewPostFragment : Fragment() {
         viewPostViewModel.glide = GlideApp.with(this)
         viewPostViewModel.mutablePost.observe(this, observer)
         viewPostViewModel.mutableBirthId.observe(this, observerBirthId)
-        viewPostViewModel.commentCount.observe(this, observerCommentCount)
 
         if (!isInitialized) {
             viewPostViewModel.initPost(post)
             isInitialized = true
         }
+        listener?.showNavBar(false)
     }
 
     override fun onAttach(context: Context) {
@@ -87,15 +81,14 @@ class ViewPostFragment : Fragment() {
 
         viewPostViewModel.mutablePost.removeObserver(observer)
         viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
-        viewPostViewModel.commentCount.removeObserver(observerCommentCount)
+        listener?.showNavBar(true)
     }
 
     interface OnFragmentInteractionListener {
         fun openProfile(birthId: String)
+        fun showNavBar(isShown: Boolean)
     }
 
-    private val calendar = Calendar.getInstance()
-    private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
     private lateinit var viewPostViewModel: ViewPostViewModel
     private val TAG: String? = javaClass.simpleName
     private var listener: OnFragmentInteractionListener? = null
@@ -115,37 +108,58 @@ class ViewPostFragment : Fragment() {
     private fun initView() {
         val post = viewPostViewModel.mutablePost.value!!
         profileName.text = post.creatorName
-        profileName.setOnClickListener { listener?.openProfile(post.creatorId) }
+        profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId) }
+
+        timeTextView.text = post.timeCreatedText
+
+        reportButton.setOnClickListener { viewPostViewModel.onReportButtonClick(post) }
 
         if (post.contentType == "TO") {
             imageView.visibility = View.GONE
             viewPostViewModel.clearPostedImageGlide(imageView)
         } else {
             imageView.visibility = View.VISIBLE
-
-            Log.v(TAG, "imageId-" + post.imageId)
             viewPostViewModel.loadPostedImage(post, 640, imageView)
-            imageView.requestLayout()
         }
-
         viewPostViewModel.loadProfileImage(post, 128, profileImage)
 
         textPost.text = post.text
 
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
-        calendar.time = inputFormat.parse(post.timeCreated)
+        commentsTotal.text = "${post.comments} comments"
+        votesTotal.text = "${post.votes}"
+        votesTotal.setTextColor(
+                when {
+                    post.opinion == 0 -> viewPostViewModel.extraDarkGrey
+                    post.opinion == 1 -> viewPostViewModel.upVoteColorTint
+                    else -> viewPostViewModel.downVoteColorTint
+                }
+        )
+        upVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, 1) }
+        upVoteButton.imageTintList =
+                (if (post.opinion == 1) viewPostViewModel.upVoteColorTint
+                else viewPostViewModel.unSelectedGrey)
 
-        timeTextView.text = TimeAgo.using(calendar.timeInMillis).toUpperCase()
+        downVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, -1) }
+        downVoteButton.imageTintList =
+                (if (post.opinion == -1) viewPostViewModel.downVoteColorTint
+                else viewPostViewModel.unSelectedGrey)
 
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recyclerView.adapter = viewPostViewModel.adapter
 
-        viewPostViewModel.getComments()
+        commentButton.setOnClickListener {
+            viewPostViewModel.onCommentButtonClick(addComment.text.toString())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ Log.v(TAG, "the result $it") }, {
+                        it.printStackTrace()
+                        hideKeyboard()
+                    })
+        }
 
-        setCommentTextView()
+        viewPostViewModel.getComments()
     }
 
-    private fun setCommentTextView() {
-        commentHeader.text = if (viewPostViewModel.commentCount.value!!.toInt() > 0) "Comments" else "No Comments"
+    private fun hideKeyboard() {
+        Log.v(TAG, "hiding keyboard")
     }
 }

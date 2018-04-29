@@ -11,8 +11,8 @@ class LoginRepository(private val crostataApiService: CrostataApiService) {
 
     val TAG = "LoginRepository"
 
-    fun signIn(subject: LoggedSubject): Observable<Response<Token>> {
-        return crostataApiService.signIn(subject.birthId, subject.password)
+    fun signIn(): Observable<Response<Token>> {
+        return crostataApiService.signIn(LoggedSubject.birthId, LoggedSubject.password)
     }
 
     fun signInSilently(token: String): Observable<Response<ResponseBody>> {

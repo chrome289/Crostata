@@ -3,17 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    android:background="@color/white"
-    android:elevation="1dp">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/profile_image"
@@ -26,36 +21,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_weight="1"
-        android:fontFamily="@font/roboto_bold"
+        android:fontFamily="@font/roboto_medium"
         android:text="@string/sample_name"
         android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
         app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
-    <TextView
-        android:id="@+id/timeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/sample_time"
-        android:textColor="@color/greyUnselected"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/commentsTotal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/commentsTotal"
-        app:layout_constraintTop_toTopOf="@+id/commentsTotal" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="12dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/content_image"
-        android:visibility="visible"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="1.75:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileImage" />
@@ -65,8 +49,8 @@
         android:id="@+id/textPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="12dp"
         android:ellipsize="end"
         android:fontFamily="@font/roboto"
@@ -82,8 +66,6 @@
         android:id="@+id/votesTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_weight="0"
         android:fontFamily="@font/roboto_bold"
@@ -92,15 +74,13 @@
         android:text="123 votes"
         android:textColor="@color/extraDarkGrey"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textPost"
         app:layout_constraintTop_toBottomOf="@+id/textPost" />
 
     <TextView
         android:id="@+id/commentsTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_weight="0"
@@ -109,8 +89,27 @@
         android:text="86 comments"
         android:textColor="@color/extraDarkGrey"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/votesTotal"
         app:layout_constraintTop_toBottomOf="@+id/textPost" />
+
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sample_time"
+        android:textColor="@color/greyUnselected"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/commentsTotal"
+        app:layout_constraintEnd_toEndOf="@+id/textPost"
+        app:layout_constraintTop_toTopOf="@+id/commentsTotal" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/greyLightest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentsTotal" />
 
 </android.support.constraint.ConstraintLayout>

@@ -12,7 +12,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.service.SharedPrefrencesService
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.viewmodel.activity.LoginActivityViewModel
 
 
@@ -94,13 +95,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_login)
 
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
+        LoggedSubject.initLoggedSubject(applicationContext)
 
         loadingFrame.setOnTouchListener { _, _ ->
             Log.v(TAG, "Don't click")
             true
         }
 
-        val token = SharedPrefrencesService().getToken(applicationContext)
+        val token = SharedPreferencesService().getToken(applicationContext)
         if (token.isNotEmpty()) {
             showLoadingDialog()
             autoFillFields()
@@ -122,9 +124,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun autoFillFields() {
-        val user = SharedPrefrencesService().getUserDetails(applicationContext)
-        birthId.setText(user.birthId)
-        password.setText(user.password)
+        //val user = SharedPreferencesService().getUserDetails(applicationContext)
+        birthId.setText(LoggedSubject.birthId)
+        password.setText(LoggedSubject.password)
     }
 
     override fun onStart() {
