@@ -225,6 +225,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/addComment"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/add_a_comment"
             app:layout_constraintTop_toTopOf="@+id/addComment" />
 
     </android.support.constraint.ConstraintLayout>

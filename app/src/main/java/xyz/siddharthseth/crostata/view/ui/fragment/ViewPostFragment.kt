@@ -16,6 +16,7 @@ import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 
 class ViewPostFragment : Fragment() {
@@ -64,7 +65,7 @@ class ViewPostFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is ViewPostInteractionListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
@@ -84,23 +85,18 @@ class ViewPostFragment : Fragment() {
         listener?.showNavBar(true)
     }
 
-    interface OnFragmentInteractionListener {
-        fun openProfile(birthId: String)
-        fun showNavBar(isShown: Boolean)
-    }
-
     private lateinit var viewPostViewModel: ViewPostViewModel
     private val TAG: String? = javaClass.simpleName
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: ViewPostInteractionListener? = null
     private lateinit var post: Post
     private var isInitialized = false
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: Post) =
+        fun newInstance(bundle: Bundle) =
                 ViewPostFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable("post", param1)
+                        putParcelable("post", bundle.getParcelable("post"))
                     }
                 }
     }

@@ -17,7 +17,7 @@
         android:title="@string/toolbar_community"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/profile"
+        android:id="@+id/selfProfile"
         android:enabled="true"
         android:icon="@drawable/ic_person"
         android:orderInCategory="2"

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Comment
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.CommentViewHolder
 
 class ViewPostCommentAdapter(private val commentItemListener: CommentItemListener) : RecyclerView.Adapter<CommentViewHolder>() {

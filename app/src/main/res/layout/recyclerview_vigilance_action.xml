@@ -14,6 +14,7 @@
         android:tint="#616161"
         app:layout_constraintBottom_toBottomOf="@+id/textView22"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/action"
         app:layout_constraintTop_toTopOf="@+id/textView22" />
 
     <TextView

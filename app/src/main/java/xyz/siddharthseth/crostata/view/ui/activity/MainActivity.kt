@@ -16,18 +16,20 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.util.backstack.BackStackListener
 import xyz.siddharthseth.crostata.util.backstack.BackStackManager
+import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
+import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
+import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
 import xyz.siddharthseth.crostata.view.ui.fragment.*
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
-
 class MainActivity : AppCompatActivity()
-        , HomeFeedFragment.OnFragmentInteractionListener
-        , ProfileFragment.OnProfileFragmentInteractionListener
         , CommunityFragment.OnFragmentInteractionListener
         , VigilanceFragment.OnFragmentInteractionListener
-        , SelfProfileFragment.OnSelfProfileFragmentInteractionListener
-        , ViewPostFragment.OnFragmentInteractionListener, BackStackListener {
+        , BackStackListener
+        , ViewPostInteractionListener
+        , ProfileInteractionListener
+        , PostInteractionListener {
 
     override fun showNavBar(isShown: Boolean) {
         bottomNavigationView.visibility = if (isShown) View.VISIBLE else View.GONE
@@ -42,10 +44,10 @@ class MainActivity : AppCompatActivity()
     override fun openProfile(birthId: String) {
         val bundle = Bundle()
         if (LoggedSubject.birthId == birthId) {
-            bottomNavigationView.selectedItemId = R.id.profile
+            bottomNavigationView.selectedItemId = R.id.selfProfile
         } else {
             bundle.putString("birthId", birthId)
-            customFragmentManager.addChildFragment(getFragment(R.id.selfProfile, bundle), R.id.frame)
+            customFragmentManager.addChildFragment(getFragment(R.id.profile, bundle), R.id.frame)
         }
     }
 
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item != null) {
+        return if (item != null) {
             when (item.itemId) {
                 R.id.addPost -> {
                     addNewPost()
@@ -68,9 +70,9 @@ class MainActivity : AppCompatActivity()
 
                 }
             }
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
@@ -81,25 +83,6 @@ class MainActivity : AppCompatActivity()
 
         val fragment = getFragment(R.id.viewPost, bundle)
         customFragmentManager.addChildFragment(fragment, R.id.frame)
-    }
-
-
-    private val TAG = javaClass.simpleName
-    private var homeFeedFragment: HomeFeedFragment? = null
-    private var selfProfileFragment: SelfProfileFragment? = null
-    private var profileFragment: ProfileFragment? = null
-    private var communityFragment: CommunityFragment? = null
-    private var vigilanceFragment: VigilanceFragment? = null
-    private var viewPostFragment: ViewPostFragment? = null
-
-    private lateinit var mainActivityViewModel: MainActivityViewModel
-    private lateinit var customFragmentManager: BackStackManager
-
-    private fun setViewPostToolbar() {
-        val toolbar = supportActionBar
-        if (toolbar != null) {
-            toolbar.title = "Comments"
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,13 +99,30 @@ class MainActivity : AppCompatActivity()
         bottomNavigationView.selectedItemId = R.id.home
     }
 
+    override fun onBackPressed() {
+        val fragment = customFragmentManager.onBackPressed()
+        if (fragment != null) {
+            //Log.v(TAG, fragment.tag!!.toInt().toString() + " " + R.id.home)
+            bottomNavigationView.setOnNavigationItemSelectedListener { true }
+            bottomNavigationView.selectedItemId = fragment.tag!!.toInt()
+            bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
+        }
+    }
+
+    private fun setViewPostToolbar() {
+        val toolbar = supportActionBar
+        if (toolbar != null) {
+            toolbar.title = "Comments"
+        }
+    }
+
     private fun getBottomNavigationListener(item: MenuItem): Boolean {
         Log.v(TAG, item.order.toString())
         val fragment = when (item.itemId) {
             R.id.community -> {
                 getFragment(R.id.community, null)
             }
-            R.id.profile -> {
+            R.id.selfProfile -> {
                 getFragment(R.id.selfProfile, null)
             }
             R.id.vigilance -> {
@@ -136,67 +136,55 @@ class MainActivity : AppCompatActivity()
         return true
     }
 
-
-    override fun onBackPressed() {
-        val fragment = customFragmentManager.onBackPressed()
-        if (fragment != null) {
-            //Log.v(TAG, fragment.tag!!.toInt().toString() + " " + R.id.home)
-            bottomNavigationView.setOnNavigationItemSelectedListener { true }
-            bottomNavigationView.selectedItemId = fragment.tag!!.toInt()
-            bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
-        }
-    }
-
     private fun getFragment(fragmentId: Int, bundle: Bundle?): Fragment {
-        when (fragmentId) {
+        return when (fragmentId) {
             R.id.community -> {
-                return if (communityFragment == null) {
+                if (communityFragment == null) {
                     communityFragment = CommunityFragment.newInstance()
                     communityFragment as CommunityFragment
                 } else {
-
                     communityFragment as CommunityFragment
                 }
             }
             R.id.profile -> {
-                return if (profileFragment == null) {
-                    profileFragment = ProfileFragment.newInstance()
-                    profileFragment as ProfileFragment
-                } else {
-
-                    profileFragment as ProfileFragment
-                }
+                profileFragment = ProfileFragment.newInstance(bundle!!)
+                profileFragment as ProfileFragment
             }
             R.id.vigilance -> {
-                return if (vigilanceFragment == null) {
+                if (vigilanceFragment == null) {
                     vigilanceFragment = VigilanceFragment.newInstance()
                     vigilanceFragment as VigilanceFragment
                 } else {
-
                     vigilanceFragment as VigilanceFragment
                 }
             }
             R.id.viewPost -> {
-                if (bundle != null) {
-                    val post: Post = bundle.getParcelable("post")
-                    viewPostFragment = ViewPostFragment.newInstance(post)
-                }
-                return viewPostFragment as ViewPostFragment
+                viewPostFragment = ViewPostFragment.newInstance(bundle!!)
+                viewPostFragment as ViewPostFragment
             }
             R.id.selfProfile -> {
                 selfProfileFragment = SelfProfileFragment.newInstance()
-                return selfProfileFragment as SelfProfileFragment
+                selfProfileFragment as SelfProfileFragment
             }
-
             else -> {
-                return if (homeFeedFragment == null) {
+                if (homeFeedFragment == null) {
                     homeFeedFragment = HomeFeedFragment.newInstance()
                     homeFeedFragment as HomeFeedFragment
                 } else {
-
                     homeFeedFragment as HomeFeedFragment
                 }
             }
         }
     }
+
+    private val TAG = javaClass.simpleName
+    private var homeFeedFragment: HomeFeedFragment? = null
+    private var selfProfileFragment: SelfProfileFragment? = null
+    private var profileFragment: ProfileFragment? = null
+    private var communityFragment: CommunityFragment? = null
+    private var vigilanceFragment: VigilanceFragment? = null
+    private var viewPostFragment: ViewPostFragment? = null
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+    private lateinit var customFragmentManager: BackStackManager
 }

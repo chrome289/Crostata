@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.PostViewHolder
 import java.util.*
 

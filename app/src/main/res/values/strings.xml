@@ -61,7 +61,7 @@
     <string name="export_revenue">Export Revenue</string>
     <string name="money">P$ 11.94 Billion</string>
     <string name="production">Production</string>
-    <string name="weight">12.8 MT</string>
+    <string name="weight">12.8 Metric Tonnes</string>
     <string name="employment">Employment</string>
     <string name="percent">99.98%</string>
     <string name="banana_cultivation">Banana Cultivation</string>
@@ -80,4 +80,9 @@
     <string name="all_posts">All Posts</string>
     <string name="p_index">P Index</string>
     <string name="_48">48</string>
+    <string name="el_presidente_s_monetary_fund">El Presidente\'s Monetary Fund</string>
+    <string name="p_4_71_billion">P$ 4.71 Billion</string>
+    <string name="our_achievements">Our Achievements</string>
+    <string name="economy">Economy</string>
+    <string name="action">action</string>
 </resources>

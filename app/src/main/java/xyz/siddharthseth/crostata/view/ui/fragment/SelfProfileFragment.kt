@@ -18,13 +18,14 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
+import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SelfProfileFragment : Fragment() {
     val TAG: String = javaClass.simpleName
-    private var mListener: OnSelfProfileFragmentInteractionListener? = null
+    private var profileInteractionListener: ProfileInteractionListener? = null
     private lateinit var profileViewModel: ProfileViewModel
     private var isInitialized = false
 
@@ -43,15 +44,15 @@ class SelfProfileFragment : Fragment() {
     private val observer: Observer<Post> = Observer {
         Log.v(TAG, "observer called")
         if (it != null) {
-            Log.v(TAG, "fragment click mListener")
-            mListener?.openFullPost(it)
+            Log.v(TAG, "fragment click profileInteractionListener")
+            profileInteractionListener?.openFullPost(it)
         }
     }
 
     /*private val observerBirthId: Observer<String> = Observer {
         Log.v(TAG, "birthid observer called")
         if (it != null) {
-            mListener?.openProfile(it)
+            profileInteractionListener?.openProfile(it)
         }
     }*/
 
@@ -100,17 +101,12 @@ class SelfProfileFragment : Fragment() {
 
                 }, { err -> err.printStackTrace() })
         profileViewModel.getPosts()
-
-        /* viewPosts.setOnClickListener {
-             mListener?.showNavBar(false)
-             profilePostRecyclerView.visibility = View.VISIBLE
-         }*/
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnSelfProfileFragmentInteractionListener) {
-            mListener = context
+        if (context is ProfileInteractionListener) {
+            profileInteractionListener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
@@ -118,13 +114,7 @@ class SelfProfileFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
-    }
-
-    interface OnSelfProfileFragmentInteractionListener {
-        fun openProfile(birthId: String)
-        fun openFullPost(post: Post)
-        fun showNavBar(isShown: Boolean)
+        profileInteractionListener = null
     }
 
     companion object {

@@ -27,8 +27,8 @@ import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.recyclerView.PostDiffUtilCallback
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.util.DiffUtil.PostDiffUtilCallback
+import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -143,7 +143,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun loadOwnProfileImage(dimen: Int, imageView: ImageView) {
         val context: Context = getApplication()
-        val quality = 70
+        val quality = 80
         val glideUrl = GlideUrl(context.getString(R.string.server_url) +
                 "subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
                 , LazyHeaders.Builder()
@@ -152,7 +152,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         GlideApp.with(context)
                 .load(glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
-                .circleCrop()
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .priority(Priority.IMMEDIATE)
                 .into(imageView)

@@ -72,6 +72,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/timeTextView"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/report"
         app:layout_constraintTop_toTopOf="@+id/timeTextView" />
 
     <View

@@ -5,7 +5,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 
 class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     : RecyclerView.ViewHolder(view), View.OnClickListener {

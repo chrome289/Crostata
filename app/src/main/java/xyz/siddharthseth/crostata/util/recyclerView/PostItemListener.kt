@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.util.recyclerView.listeners
+package xyz.siddharthseth.crostata.util.recyclerView
 
 import android.content.res.ColorStateList
 import android.widget.ImageView

@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.util.recyclerView
+package xyz.siddharthseth.crostata.view.ui.customView
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager

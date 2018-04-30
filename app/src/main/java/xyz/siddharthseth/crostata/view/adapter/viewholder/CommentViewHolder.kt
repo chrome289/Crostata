@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.recyclerview_comment_card.view.*
 import xyz.siddharthseth.crostata.data.model.Comment
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 
 class CommentViewHolder(view: View, private val commentItemListener: CommentItemListener)
     : RecyclerView.ViewHolder(view) {

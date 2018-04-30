@@ -25,9 +25,9 @@ import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.recyclerView.CommentDiffUtilCallback
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.CommentItemListener
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.util.DiffUtil.CommentDiffUtilCallback
+import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
 import java.util.*
 import kotlin.collections.ArrayList

@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
-public class Crostata extends Application {
+class Crostata extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

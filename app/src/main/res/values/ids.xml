@@ -2,4 +2,5 @@
 <resources>
     <item name="selfProfile" type="id">5</item>
     <item name="viewPost" type="id">6</item>
+    <item name="profile" type="id">10</item>
 </resources>

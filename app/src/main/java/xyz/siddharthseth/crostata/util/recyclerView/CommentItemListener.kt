@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.util.recyclerView.listeners
+package xyz.siddharthseth.crostata.util.recyclerView
 
 import android.widget.ImageView
 import xyz.siddharthseth.crostata.data.model.Comment

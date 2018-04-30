@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import java.util.Calendar
 import kotlin.collections.ArrayList
 
-class BackStackManager(private val mListener: BackStackListener, fragmentManager: FragmentManager) {
+class BackStackManager(private val backStackListener: BackStackListener, fragmentManager: FragmentManager) {
 
     private val backStackList: ArrayList<BackStack> = ArrayList()
     private val fragmentManager: BackStackFragmentManager = BackStackFragmentManager(fragmentManager)
@@ -46,7 +46,7 @@ class BackStackManager(private val mListener: BackStackListener, fragmentManager
         backStackList.remove(backStack)
 
         return if (backStackList.isEmpty()) {
-            mListener.finishActivity()
+            backStackListener.finishActivity()
             null
         } else {
             val newRoot = backStackList.last()
@@ -74,7 +74,7 @@ class BackStackManager(private val mListener: BackStackListener, fragmentManager
     }
 
     private fun refreshCurrentRoot() {
-        mListener.tabReselected()
+        backStackListener.tabReselected()
     }
 
     private fun isAdded(fragment: Fragment): Boolean {

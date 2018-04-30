@@ -14,10 +14,10 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_profile.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
-import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
+import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,17 +25,16 @@ import java.util.*
 
 class ProfileFragment : Fragment() {
 
-    private var mListener: OnProfileFragmentInteractionListener? = null
+    private var profileInteractionListener: ProfileInteractionListener? = null
     private lateinit var profileViewModel: ProfileViewModel
     private var isInitialized = false
     val TAG: String = javaClass.simpleName
-
-    //private lateinit var profileCommentAdapter: ProfileCommentAdapter
-    private lateinit var profilePostAdapter: HomeFeedAdapter
+    var birthId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
+            birthId = arguments!!.getString("birthId")
         }
     }
 
@@ -48,14 +47,14 @@ class ProfileFragment : Fragment() {
         Log.v(TAG, "observer called")
         if (it != null) {
             Log.v(TAG, "fragment click listener")
-            mListener?.openFullPost(it)
+            profileInteractionListener?.openFullPost(it)
         }
     }
 
     /*private val observerBirthId: Observer<String> = Observer {
         Log.v(TAG, "birthid observer called")
         if (it != null) {
-            mListener?.openProfile(it)
+            profileInteractionListener?.openProfile(it)
         }
     }*/
 
@@ -69,38 +68,29 @@ class ProfileFragment : Fragment() {
         super.onResume()
         if (!isInitialized) {
             profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-            profileViewModel.birthId = LoggedSubject.birthId
+            profileViewModel.glide = GlideApp.with(this)
+            profileViewModel.birthId = birthId
             Log.v(TAG, "loading birthid " + profileViewModel.birthId)
 
             isInitialized = true
         }
-
         profileViewModel.mutablePost.observe(this, observer)
-/*
 
-        profileCommentAdapter = ProfileCommentAdapter(profileViewModel)
-        profileCommentAdapter.setHasStableIds(true)
-        profileCommentRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        profileCommentRecyclerView.adapter = profileCommentAdapter
-*/
-
-        profilePostAdapter = HomeFeedAdapter(profileViewModel)
-        profilePostAdapter.setHasStableIds(true)
         profilePostRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        profilePostRecyclerView.adapter = profilePostAdapter
+        profilePostRecyclerView.adapter = profileViewModel.profilePostAdapter
 
         profileViewModel.getInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ subject: Subject ->
-                    //  profileViewModel.loadProfileImage(LoggedSubject.birthId, 256, true, profileImage)
+                    profileViewModel.loadOwnProfileImage(640, profileImage)
 
                     profileName.text = subject.name.capitalize()
 
-                    rank.text = getString(R.string.ranked, subject.rank)
+                    rank.text = getString(R.string.ranked, subject.rank.toString())
                     postTotal.text = subject.posts.toString()
                     commentTotal.text = subject.comments.toString()
 
-                    patriotIndex.text = getString(R.string.profile_patriot_index, subject.patriotIndex)
+                    patriotIndex.text = subject.patriotIndex.toString()
 
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
                     val outputFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.US)
@@ -111,33 +101,7 @@ class ProfileFragment : Fragment() {
                     profession.text = subject.profession.toLowerCase().capitalize()
 
                 }, { err -> err.printStackTrace() })
-
-        /*profileViewModel.getComments()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    profileCommentAdapter.commentList.add(it)
-                    profileCommentAdapter
-                            .notifyItemInserted(profileCommentAdapter.commentList.size - 1)
-                }, { err -> err.printStackTrace() })*/
-
         profileViewModel.getPosts()
-/*
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position == 0)
-                    showPosts()
-                else
-                    showComments()
-            }
-        })*/
-
-
     }
 
     /*private fun showPosts() {
@@ -153,7 +117,7 @@ class ProfileFragment : Fragment() {
 */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        mListener = if (context is OnProfileFragmentInteractionListener) {
+        profileInteractionListener = if (context is ProfileInteractionListener) {
             context
         } else {
             throw RuntimeException((context!!.toString() + " must implement OnFragmentInteractionListener"))
@@ -162,20 +126,15 @@ class ProfileFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
-    }
-
-
-    interface OnProfileFragmentInteractionListener {
-        fun openProfile(birthId: String)
-        fun openFullPost(post: Post)
+        profileInteractionListener = null
     }
 
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(bundle: Bundle) =
                 ProfileFragment().apply {
                     arguments = Bundle().apply {
+                        this.putString("birthId", bundle.getString("birthId"))
                     }
                 }
     }

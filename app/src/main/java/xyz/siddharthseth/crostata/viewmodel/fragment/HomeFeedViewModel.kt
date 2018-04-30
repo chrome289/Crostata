@@ -23,8 +23,8 @@ import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.recyclerView.PostDiffUtilCallback
-import xyz.siddharthseth.crostata.util.recyclerView.listeners.PostItemListener
+import xyz.siddharthseth.crostata.util.DiffUtil.PostDiffUtilCallback
+import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -61,7 +61,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun openProfile(birthId: String) {
-        Log.v(TAG, "setting birthid")
+        Log.v(TAG, "setting birthid $birthId")
         mutableBirthId.value = birthId
     }
 

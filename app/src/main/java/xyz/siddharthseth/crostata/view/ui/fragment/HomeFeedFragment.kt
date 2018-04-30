@@ -25,17 +25,12 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.device.DeviceUtils
+import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.util.*
 
 
 class HomeFeedFragment : Fragment(), View.OnClickListener {
-
-    interface OnFragmentInteractionListener {
-        fun openFullPost(post: Post)
-        fun openProfile(birthId: String)
-        fun addNewPost()
-    }
 
     override fun onClick(v: View?) {
         if (v != null && mListener != null) {
@@ -54,21 +49,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onPause")
     }
 
-    private val observer: Observer<Post> = Observer {
-        Log.v(TAG, "observer called")
-        if (it != null) {
-            Log.v(TAG, "fragment click listener")
-            mListener?.openFullPost(it)
-        }
-    }
-
-    private val observerBirthId: Observer<String> = Observer {
-        Log.v(TAG, "birthid observer called")
-        if (it != null) {
-            mListener?.openProfile(it)
-        }
-    }
-
     override fun onStop() {
         super.onStop()
         Log.v(TAG, "onstop")
@@ -79,7 +59,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         Log.v(TAG, "onattach")
-        mListener = if (context is HomeFeedFragment.OnFragmentInteractionListener) {
+        mListener = if (context is PostInteractionListener) {
             context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
@@ -90,20 +70,19 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         super.onResume()
         Log.v(TAG, "onResume")
 
-        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
-        homeFeedViewModel.glide = GlideApp.with(this)
-        homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
-        homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
-
-        val manager = LinearLayoutManager(context)
-        manager.isItemPrefetchEnabled = true
-
-        val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
-        val modelProvider = MyPreloadModelProvider()
-        val preLoader = RecyclerViewPreloader<GlideUrl>(GlideApp.with(activity?.applicationContext!!), modelProvider, sizeProvider, 5)
-
         if (!isInitialized) {
+            homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
+            homeFeedViewModel.glide = GlideApp.with(this)
+            homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
+            homeFeedViewModel.mutablePost.observe(this, observer)
+            homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
+
+            val manager = LinearLayoutManager(context)
+            manager.isItemPrefetchEnabled = true
+
+            val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
+            val modelProvider = MyPreloadModelProvider()
+            val preLoader = RecyclerViewPreloader<GlideUrl>(GlideApp.with(activity?.applicationContext!!), modelProvider, sizeProvider, 5)
             recyclerView.addOnScrollListener(preLoader)
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = manager
@@ -123,16 +102,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
     }
 
-    private fun checkMorePostsNeeded(recyclerView: RecyclerView) {
-        val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-        if (!homeFeedViewModel.isLoading &&
-                layoutManager.itemCount <=
-                (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
-            homeFeedViewModel.isLoading = true
-            homeFeedViewModel.getNextPosts()
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         Log.v(TAG, "onCreateView")
@@ -145,8 +114,33 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         mListener = null
     }
 
+    private val observer: Observer<Post> = Observer {
+        Log.v(TAG, "observer called")
+        if (it != null) {
+            Log.v(TAG, "fragment click listener")
+            mListener?.openFullPost(it)
+        }
+    }
+
+    private val observerBirthId: Observer<String> = Observer {
+        Log.v(TAG, "birthid observer called")
+        if (it != null) {
+            mListener?.openProfile(it)
+        }
+    }
+
+    private fun checkMorePostsNeeded(recyclerView: RecyclerView) {
+        val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+        if (!homeFeedViewModel.isLoading &&
+                layoutManager.itemCount <=
+                (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
+            homeFeedViewModel.isLoading = true
+            homeFeedViewModel.getNextPosts()
+        }
+    }
+
     private lateinit var homeFeedViewModel: HomeFeedViewModel
-    private var mListener: OnFragmentInteractionListener? = null
+    private var mListener: PostInteractionListener? = null
     private var isInitialized: Boolean = false
     private val toleranceEndlessScroll = 3
 

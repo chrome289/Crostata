@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.util.recyclerView
+package xyz.siddharthseth.crostata.util.DiffUtil
 
 import android.support.v7.util.DiffUtil
 import xyz.siddharthseth.crostata.data.model.Comment
