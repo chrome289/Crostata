@@ -1,5 +1,6 @@
 package xyz.siddharthseth.crostata.view.ui.activity
 
+import android.app.AlertDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,8 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Token
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.backstack.BackStackListener
 import xyz.siddharthseth.crostata.util.backstack.BackStackManager
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
@@ -63,17 +66,38 @@ class MainActivity : AppCompatActivity()
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return if (item != null) {
             when (item.itemId) {
-                R.id.addPost -> {
-                    addNewPost()
-                }
+                R.id.addPost -> addNewPost()
                 R.id.search -> {
-
                 }
+                R.id.signOut -> showSignOutDialog()
             }
             true
         } else {
             false
         }
+    }
+
+    private fun showSignOutDialog() {
+        val alertDialog = AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setPositiveButton("OKAY", { dialog, _ ->
+                    dialog.dismiss()
+                    signOut()
+                })
+                .setNegativeButton("CANCEL", { dialog, _ -> dialog.dismiss() })
+                .setTitle("Sign Out ?")
+                .setMessage("Close the session and sign out.")
+                .create()
+
+        alertDialog.show()
+    }
+
+    private fun signOut() {
+        LoggedSubject.init("", "")
+        val sharedPreferences = SharedPreferencesService()
+        sharedPreferences.saveToken(Token(), applicationContext)
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 
     override fun openFullPost(post: Post) {
@@ -92,10 +116,15 @@ class MainActivity : AppCompatActivity()
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         customFragmentManager = BackStackManager(this, supportFragmentManager)
 
-        setSupportActionBar(toolbar)
-
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
+
+        //workaround, dummy load
+        bottomNavigationView.selectedItemId = R.id.community
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            Log.v(TAG, "loading once")
+            getBottomNavigationListener(it)
+        }
+        bottomNavigationView.setOnNavigationItemReselectedListener { Log.v(TAG, "no reloading for you") }
         bottomNavigationView.selectedItemId = R.id.home
     }
 
@@ -105,14 +134,6 @@ class MainActivity : AppCompatActivity()
             //Log.v(TAG, fragment.tag!!.toInt().toString() + " " + R.id.home)
             bottomNavigationView.setOnNavigationItemSelectedListener { true }
             bottomNavigationView.selectedItemId = fragment.tag!!.toInt()
-            bottomNavigationView.setOnNavigationItemSelectedListener { getBottomNavigationListener(it) }
-        }
-    }
-
-    private fun setViewPostToolbar() {
-        val toolbar = supportActionBar
-        if (toolbar != null) {
-            toolbar.title = "Comments"
         }
     }
 
@@ -163,8 +184,12 @@ class MainActivity : AppCompatActivity()
                 viewPostFragment as ViewPostFragment
             }
             R.id.selfProfile -> {
+                //if (selfProfileFragment == null) {
                 selfProfileFragment = SelfProfileFragment.newInstance()
                 selfProfileFragment as SelfProfileFragment
+                /*} else {
+                    selfProfileFragment as SelfProfileFragment
+                }*/
             }
             else -> {
                 if (homeFeedFragment == null) {

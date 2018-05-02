@@ -58,7 +58,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialog() {
         loadingFrame.visibility = View.VISIBLE
-        animationView.setAnimation(R.raw.loader1)
         animationView.playAnimation()
     }
 
@@ -95,12 +94,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_login)
 
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
-        LoggedSubject.initLoggedSubject(applicationContext)
+        LoggedSubject.init(applicationContext)
 
         loadingFrame.setOnTouchListener { _, _ ->
             Log.v(TAG, "Don't click")
             true
         }
+        animationView.setAnimation(R.raw.loader1)
 
         val token = SharedPreferencesService().getToken(applicationContext)
         if (token.isNotEmpty()) {

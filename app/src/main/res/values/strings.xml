@@ -87,4 +87,5 @@
     <string name="action">action</string>
     <string name="internet_connection_failed">Internet Connection Failed</string>
     <string name="check_your_internet_amp_try_again">Check your Internet &amp; try again</string>
+    <string name="toolbar_signOut">Sign Out</string>
 </resources>
