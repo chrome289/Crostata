@@ -165,7 +165,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun getPosts() {
         if (isInitialized)
-            Observable.from(postList)
+            updatePostAdapter()
         else
             getNextPosts()
     }
@@ -188,7 +188,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                             postList.add(it)
                             hasNewItems = true
                         },
-                        { it.printStackTrace() },
+                        {
+                            it.printStackTrace()
+                        },
                         {
                             Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
                             if (hasNewItems) {

@@ -58,7 +58,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialog() {
         loadingFrame.visibility = View.VISIBLE
-        animationView.setAnimation(R.raw.preloader)
+        animationView.setAnimation(R.raw.loader1)
         animationView.playAnimation()
     }
 

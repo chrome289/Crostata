@@ -85,4 +85,6 @@
     <string name="our_achievements">Our Achievements</string>
     <string name="economy">Economy</string>
     <string name="action">action</string>
+    <string name="internet_connection_failed">Internet Connection Failed</string>
+    <string name="check_your_internet_amp_try_again">Check your Internet &amp; try again</string>
 </resources>

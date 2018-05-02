@@ -2,6 +2,7 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
@@ -107,15 +108,38 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     lateinit var glide: GlideRequests
 
+    var mutableShowAnimation = MutableLiveData<Boolean>()
+    var mutableShowError = MutableLiveData<Boolean>()
+    var mutableShowLoader = MutableLiveData<Boolean>()
+
     init {
         homeFeedAdapter.setHasStableIds(true)
     }
 
     fun getPosts() {
-        if (isInitialized)
-            Observable.from(postList)
-        else
+        mutableShowError.value = false
+        mutableShowAnimation.value = true
+        mutableShowLoader.value = true
+
+        if (isInitialized) {
+            updatePostAdapter()
+        } else
             fetchPosts()
+    }
+
+    private fun updatePostAdapter() {
+        val diffUtil = DiffUtil.calculateDiff(
+                PostDiffUtilCallback(homeFeedAdapter.postList, postList))
+        postList.sort()
+        homeFeedAdapter.postList.clear()
+        homeFeedAdapter.postList.addAll(postList)
+        lastTimestamp = postList[postList.size - 1].getTimestamp()
+        isLoading = false
+        diffUtil.dispatchUpdatesTo(homeFeedAdapter)
+
+        mutableShowError.value = false
+        mutableShowAnimation.value = false
+        mutableShowLoader.value = false
     }
 
     fun getNextPosts() {
@@ -145,18 +169,17 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                             postList.add(it)
                             hasNewItems = true
                         },
-                        { it.printStackTrace() },
+                        {
+                            it.printStackTrace()
+
+                            mutableShowError.value = true
+                            mutableShowAnimation.value = false
+                            mutableShowLoader.value = true
+                        },
                         {
                             Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
                             if (hasNewItems) {
-                                val diffUtil = DiffUtil.calculateDiff(
-                                        PostDiffUtilCallback(homeFeedAdapter.postList, postList))
-                                postList.sort()
-                                homeFeedAdapter.postList.clear()
-                                homeFeedAdapter.postList.addAll(postList)
-                                lastTimestamp = postList[postList.size - 1].getTimestamp()
-                                isLoading = false
-                                diffUtil.dispatchUpdatesTo(homeFeedAdapter)
+                                updatePostAdapter()
                             }
                         }
                 )

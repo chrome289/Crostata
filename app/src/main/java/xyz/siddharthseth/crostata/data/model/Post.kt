@@ -139,7 +139,7 @@ class Post() : Comparable<Post>, Parcelable {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = date
 
-        timeCreatedText = TimeAgo.using(calendar.timeInMillis).capitalize()
+        timeCreatedText = TimeAgo.using(calendar.timeInMillis)
     }
 
     private fun setGlideUrl(baseUrl: String, dimen: Int, quality: Int, token: String) {

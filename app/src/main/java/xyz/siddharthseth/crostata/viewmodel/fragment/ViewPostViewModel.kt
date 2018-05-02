@@ -90,7 +90,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         val birthId = LoggedSubject.birthId
         return contentRepository.clearVote(token, postId, birthId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+                .subscribeOn(Schedulers.io())
     }
 
     override fun clearPostedImageGlide(imageView: ImageView) {
@@ -154,10 +154,9 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
         Log.v(TAG, "upVoteButtonClick")
-        //  val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
         return contentRepository.submitVote(token, postId, LoggedSubject.birthId, value)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+                .subscribeOn(Schedulers.io())
     }
 
     private var commentList = ArrayList<Comment>()

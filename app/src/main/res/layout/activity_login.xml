@@ -224,8 +224,12 @@
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:layout_weight="5"
+                android:scaleType="fitCenter"
+                app:lottie_cacheStrategy="strong"
+                app:lottie_enableMergePathsForKitKatAndAbove="true"
                 app:lottie_loop="true" />
         </LinearLayout>
 

@@ -25,12 +25,40 @@ import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.device.DeviceUtils
+import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.util.*
 
 
-class HomeFeedFragment : Fragment(), View.OnClickListener {
+class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
+    override fun showError(isShown: Boolean) {
+        if (isShown) {
+            errorLayout.visibility = View.VISIBLE
+        } else {
+            errorLayout.visibility = View.GONE
+        }
+    }
+
+    override fun showLoader(isShown: Boolean) {
+        if (isShown) {
+            loadingFrame.visibility = View.VISIBLE
+        } else {
+            loadingFrame.visibility = View.GONE
+        }
+    }
+
+    override fun showAnimation(isShown: Boolean) {
+        if (isShown) {
+            animationView.setAnimation(R.raw.loader1)
+            animationView.scale = 0.2f
+            animationView.visibility = View.VISIBLE
+            animationView.playAnimation()
+        } else {
+            animationView.cancelAnimation()
+            animationView.visibility = View.GONE
+        }
+    }
 
     override fun onClick(v: View?) {
         if (v != null && mListener != null) {
@@ -42,6 +70,15 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onCreate")
         if (arguments != null) {
         }
+
+        homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
+        homeFeedViewModel.glide = GlideApp.with(this)
+        homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
+        homeFeedViewModel.mutablePost.observe(this, observer)
+        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
+        homeFeedViewModel.mutableShowAnimation.observe(this, observerShowAnimation)
+        homeFeedViewModel.mutableShowError.observe(this, observerShowError)
+        homeFeedViewModel.mutableShowLoader.observe(this, observerShowLoader)
     }
 
     override fun onPause() {
@@ -71,12 +108,6 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onResume")
 
         if (!isInitialized) {
-            homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
-            homeFeedViewModel.glide = GlideApp.with(this)
-            homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
-            homeFeedViewModel.mutablePost.observe(this, observer)
-            homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
-
             val manager = LinearLayoutManager(context)
             manager.isItemPrefetchEnabled = true
 
@@ -126,6 +157,25 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "birthid observer called")
         if (it != null) {
             mListener?.openProfile(it)
+        }
+    }
+
+    private val observerShowError: Observer<Boolean> = Observer {
+        if (it != null) {
+            showError(it)
+        }
+    }
+
+
+    private val observerShowAnimation: Observer<Boolean> = Observer {
+        if (it != null) {
+            showAnimation(it)
+        }
+    }
+
+    private val observerShowLoader: Observer<Boolean> = Observer {
+        if (it != null) {
+            showLoader(it)
         }
     }
 

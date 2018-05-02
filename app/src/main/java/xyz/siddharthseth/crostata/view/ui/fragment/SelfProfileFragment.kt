@@ -18,12 +18,41 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
+import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SelfProfileFragment : Fragment() {
+class SelfProfileFragment : Fragment(), BusyLoaderListener {
+    override fun showError(isShown: Boolean) {
+        if (isShown) {
+            errorLayout.visibility = View.VISIBLE
+        } else {
+            errorLayout.visibility = View.GONE
+        }
+    }
+
+    override fun showLoader(isShown: Boolean) {
+        if (isShown) {
+            loadingFrame.visibility = View.VISIBLE
+        } else {
+            loadingFrame.visibility = View.GONE
+        }
+    }
+
+    override fun showAnimation(isShown: Boolean) {
+        if (isShown) {
+            animationView.setAnimation(R.raw.loader1)
+            animationView.scale = 0.2f
+            animationView.visibility = View.VISIBLE
+            animationView.playAnimation()
+        } else {
+            animationView.cancelAnimation()
+            animationView.visibility = View.GONE
+        }
+    }
+
     val TAG: String = javaClass.simpleName
     private var profileInteractionListener: ProfileInteractionListener? = null
     private lateinit var profileViewModel: ProfileViewModel
@@ -56,6 +85,7 @@ class SelfProfileFragment : Fragment() {
         }
     }*/
 
+
     override fun onStop() {
         super.onStop()
 
@@ -78,6 +108,9 @@ class SelfProfileFragment : Fragment() {
         profilePostRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         profilePostRecyclerView.adapter = profileViewModel.profilePostAdapter
 
+        showLoader(true)
+        showAnimation(true)
+        showError(false)
         profileViewModel.getInfo()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ subject: Subject ->
@@ -99,7 +132,16 @@ class SelfProfileFragment : Fragment() {
                     gender.text = if (subject.gender == 0) "Male" else "Female"
                     profession.text = subject.profession.toLowerCase().capitalize()
 
-                }, { err -> err.printStackTrace() })
+                    showLoader(false)
+                    showAnimation(false)
+                    showError(false)
+                }, { err ->
+                    err.printStackTrace()
+
+                    showLoader(true)
+                    showAnimation(false)
+                    showError(true)
+                })
         profileViewModel.getPosts()
     }
 
