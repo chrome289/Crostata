@@ -11,10 +11,10 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
 
     private val TAG = javaClass.simpleName
     fun init(comment: Comment) {
-        itemView.nameTextView.text = comment.name
-        itemView.textPost.text = comment.text
+        itemView.profileName.text = comment.name
+        itemView.contentText.text = comment.text
 
-        itemView.timeTextView.text = comment.timeCreatedText
+        itemView.timeText.text = comment.timeCreatedText
     }
 
     fun loadImages(comment: Comment) {

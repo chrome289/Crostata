@@ -2,7 +2,7 @@ package xyz.siddharthseth.crostata.view.adapter.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import kotlinx.android.synthetic.main.recyclerview_home_card.view.*
+import kotlinx.android.synthetic.main.recyclerview_post_card.view.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
@@ -13,7 +13,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.imageView, R.id.commentButton, R.id.textPost -> {
+                R.id.contentImage, R.id.commentButton, R.id.contentText -> {
                     postItemListener.openFullPost(adapterPosition)
                 }
             }
@@ -30,7 +30,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
         itemView.profileName.text = post.creatorName
         itemView.profileName.setOnClickListener { postItemListener.openProfile(post.creatorId) }
 
-        itemView.timeTextView.text = post.timeCreatedText
+        itemView.timeText.text = post.timeCreatedText
 
         itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
@@ -43,18 +43,18 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
         itemView.commentsTotal.text = "${post.comments} comments"
 
-        itemView.textPost.text = post.text
-        itemView.textPost.setOnClickListener { this.onClick(it) }
+        itemView.contentText.text = post.text
+        itemView.contentText.setOnClickListener { this.onClick(it) }
     }
 
     fun loadImages(post: Post) {
         if (post.contentType == "TO") {
-            itemView.imageView.visibility = View.GONE
-            postItemListener.clearPostedImageGlide(itemView.imageView)
+            itemView.contentImage.visibility = View.GONE
+            postItemListener.clearPostedImageGlide(itemView.contentImage)
         } else {
-            itemView.imageView.visibility = View.VISIBLE
-            postItemListener.loadPostedImage(post, 640, itemView.imageView)
-            itemView.imageView.setOnClickListener(this)
+            itemView.contentImage.visibility = View.VISIBLE
+            postItemListener.loadPostedImage(post, 640, itemView.contentImage)
+            itemView.contentImage.setOnClickListener(this)
             //itemView.imageView.requestLayout()
         }
         //Log.v(TAG, post.glideUrlProfileThumb.toStringUrl())
@@ -62,7 +62,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     }
 
     fun clearImages() {
-        postItemListener.clearPostedImageGlide(itemView.imageView)
+        postItemListener.clearPostedImageGlide(itemView.contentImage)
         postItemListener.clearPostedImageGlide(itemView.profileImage)
     }
 }

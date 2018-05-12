@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textPost"
+        android:id="@+id/contentText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
     <TextView
-        android:id="@+id/nameTextView"
+        android:id="@+id/profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -45,38 +45,38 @@
         android:fontFamily="@font/roboto"
         android:text="@string/sample_name"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/textPost"
-        app:layout_constraintTop_toBottomOf="@+id/textPost" />
+        app:layout_constraintStart_toStartOf="@+id/contentText"
+        app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
     <TextView
-        android:id="@+id/timeTextView"
+        android:id="@+id/timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:fontFamily="@font/roboto_light"
         android:text="@string/sample_time"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/nameTextView"
-        app:layout_constraintStart_toEndOf="@+id/nameTextView"
-        app:layout_constraintTop_toTopOf="@+id/nameTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/profileName"
+        app:layout_constraintStart_toEndOf="@+id/profileName"
+        app:layout_constraintTop_toTopOf="@+id/profileName" />
 
     <ImageButton
-        android:id="@+id/reportTextView"
+        android:id="@+id/reportButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:background="#00ffffff"
+        android:contentDescription="@string/report"
         android:scaleType="centerInside"
         android:src="@drawable/ic_flag"
         android:tint="@color/greyUnselected"
-        app:layout_constraintBottom_toBottomOf="@+id/timeTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/timeText"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/report"
-        app:layout_constraintTop_toTopOf="@+id/timeTextView" />
+        app:layout_constraintTop_toTopOf="@+id/timeText" />
 
     <View
-        android:id="@+id/view4"
+        android:id="@+id/seperator"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginEnd="8dp"
@@ -84,7 +84,7 @@
         android:background="#f5f5f5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -17,7 +17,7 @@ class HomeFeedAdapter(private val postItemListener: PostItemListener) : Recycler
         return PostViewHolder(
                 LayoutInflater
                         .from(parent.context)
-                        .inflate(R.layout.recyclerview_home_card, parent, false)
+                        .inflate(R.layout.recyclerview_post_card, parent, false)
                 , postItemListener
         )
     }

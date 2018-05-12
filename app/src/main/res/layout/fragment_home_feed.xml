@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment"
-        tools:listitem="@layout/recyclerview_home_card" />
+        tools:listitem="@layout/recyclerview_post_card" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/loadingFrame"

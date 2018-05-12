@@ -88,4 +88,9 @@
     <string name="internet_connection_failed">Internet Connection Failed</string>
     <string name="check_your_internet_amp_try_again">Check your Internet &amp; try again</string>
     <string name="toolbar_signOut">Sign Out</string>
+    <string name="donate_money">Donate Money</string>
+    <string name="very_high">Very High</string>
+    <string name="job_satisfaction">Job Satisfaction</string>
+    <string name="be_an_informer">Be an Informer</string>
+    <string name="enlist">Enlist</string>
 </resources>

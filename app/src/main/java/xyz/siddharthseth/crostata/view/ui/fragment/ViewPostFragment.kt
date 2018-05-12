@@ -106,20 +106,20 @@ class ViewPostFragment : Fragment() {
         profileName.text = post.creatorName
         profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId) }
 
-        timeTextView.text = post.timeCreatedText
+        timeText.text = post.timeCreatedText
 
         reportButton.setOnClickListener { viewPostViewModel.onReportButtonClick(post) }
 
         if (post.contentType == "TO") {
-            imageView.visibility = View.GONE
-            viewPostViewModel.clearPostedImageGlide(imageView)
+            contentImage.visibility = View.GONE
+            viewPostViewModel.clearPostedImageGlide(contentImage)
         } else {
-            imageView.visibility = View.VISIBLE
-            viewPostViewModel.loadPostedImage(post, 640, imageView)
+            contentImage.visibility = View.VISIBLE
+            viewPostViewModel.loadPostedImage(post, 640, contentImage)
         }
         viewPostViewModel.loadProfileImage(post, 128, profileImage)
 
-        textPost.text = post.text
+        contentText.text = post.text
 
         commentsTotal.text = "${post.comments} comments"
         votesTotal.text = "${post.votes}"

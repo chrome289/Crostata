@@ -48,7 +48,7 @@
                 app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
             <TextView
-                android:id="@+id/timeTextView"
+                android:id="@+id/timeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -71,12 +71,12 @@
                 android:text="REPORT"
                 android:textColor="#212121"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="@+id/timeTextView"
+                app:layout_constraintBottom_toBottomOf="@+id/timeText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/profileName" />
 
             <TextView
-                android:id="@+id/textPost"
+                android:id="@+id/contentText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -89,10 +89,10 @@
                 android:textColor="#616161"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/contentImage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -116,7 +116,7 @@
                 android:textColor="@color/extraDarkGrey"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPost" />
+                app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
             <ImageButton
                 android:id="@+id/upVoteButton"
@@ -166,7 +166,7 @@
                 android:src="@drawable/arrow"
                 android:tint="@color/greyUnselected"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPost" />
+                app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"

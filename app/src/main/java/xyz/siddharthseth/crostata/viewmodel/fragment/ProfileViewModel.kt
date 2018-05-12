@@ -135,7 +135,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     private var hasNewItems = false
-    private var isLoading = false
+    internal var isLoading = false
 
     init {
         profilePostAdapter.setHasStableIds(true)
@@ -167,10 +167,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         if (isInitialized)
             updatePostAdapter()
         else
-            getNextPosts()
+            fetchPosts()
     }
 
-    private fun getNextPosts() {
+    private fun fetchPosts() {
+        isLoading = true
+        hasNewItems = false
+
         contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
                 .subscribeOn(Schedulers.io())
                 .flatMap { nextPosts ->
@@ -195,7 +198,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                             Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
                             if (hasNewItems) {
                                 updatePostAdapter()
-                                isLoading = false
                             }
                         }
                 )
@@ -207,7 +209,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         postList.sort()
         profilePostAdapter.postList.clear()
         profilePostAdapter.postList.addAll(postList)
-        lastTimestamp = postList[postList.size - 1].getTimestamp()
+        lastTimestamp = postList.last().getTimestamp()
+        isLoading = false
         diffUtil.dispatchUpdatesTo(profilePostAdapter)
     }
 
@@ -217,6 +220,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return contentRepository.submitVote(token, postId, birthId, value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+    }
+
+    fun getMorePosts() {
+        fetchPosts()
     }
 
 }

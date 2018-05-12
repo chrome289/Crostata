@@ -105,6 +105,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     var mutablePost: SingleLivePost = SingleLivePost()
     var mutableBirthId: SingleBirthId = SingleBirthId()
     var width: Int = 1080
+    var hasNewItems = false
 
     lateinit var glide: GlideRequests
 
@@ -117,10 +118,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getPosts() {
-        mutableShowError.value = false
-        mutableShowAnimation.value = true
-        mutableShowLoader.value = true
-
+        setLoaderLiveData(true, true, false)
         if (isInitialized) {
             updatePostAdapter()
         } else
@@ -137,9 +135,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         isLoading = false
         diffUtil.dispatchUpdatesTo(homeFeedAdapter)
 
-        mutableShowError.value = false
-        mutableShowAnimation.value = false
-        mutableShowLoader.value = false
+        setLoaderLiveData(false, false, false)
     }
 
     fun getNextPosts() {
@@ -149,7 +145,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private fun fetchPosts() {
         // val birthId = sharedPreferencesService.getUserDetails(getApplication())
         isLoading = true
-        var hasNewItems = false
+        hasNewItems = false
         Log.v(TAG, "making a request for posts")
 
         contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, LoggedSubject.birthId)
@@ -171,10 +167,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                         },
                         {
                             it.printStackTrace()
-
-                            mutableShowError.value = true
-                            mutableShowAnimation.value = false
-                            mutableShowLoader.value = true
+                            setLoaderLiveData(true, false, true)
                         },
                         {
                             Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
@@ -184,4 +177,11 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
                         }
                 )
     }
+
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        mutableShowLoader.value = isLoaderVisible
+        mutableShowAnimation.value = isAnimationVisible
+        mutableShowError.value = isErrorVisible
+    }
+
 }
