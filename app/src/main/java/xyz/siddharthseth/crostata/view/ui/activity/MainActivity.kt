@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -34,6 +35,14 @@ class MainActivity : AppCompatActivity()
         , ProfileInteractionListener
         , PostInteractionListener {
 
+    override fun showBackButton(isShown: Boolean) {
+        val toolbar: ActionBar = this.supportActionBar!!
+        toolbar.setDisplayHomeAsUpEnabled(isShown)
+        toolbar.setDisplayShowHomeEnabled(isShown)
+        isMainToolbarMenuShown = !isShown
+        invalidateOptionsMenu()
+    }
+
     override fun showNavBar(isShown: Boolean) {
         bottomNavigationView.visibility = if (isShown) View.VISIBLE else View.GONE
     }
@@ -59,7 +68,16 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_main, menu)
+        menuInflater.inflate(R.menu.menu_toolbar_main, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        if (isMainToolbarMenuShown)
+            menuInflater.inflate(R.menu.menu_toolbar_main, menu)
+        else
+            menuInflater.inflate(R.menu.menu_toolbar_view_post, menu)
         return true
     }
 
@@ -70,6 +88,7 @@ class MainActivity : AppCompatActivity()
                 R.id.search -> {
                 }
                 R.id.signOut -> showSignOutDialog()
+                android.R.id.home -> this.onBackPressed()
             }
             true
         } else {
@@ -210,6 +229,7 @@ class MainActivity : AppCompatActivity()
     private var vigilanceFragment: VigilanceFragment? = null
     private var viewPostFragment: ViewPostFragment? = null
 
+    var isMainToolbarMenuShown = true
     private lateinit var mainActivityViewModel: MainActivityViewModel
     private lateinit var customFragmentManager: BackStackManager
 }

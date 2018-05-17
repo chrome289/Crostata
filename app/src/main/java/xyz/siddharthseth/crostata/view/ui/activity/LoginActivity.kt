@@ -32,11 +32,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     // Log.v(TAG, "here0")
                     loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
                             .subscribe({ resultCode ->
-                                hideLoadingDialog()
                                 if (resultCode == 0) {
                                     openHomePage()
+                                    hideLoadingDialog()
+                                    finish()
                                 } else {
                                     showErrorAlert(resultCode)
+                                    hideLoadingDialog()
                                 }
                             }, { onError ->
                                 onError.printStackTrace()
@@ -63,7 +65,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun openHomePage() {
         startActivity(Intent(this, MainActivity::class.java))
-        finish()
     }
 
     private fun showErrorAlert(resultCode: Int) {
@@ -109,11 +110,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             loginActivityViewModel.signInSilently(token)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ resultCode ->
-                        hideLoadingDialog()
                         if (resultCode == 0) {
                             openHomePage()
+                            hideLoadingDialog()
+                            finish()
                         } else {
                             showErrorAlert(resultCode)
+                            hideLoadingDialog()
                         }
                     }, { error ->
                         Log.v(TAG, "Network Error " + error.message)

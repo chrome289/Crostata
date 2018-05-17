@@ -13,7 +13,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.contentImage, R.id.commentButton, R.id.contentText -> {
+                R.id.contentImage, R.id.contentText, R.id.commentButton, R.id.title -> {
                     postItemListener.openFullPost(adapterPosition)
                 }
             }
@@ -32,6 +32,9 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
         itemView.timeText.text = post.timeCreatedText
 
+        itemView.contentText.text = post.text
+        itemView.contentText.setOnClickListener { this.onClick(it) }
+
         itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
                 when {
@@ -42,9 +45,6 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
         )
 
         itemView.commentsTotal.text = "${post.comments} comments"
-
-        itemView.contentText.text = post.text
-        itemView.contentText.setOnClickListener { this.onClick(it) }
     }
 
     fun loadImages(post: Post) {

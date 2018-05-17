@@ -61,6 +61,7 @@ class ViewPostFragment : Fragment() {
             isInitialized = true
         }
         listener?.showNavBar(false)
+        listener?.showBackButton(true)
     }
 
     override fun onAttach(context: Context) {
@@ -83,6 +84,7 @@ class ViewPostFragment : Fragment() {
         viewPostViewModel.mutablePost.removeObserver(observer)
         viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
         listener?.showNavBar(true)
+        listener?.showBackButton(false)
     }
 
     private lateinit var viewPostViewModel: ViewPostViewModel
@@ -103,10 +105,11 @@ class ViewPostFragment : Fragment() {
 
     private fun initView() {
         val post = viewPostViewModel.mutablePost.value!!
+
         profileName.text = post.creatorName
         profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId) }
 
-        timeText.text = post.timeCreatedText
+        timeText.text = post.timeCreatedText.capitalize()
 
         reportButton.setOnClickListener { viewPostViewModel.onReportButtonClick(post) }
 
@@ -118,10 +121,11 @@ class ViewPostFragment : Fragment() {
             viewPostViewModel.loadPostedImage(post, 640, contentImage)
         }
         viewPostViewModel.loadProfileImage(post, 128, profileImage)
+        viewPostViewModel.loadProfileImage(post, 128, profileImage2)
 
         contentText.text = post.text
 
-        commentsTotal.text = "${post.comments} comments"
+        commentsTotal.text = "${post.comments} Comments"
         votesTotal.text = "${post.votes}"
         votesTotal.setTextColor(
                 when {

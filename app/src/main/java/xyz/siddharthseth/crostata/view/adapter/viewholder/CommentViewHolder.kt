@@ -12,7 +12,7 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
     private val TAG = javaClass.simpleName
     fun init(comment: Comment) {
         itemView.profileName.text = comment.name
-        itemView.contentText.text = comment.text
+        itemView.title.text = comment.text
 
         itemView.timeText.text = comment.timeCreatedText
     }

@@ -2,17 +2,14 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/profile_image"
         android:src="@drawable/home_feed_content_placeholder"
         app:layout_constraintDimensionRatio="1:1"
@@ -20,17 +17,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/contentText"
+        android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:ellipsize="end"
         android:fontFamily="@font/roboto"
-        android:maxLines="4"
         android:text="@string/sample_text"
         android:textColor="#424242"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
@@ -40,13 +34,13 @@
         android:id="@+id/profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:fontFamily="@font/roboto"
         android:text="@string/sample_name"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/contentText"
-        app:layout_constraintTop_toBottomOf="@+id/contentText" />
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
         android:id="@+id/timeText"
@@ -80,8 +74,8 @@
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
-        android:background="#f5f5f5"
+        android:layout_marginTop="8dp"
+        android:background="@color/greyLighter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileName" />

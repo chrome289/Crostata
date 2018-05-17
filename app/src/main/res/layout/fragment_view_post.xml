@@ -1,107 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_weight="1"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
-    <android.support.v4.widget.NestedScrollView
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
-        <android.support.constraint.ConstraintLayout
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/profile_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/sample_name"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <ImageButton
+            android:id="@+id/reportButton"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/white"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_flag"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <TextView
+            android:id="@+id/contentText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:paddingBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
+            android:gravity="start|center_vertical"
+            android:text="@string/sample_text"
+            android:textColor="#424242"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/profile_image"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/profileName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/sample_name"
-                android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintStart_toEndOf="@+id/profileImage"
-                app:layout_constraintTop_toTopOf="@+id/profileImage" />
+        <ImageView
+            android:id="@+id/contentImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:contentDescription="@string/content_image"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
-            <TextView
-                android:id="@+id/timeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/sample_time"
-                android:textColor="@color/greyUnselected"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-                app:layout_constraintStart_toEndOf="@+id/profileImage"
-                app:layout_constraintTop_toBottomOf="@+id/profileName" />
+        <TextView
+            android:id="@+id/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="@string/sample_time"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
-            <TextView
-                android:id="@+id/reportButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:fontFamily="@font/roboto"
-                android:text="REPORT"
-                android:textColor="#212121"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="@+id/timeText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/profileName" />
+        <ImageButton
+            android:id="@+id/upVoteButton"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="0"
+            android:background="@color/white"
+            android:contentDescription="@string/up_vote_button"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow"
+            android:tint="@color/greyUnselected"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toStartOf="@+id/votesTotal"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
-            <TextView
-                android:id="@+id/contentText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:ellipsize="end"
-                android:fontFamily="@font/roboto"
-                android:gravity="start|center_vertical"
-                android:text="@string/sample_text"
-                android:textColor="#616161"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+        <TextView
+            android:id="@+id/votesTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="0"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:minWidth="36dp"
+            android:text="@string/_123"
+            android:textColor="@color/extraDarkGrey"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/upVoteButton"
+            app:layout_constraintEnd_toStartOf="@+id/downVoteButton"
+            app:layout_constraintTop_toTopOf="@+id/upVoteButton" />
 
-            <ImageView
-                android:id="@+id/contentImage"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/content_image"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+        <ImageButton
+            android:id="@+id/downVoteButton"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="0"
+            android:background="@color/white"
+            android:contentDescription="@string/down_vote_button"
+            android:padding="2dp"
+            android:rotation="180"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow"
+            android:tint="@color/greyUnselected"
+            app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/commentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/greyLightest"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/upVoteButton">
 
             <TextView
                 android:id="@+id/commentsTotal"
@@ -110,123 +169,80 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_weight="0"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/roboto_light"
                 android:gravity="center"
-                android:text="86 comments"
+                android:text="@string/_86_comments"
                 android:textColor="@color/extraDarkGrey"
-                android:textSize="14sp"
+                android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contentText" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/upVoteButton"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="center"
+            <ImageView
+                android:id="@+id/profileImage2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/addComment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/addComment"
+                app:srcCompat="@drawable/farmer" />
+
+            <EditText
+                android:id="@+id/addComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/up_vote_button"
-                android:padding="2dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/arrow"
-                android:tint="@color/greyUnselected"
-                app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
-                app:layout_constraintEnd_toStartOf="@+id/votesTotal"
-                app:layout_constraintTop_toTopOf="@+id/votesTotal" />
-
-            <TextView
-                android:id="@+id/votesTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="0"
-                android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
-                android:text="@string/_123"
-                android:textColor="@color/extraDarkGrey"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/downVoteButton"
-                app:layout_constraintEnd_toStartOf="@+id/downVoteButton"
-                app:layout_constraintTop_toTopOf="@+id/downVoteButton" />
-
-            <ImageButton
-                android:id="@+id/downVoteButton"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_weight="0"
-                android:background="#00ffffff"
-                android:contentDescription="@string/down_vote_button"
-                android:padding="2dp"
-                android:rotation="180"
+                android:ems="10"
+                android:hint="@string/add_a_comment"
+                android:inputType="text"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@+id/commentButton"
+                app:layout_constraintStart_toEndOf="@+id/profileImage2"
+                app:layout_constraintTop_toBottomOf="@+id/commentsTotal" />
+
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/greyLightest"
+                android:contentDescription="@string/add_a_comment"
                 android:scaleType="centerInside"
-                android:src="@drawable/arrow"
-                android:tint="@color/greyUnselected"
+                android:src="@drawable/ic_send"
+                android:tint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/addComment"
+                app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/contentText" />
+                app:layout_constraintTop_toTopOf="@+id/addComment" />
+
+            <View
+                android:id="@+id/seperator2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/greyLighter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addComment" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_weight="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentsTotal"
+                app:layout_constraintTop_toBottomOf="@+id/seperator2"
                 tools:listitem="@layout/recyclerview_comment_card">
 
             </android.support.v7.widget.RecyclerView>
-
         </android.support.constraint.ConstraintLayout>
 
-
-    </android.support.v4.widget.NestedScrollView>
-
-    <View
-        android:id="@+id/view5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyLighter" />
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/addComment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="@string/add_a_comment"
-            android:inputType="textMultiLine"
-            android:textSize="14sp"
-            android:windowSoftInputMode="stateHidden"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/commentButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/commentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:background="#00ffffff"
-            android:src="@drawable/ic_send"
-            android:tint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/addComment"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/add_a_comment"
-            app:layout_constraintTop_toTopOf="@+id/addComment" />
-
     </android.support.constraint.ConstraintLayout>
-</LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
