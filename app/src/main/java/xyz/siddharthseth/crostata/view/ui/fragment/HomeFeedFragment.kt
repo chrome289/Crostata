@@ -91,6 +91,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
         Log.v(TAG, "onstop")
         homeFeedViewModel.mutablePost.removeObserver(observer)
         homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
+        homeFeedViewModel.mutableShowAnimation.removeObserver(observerShowAnimation)
+        homeFeedViewModel.mutableShowError.removeObserver(observerShowError)
+        homeFeedViewModel.mutableShowLoader.removeObserver(observerShowLoader)
     }
 
     override fun onAttach(context: Context?) {

@@ -33,6 +33,10 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.colorPrimary))
 
     var mutableSubject = MutableLiveData<Subject>()
+    var mutableShowAnimation = MutableLiveData<Boolean>()
+    var mutableShowError = MutableLiveData<Boolean>()
+    var mutableShowLoader = MutableLiveData<Boolean>()
+
     val contentRepository = ContentRepositoryProvider.getContentRepository()
     val sharedPreferencesService = SharedPreferencesService()
     var token = sharedPreferencesService.getToken(getApplication())
@@ -61,7 +65,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
                 val vigilanceAction =
                         VigilanceAction(1,
                                 false,
-                                "Enemy of The President's Regime.")
+                                "Enemy of President's Regime.")
                 actionList.add(vigilanceAction)
             }
             "NONE" -> {
@@ -75,14 +79,14 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
                 val vigilanceAction =
                         VigilanceAction(1,
                                 true,
-                                "Fought for The President's Regime.")
+                                "Fought for President's Regime.")
                 actionList.add(vigilanceAction)
             }
             "PEASANT" -> {
                 val vigilanceAction =
                         VigilanceAction(1,
                                 true,
-                                "Following The President's Orders.")
+                                "Following President's Orders.")
                 actionList.add(vigilanceAction)
             }
             "MERCHANT" -> {
@@ -96,7 +100,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
                 val vigilanceAction =
                         VigilanceAction(1,
                                 true,
-                                "Member of The President's Advisory Council.")
+                                "Member of President's Advisory Council.")
                 actionList.add(vigilanceAction)
             }
         }
@@ -105,14 +109,14 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
             val vigilanceAction =
                     VigilanceAction(2,
                             true,
-                            "Takes part in The President's Neighbourhood Surveillance Programme.")
+                            "Takes part in President's Hyperlocal Surveillance Programme.")
             actionList.add(vigilanceAction)
         }
         if (subject.moneyDonated > 0) {
             val vigilanceAction =
                     VigilanceAction(3,
                             true,
-                            "Donated " + CurrencyFormatter.commaSeparated(subject.moneyDonated) + " to The President's Fund.")
+                            "Donated " + CurrencyFormatter.commaSeparated(subject.moneyDonated) + " to President's Fund.")
             actionList.add(vigilanceAction)
         }
         if (subject.reportsMade > 0) {
@@ -156,7 +160,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         //  isLoading = false
         diffUtil.dispatchUpdatesTo(vigilanceReportAdapter)
 
-        //setLoaderLiveData(false, false, false)
+        setLoaderLiveData(false, false, false)
     }
 
     fun getReports() {
@@ -168,10 +172,23 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
                     it.initExtraInfo()
                     reportList.add(it)
                 }, {
+                    setLoaderLiveData(true, false, true)
                     it.printStackTrace()
                 }, {
 
                     updateVigilanceReportAdapter()
                 })
+    }
+
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        mutableShowLoader.value = isLoaderVisible
+        mutableShowAnimation.value = isAnimationVisible
+        mutableShowError.value = isErrorVisible
+    }
+
+    fun init() {
+        setLoaderLiveData(true, true, false)
+        getSubjectInfo()
+        getReports()
     }
 }
