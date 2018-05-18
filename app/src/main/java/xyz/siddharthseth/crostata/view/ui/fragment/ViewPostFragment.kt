@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view_post.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 

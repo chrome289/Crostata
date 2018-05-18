@@ -46,7 +46,7 @@
     <string name="security3">News Correction System</string>
     <string name="security2">102,794 Informers</string>
     <string name="security1">44,586 CCTVs</string>
-    <string name="security_amp_privacy"><![CDATA[Security & Privacy]]></string>
+    <string name="security_amp_privacy">Security &amp; Privacy></string>
     <string name="camps_raided">Camps Raided</string>
     <string name="territory_gained">Territory Gained</string>
     <string name="_7_174">7,174</string>
@@ -68,8 +68,8 @@
     <string name="our_progress_this_year">Our Progress this year</string>
     <string name="positive_con1">Donated P$ 5,206 to the National Security Fund</string>
     <string name="positive_con2">Reported 21 Citizens</string>
-    <string name="negetive_con1">Disrespected El Presidente online</string>
-    <string name="your_patriot_index_is_385">Your Patriot Index is -385</string>
+    <string name="negetive_con1">Disrespected The President online</string>
+    <string name="your_patriot_index_is_385">Your Patriot Index is %1$d</string>
     <string name="toolbar_vigilance">Vigilance</string>
     <string name="profile_patriot_index">Has a Patriot Index of %1$d</string>
     <string name="profile_gender">Male</string>
@@ -80,7 +80,7 @@
     <string name="all_posts">All Posts</string>
     <string name="p_index">P Index</string>
     <string name="_48">48</string>
-    <string name="el_presidente_s_monetary_fund">El Presidente\'s Monetary Fund</string>
+    <string name="el_presidente_s_monetary_fund">The President\'s Monetary Fund</string>
     <string name="p_4_71_billion">P$ 4.71 Billion</string>
     <string name="our_achievements">Our Achievements</string>
     <string name="economy">Economy</string>

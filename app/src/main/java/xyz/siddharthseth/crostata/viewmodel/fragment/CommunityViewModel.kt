@@ -14,7 +14,6 @@ import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
-import xyz.siddharthseth.crostata.data.model.retrofit.ChartEntry
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
@@ -26,12 +25,6 @@ class CommunityViewModel(application: Application) : AndroidViewModel(applicatio
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     val TAG: String = javaClass.simpleName
     //val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
-
-    fun getChart(): Observable<ChartEntry> {
-        return contentRepository.getPatriotChart(token)
-                .subscribeOn(Schedulers.io())
-                .flatMap { entries -> return@flatMap Observable.from(entries) }
-    }
 
     fun loadProfileImage(birthId2: String, imageView: ImageView,dimension:Int) {
         val context: Context = getApplication()

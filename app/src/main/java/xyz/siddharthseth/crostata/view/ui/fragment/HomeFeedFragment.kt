@@ -21,8 +21,8 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import kotlinx.android.synthetic.main.fragment_home_feed.*
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.Post
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.device.DeviceUtils
 import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener

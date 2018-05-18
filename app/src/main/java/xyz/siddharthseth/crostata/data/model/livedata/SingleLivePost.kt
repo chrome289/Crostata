@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
 import android.util.Log
-import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SingleLivePost : MutableLiveData<Post>() {

@@ -15,7 +15,7 @@ object LoggedSubject {
 
     fun init(context: Context) {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
-        LoggedSubject.init(sharedPreferences.getString("birthId", "")
+        init(sharedPreferences.getString("birthId", "")
                 , sharedPreferences.getString("password", ""))
     }
 }

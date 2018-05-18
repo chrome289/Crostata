@@ -7,11 +7,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.Comment
-import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.ChartEntry
-import xyz.siddharthseth.crostata.data.model.retrofit.Token
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
+import xyz.siddharthseth.crostata.data.model.retrofit.*
 
 interface CrostataApiService {
 
@@ -65,11 +61,6 @@ interface CrostataApiService {
             @Query("lastTimestamp") lastTimestamp: Long
     ): Observable<List<Comment>>
 
-    @GET("subject/charts")
-    fun getPatriotChart(
-            @Header("authorization") token: String
-    ): Observable<List<ChartEntry>>
-
     @GET("subject/info")
     fun getSubjectInfo(
             @Header("authorization") token: String,
@@ -101,6 +92,12 @@ interface CrostataApiService {
             @Field("text") comment: String,
             @Field("generate") generate: Boolean
     ): Observable<Comment>
+
+    @GET("report/reportMade")
+    fun getReports(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String
+    ): Observable<List<Report>>
 
     companion object {
         fun create(): CrostataApiService {

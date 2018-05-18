@@ -1,7 +1,7 @@
-package xyz.siddharthseth.crostata.util.DiffUtil
+package xyz.siddharthseth.crostata.util.diffUtil
 
 import android.support.v7.util.DiffUtil
-import xyz.siddharthseth.crostata.data.model.Comment
+import xyz.siddharthseth.crostata.data.model.retrofit.Comment
 
 class CommentDiffUtilCallback(private val commentList: ArrayList<Comment>, private val newComments: ArrayList<Comment>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

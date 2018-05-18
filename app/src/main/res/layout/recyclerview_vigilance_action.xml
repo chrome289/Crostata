@@ -2,32 +2,30 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/actionPolarity"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ic_action_minus"
-        android:tint="#616161"
-        app:layout_constraintBottom_toBottomOf="@+id/textView22"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="24dp"
         android:contentDescription="@string/action"
-        app:layout_constraintTop_toTopOf="@+id/textView22" />
+        android:src="@drawable/ic_action_minus"
+        app:layout_constraintBottom_toBottomOf="@+id/actionDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/actionDetail" />
 
     <TextView
-        android:id="@+id/textView22"
+        android:id="@+id/actionDetail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto_medium"
         android:text="@string/negetive_con1"
-        android:textAppearance="@android:style/TextAppearance.Material.Notification"
         android:textColor="#616161"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView6"
+        app:layout_constraintStart_toEndOf="@+id/actionPolarity"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

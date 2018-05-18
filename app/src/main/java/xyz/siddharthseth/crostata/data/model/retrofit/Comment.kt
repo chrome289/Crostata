@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.data.model
+package xyz.siddharthseth.crostata.data.model.retrofit
 
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders

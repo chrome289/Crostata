@@ -3,7 +3,7 @@ package xyz.siddharthseth.crostata.util.recyclerView
 import android.content.res.ColorStateList
 import android.widget.ImageView
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface PostItemListener {

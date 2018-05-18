@@ -1,11 +1,7 @@
 package xyz.siddharthseth.crostata.data.repository
 
 import rx.Observable
-import xyz.siddharthseth.crostata.data.model.Comment
-import xyz.siddharthseth.crostata.data.model.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.ChartEntry
-import xyz.siddharthseth.crostata.data.model.retrofit.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
+import xyz.siddharthseth.crostata.data.model.retrofit.*
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
 
 class ContentRepository(private var crostataApiService: CrostataApiService) {
@@ -31,10 +27,6 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.getComments(token, postId, noOfComments, lastTimestamp)
     }
 
-    fun getPatriotChart(token: String): Observable<List<ChartEntry>> {
-        return crostataApiService.getPatriotChart(token)
-    }
-
     fun getSubjectInfo(token: String, birthId: String): Observable<Subject> {
         return crostataApiService.getSubjectInfo(token, birthId)
     }
@@ -49,5 +41,9 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
 
     fun submitComment(token: String, postId: String, birthId: String, comment: String): Observable<Comment> {
         return crostataApiService.addComment(token, postId, birthId, comment, false)
+    }
+
+    fun getReports(token: String, birthId: String): Observable<List<Report>> {
+        return crostataApiService.getReports(token, birthId)
     }
 }

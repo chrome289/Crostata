@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.Comment
+import xyz.siddharthseth.crostata.data.model.retrofit.Comment
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.CommentViewHolder
 

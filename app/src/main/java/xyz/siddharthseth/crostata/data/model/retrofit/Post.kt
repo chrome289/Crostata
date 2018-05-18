@@ -1,4 +1,4 @@
-package xyz.siddharthseth.crostata.data.model
+package xyz.siddharthseth.crostata.data.model.retrofit
 
 import android.os.Parcel
 import android.os.Parcelable
