@@ -24,7 +24,6 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.device.DeviceUtils
 import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
@@ -73,7 +72,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
 
         homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
         homeFeedViewModel.glide = GlideApp.with(this)
-        homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
+        // homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
         homeFeedViewModel.mutablePost.observe(this, observer)
         homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
         homeFeedViewModel.mutableShowAnimation.observe(this, observerShowAnimation)

@@ -1,36 +1,266 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/theParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/greyLightest"
     tools:context="xyz.siddharthseth.crostata.view.ui.activity.AddPostActivity">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="What do you want to say ?"
-        android:textColor="#212121"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/farmer" />
+
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/sample_name"
+            android:textColor="#424242"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:tint="@color/greyUnselected"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toBottomOf="@+id/profileName"
+            app:srcCompat="@drawable/ic_action_info" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:text="Post will be censored before sharing"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/imageView8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/agreementBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage">
+
+            <EditText
+                android:id="@+id/contentText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:elevation="1dp"
+                android:ems="10"
+                android:gravity="top"
+                android:hint="Tell everyone what you are thinking..."
+                android:inputType="text|textMultiLine"
+                android:padding="8dp"
+                app:layout_constraintDimensionRatio="w,1:1.75"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1.75"
+                android:background="@color/white"
+                android:elevation="1dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/agreementBox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contentText">
+
+                <View
+                    android:id="@+id/viewe3"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLighter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/contentImage"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/home_feed_content_placeholder"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/disclaimer"
+                    app:layout_constraintDimensionRatio="w,1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/removeImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00ffffff"
+                    android:elevation="4dp"
+                    android:padding="0dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_cancel"
+                    android:tint="@color/greyLighter"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@+id/contentImage"
+                    app:layout_constraintTop_toTopOf="@+id/contentImage" />
+
+                <ImageButton
+                    android:id="@+id/addImage"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="#00ffffff"
+                    android:elevation="4dp"
+                    android:padding="0dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_action_add"
+                    android:tint="@color/greyUnselected"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/contentImage"
+                    app:layout_constraintEnd_toEndOf="@+id/contentImage"
+                    app:layout_constraintStart_toStartOf="@+id/contentImage"
+                    app:layout_constraintTop_toTopOf="@+id/contentImage" />
+
+                <TextView
+                    android:id="@+id/disclaimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="This image will be uploaded with your post"
+                    android:textColor="@color/greyUnselected"
+                    android:textSize="12sp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/contentImage"
+                    app:layout_constraintStart_toStartOf="@+id/contentImage" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/agreementBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="I certify that this post complies with the Palmyrene Code of Conduct"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/loadingFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#64ffffff"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-</android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_cacheStrategy="strong"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            app:lottie_loop="true" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/errorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/animationView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/animationView">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/internet_connection_failed"
+                android:src="@drawable/error"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/internet_connection_failed"
+                android:textColor="#212121"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView7"
+                app:layout_constraintTop_toTopOf="@+id/imageView7" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/check_your_internet_amp_try_again"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

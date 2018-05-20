@@ -1,8 +1,13 @@
 package xyz.siddharthseth.crostata.data.repository
 
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Response
 import rx.Observable
 import xyz.siddharthseth.crostata.data.model.retrofit.*
 import xyz.siddharthseth.crostata.data.service.CrostataApiService
+import java.io.File
 
 class ContentRepository(private var crostataApiService: CrostataApiService) {
     private val TAG = "ContentRepository"
@@ -45,5 +50,18 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
 
     fun getReports(token: String, birthId: String): Observable<List<Report>> {
         return crostataApiService.getReports(token, birthId)
+    }
+
+    fun submitTextPost(token: String, birthId: String, postContent: String, isGenerated: Boolean): Observable<Response<ResponseBody>> {
+        return crostataApiService.postTextPost(token, birthId, postContent, isGenerated)
+    }
+
+    fun submitImagePost(token: String, birthId: String, postContent: String, image: File, isGenerated: Boolean): Observable<Response<ResponseBody>> {
+
+        val requestBody = RequestBody.create(MediaType.parse("image/*"), image)
+        val requestBody2 = RequestBody.create(MediaType.parse("text/plain"), birthId)
+        val requestBody3 = RequestBody.create(MediaType.parse("text/plain"), postContent)
+        val requestBody4 = RequestBody.create(MediaType.parse("text/plain"), isGenerated.toString())
+        return crostataApiService.postImagePost(token, requestBody2, requestBody3, requestBody, requestBody4)
     }
 }

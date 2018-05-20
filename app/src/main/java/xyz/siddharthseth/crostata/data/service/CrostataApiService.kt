@@ -1,5 +1,6 @@
 package xyz.siddharthseth.crostata.data.service
 
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -98,6 +99,25 @@ interface CrostataApiService {
             @Header("authorization") token: String,
             @Query("birthId") birthId: String
     ): Observable<List<Report>>
+
+    @POST("content/textPost")
+    @FormUrlEncoded
+    fun postTextPost(
+            @Header("authorization") token: String,
+            @Field("birthId") birthId: String,
+            @Field("postContent") postContent: String,
+            @Field("generate") generated: Boolean
+    ): Observable<Response<ResponseBody>>
+
+    @POST("content/comboPost")
+    @Multipart
+    fun postImagePost(
+            @Header("authorization") token: String,
+            @Part("birthId") birthId: RequestBody,
+            @Part("postContent") postContent: RequestBody,
+            @Part("file\"; fileName=\"myFile.png\" ") image: RequestBody,
+            @Part("generate") generated: RequestBody
+    ): Observable<Response<ResponseBody>>
 
     companion object {
         fun create(): CrostataApiService {

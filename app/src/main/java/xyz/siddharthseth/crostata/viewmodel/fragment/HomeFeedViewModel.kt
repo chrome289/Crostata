@@ -104,7 +104,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     var mutablePost: SingleLivePost = SingleLivePost()
     var mutableBirthId: SingleBirthId = SingleBirthId()
-    var width: Int = 1080
+    // var width: Int = 1080
     var hasNewItems = false
 
     lateinit var glide: GlideRequests
