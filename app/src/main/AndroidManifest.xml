@@ -41,6 +41,9 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".view.ui.activity.AddPostActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c56b795ee9ade0d24c258152610ed617aa0aaf6e" />
     </application>
 
 </manifest>

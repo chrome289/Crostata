@@ -1,5 +1,6 @@
 package xyz.siddharthseth.crostata.view.ui.activity
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlinx.android.synthetic.main.activity_add_post_activity.*
+import kotlinx.android.synthetic.main.activity_add_post.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
@@ -17,6 +18,14 @@ import xyz.siddharthseth.crostata.viewmodel.activity.AddPostActivityViewModel
 import java.io.File
 
 class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
+    override fun isNetAvailable() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override var mutableNetStatusChanged: MutableLiveData<Boolean>
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+        set(value) {}
+
     override fun showError(isShown: Boolean) {
         if (isShown) {
             errorLayout.visibility = View.VISIBLE
@@ -45,12 +54,18 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
         }
     }
 
+    override fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        showLoader(isLoaderVisible)
+        showAnimation(isAnimationVisible)
+        showError(isErrorVisible)
+    }
+
     lateinit var addPostActivityViewModel: AddPostActivityViewModel
     val TAG: String = javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_post_activity)
+        setContentView(R.layout.activity_add_post)
 
         addPostActivityViewModel = ViewModelProviders.of(this).get(AddPostActivityViewModel::class.java)
 
@@ -136,11 +151,5 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
                     .into(contentImage)
             contentImage.requestLayout()
         }
-    }
-
-    private fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        showLoader(isLoaderVisible)
-        showAnimation(isAnimationVisible)
-        showError(isErrorVisible)
     }
 }

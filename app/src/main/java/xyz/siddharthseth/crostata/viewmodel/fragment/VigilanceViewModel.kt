@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
+import android.util.Log
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -32,30 +33,25 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
     override val negativeColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.colorPrimary))
 
-    var mutableSubject = MutableLiveData<Subject>()
-    var mutableShowAnimation = MutableLiveData<Boolean>()
-    var mutableShowError = MutableLiveData<Boolean>()
-    var mutableShowLoader = MutableLiveData<Boolean>()
 
-    val contentRepository = ContentRepositoryProvider.getContentRepository()
-    val sharedPreferencesService = SharedPreferencesService()
+    private val contentRepository = ContentRepositoryProvider.getContentRepository()
+    private val sharedPreferencesService = SharedPreferencesService()
     var token = sharedPreferencesService.getToken(getApplication())
-    var actionList = ArrayList<VigilanceAction>()
-    val vigilanceActionAdapter = VigilanceActionAdapter(this)
 
-    var reportList = ArrayList<Report>()
+    private var actionList = ArrayList<VigilanceAction>()
+    val vigilanceActionAdapter = VigilanceActionAdapter(this)
+    private var reportList = ArrayList<Report>()
     val vigilanceReportAdapter = VigilanceReportAdapter(this)
 
-    internal fun getSubjectInfo() {
-        contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mutableSubject.value = it
-                }, {
-                    it.printStackTrace()
-                })
-    }
+    private val TAG: String = javaClass.simpleName
+
+    var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
+    var mutableSubject = MutableLiveData<Subject>()
+
+    private var isReportRequestSent = false
+    private var isActionRequestSent = false
+    var isLoadPending = false
+    private var hasNewItems = false
 
     fun setVigilanceActions() {
         val subject: Subject = mutableSubject.value!!
@@ -144,10 +140,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         vigilanceActionAdapter.actionReportList.clear()
         vigilanceActionAdapter.actionReportList.addAll(actionList)
         // lastTimestamp = postList[postList.size - 1].getTimestamp()
-        //  isLoading = false
         diffUtil.dispatchUpdatesTo(vigilanceActionAdapter)
-
-        //setLoaderLiveData(false, false, false)
     }
 
     private fun updateVigilanceReportAdapter() {
@@ -157,38 +150,80 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         vigilanceReportAdapter.reportList.clear()
         vigilanceReportAdapter.reportList.addAll(reportList)
         // lastTimestamp = postList[postList.size - 1].getTimestamp()
-        //  isLoading = false
         diffUtil.dispatchUpdatesTo(vigilanceReportAdapter)
-
-        setLoaderLiveData(false, false, false)
     }
 
-    fun getReports() {
-        contentRepository.getReports(token, LoggedSubject.birthId)
-                .subscribeOn(Schedulers.io())
-                .flatMap { Observable.from(it) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    it.initExtraInfo()
-                    reportList.add(it)
-                }, {
-                    setLoaderLiveData(true, false, true)
-                    it.printStackTrace()
-                }, {
-
-                    updateVigilanceReportAdapter()
-                })
+    private fun getSubjectInfo() {
+        if (!isActionRequestSent) {
+            isActionRequestSent = true
+            contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        mutableSubject.value = it
+                    }, {
+                        isActionRequestSent = false
+                        it.printStackTrace()
+                    }, {
+                        isActionRequestSent = false
+                        updateVigilanceActionAdapter()
+                    })
+        }
     }
 
-    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        mutableShowLoader.value = isLoaderVisible
-        mutableShowAnimation.value = isAnimationVisible
-        mutableShowError.value = isErrorVisible
+    private fun getReports() {
+        if (!isReportRequestSent) {
+            isReportRequestSent = true
+            hasNewItems = false
+            contentRepository.getReports(token, LoggedSubject.birthId)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap { Observable.from(it) }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        it.initExtraInfo()
+                        reportList.add(it)
+                        hasNewItems = true
+                    }, {
+                        isReportRequestSent = false
+                        setLoaderLiveData(true, false, true)
+                        it.printStackTrace()
+                    }, {
+                        isReportRequestSent = false
+                        if (hasNewItems) {
+                            updateVigilanceReportAdapter()
+                        }
+                        setLoaderLiveData(false, false, false)
+                    })
+        }
     }
 
     fun init() {
         setLoaderLiveData(true, true, false)
         getSubjectInfo()
         getReports()
+    }
+
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
+        isLoadPending = isLoaderVisible
+
+        val tempList = ArrayList<Boolean>()
+        tempList.add(isLoaderVisible)
+        tempList.add(isAnimationVisible)
+        tempList.add(isErrorVisible)
+        mutableLoaderConfig.value = tempList
+    }
+
+    fun refreshData() {
+        vigilanceActionAdapter.actionReportList.clear()
+        vigilanceReportAdapter.reportList.clear()
+        actionList.clear()
+        reportList.clear()
+
+
+        updateVigilanceActionAdapter()
+        updateVigilanceReportAdapter()
+
+        init()
     }
 }

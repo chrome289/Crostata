@@ -17,59 +17,15 @@ import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.VigilanceViewModel
 import java.util.*
 
-class VigilanceFragment : Fragment(), BusyLoaderListener {
-    override fun showError(isShown: Boolean) {
-        if (isShown) {
-            errorLayout.visibility = View.VISIBLE
-        } else {
-            errorLayout.visibility = View.GONE
-        }
-    }
+class VigilanceFragment : Fragment() {
 
-    override fun showLoader(isShown: Boolean) {
-        if (isShown) {
-            loadingFrame.visibility = View.VISIBLE
-        } else {
-            loadingFrame.visibility = View.GONE
-        }
-    }
-
-    override fun showAnimation(isShown: Boolean) {
-        if (isShown) {
-            animationView.setAnimation(R.raw.loader1)
-            animationView.scale = 0.2f
-            animationView.visibility = View.VISIBLE
-            animationView.playAnimation()
-        } else {
-            animationView.cancelAnimation()
-            animationView.visibility = View.GONE
-        }
-    }
-
-    private var listener: OnFragmentInteractionListener? = null
+    private var mListener: OnFragmentInteractionListener? = null
     lateinit var vigilanceViewModel: VigilanceViewModel
+    private var isInitialized = false
 
     private val observerSubject: Observer<Subject> = Observer {
         if (it != null)
             initSubjectInfo(it)
-    }
-    private val observerShowError: Observer<Boolean> = Observer {
-        if (it != null) {
-            showError(it)
-        }
-    }
-
-
-    private val observerShowAnimation: Observer<Boolean> = Observer {
-        if (it != null) {
-            showAnimation(it)
-        }
-    }
-
-    private val observerShowLoader: Observer<Boolean> = Observer {
-        if (it != null) {
-            showLoader(it)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,18 +36,15 @@ class VigilanceFragment : Fragment(), BusyLoaderListener {
         vigilanceViewModel = ViewModelProviders.of(this).get(VigilanceViewModel::class.java)
 
         vigilanceViewModel.mutableSubject.observe(this, observerSubject)
-        vigilanceViewModel.mutableShowAnimation.observe(this, observerShowAnimation)
-        vigilanceViewModel.mutableShowError.observe(this, observerShowError)
-        vigilanceViewModel.mutableShowLoader.observe(this, observerShowLoader)
-        vigilanceViewModel.init()
+        vigilanceViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
     }
 
     override fun onStop() {
         super.onStop()
         vigilanceViewModel.mutableSubject.removeObserver(observerSubject)
-        vigilanceViewModel.mutableShowAnimation.removeObserver(observerShowAnimation)
-        vigilanceViewModel.mutableShowError.removeObserver(observerShowError)
-        vigilanceViewModel.mutableShowLoader.removeObserver(observerShowLoader)
+        vigilanceViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -106,26 +59,25 @@ class VigilanceFragment : Fragment(), BusyLoaderListener {
         vigilanceRecyclerViewAction.adapter = vigilanceViewModel.vigilanceActionAdapter
         vigilanceRecyclerViewReport.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         vigilanceRecyclerViewReport.adapter = vigilanceViewModel.vigilanceReportAdapter
+
+        if (!isInitialized) {
+            vigilanceViewModel.init()
+            isInitialized = true
+        }
     }
 
-    override fun onAttach(context: Context) {
+    override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
-            listener = context
+            mListener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
-    }
-
-    private fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        showLoader(isLoaderVisible)
-        showAnimation(isAnimationVisible)
-        showError(isErrorVisible)
+        mListener = null
     }
 
     private fun initSubjectInfo(subject: Subject) {
@@ -133,7 +85,22 @@ class VigilanceFragment : Fragment(), BusyLoaderListener {
         vigilanceViewModel.setVigilanceActions()
     }
 
-    interface OnFragmentInteractionListener
+    private val observerLoaderConfig: Observer<List<Boolean>> = Observer {
+        if (it != null) {
+            mListener!!.setLoaderVisibility(it[0], it[1], it[2])
+        }
+    }
+
+    private val observerNetStatus: Observer<Boolean> = Observer {
+        if (it != null) {
+            if (it && vigilanceViewModel.isLoadPending) {
+                mListener!!.setLoaderVisibility(true, true, false)
+                vigilanceViewModel.refreshData()
+            }
+        }
+    }
+
+    interface OnFragmentInteractionListener : BusyLoaderListener
 
     companion object {
         @JvmStatic

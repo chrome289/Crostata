@@ -64,4 +64,8 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         val requestBody4 = RequestBody.create(MediaType.parse("text/plain"), isGenerated.toString())
         return crostataApiService.postImagePost(token, requestBody2, requestBody3, requestBody, requestBody4)
     }
+
+    fun serverStatus(token: String): Observable<Response<ResponseBody>> {
+        return crostataApiService.getServerStatus(token)
+    }
 }

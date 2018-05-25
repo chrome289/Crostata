@@ -2,7 +2,7 @@ package xyz.siddharthseth.crostata.util.viewModel
 
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 
-interface PostInteractionListener {
+interface PostInteractionListener : BusyLoaderListener {
     fun openFullPost(post: Post)
     fun openProfile(birthId: String)
     fun addNewPost()

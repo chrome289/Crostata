@@ -2,6 +2,7 @@ package xyz.siddharthseth.crostata.viewmodel.fragment
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
@@ -135,7 +136,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     private var hasNewItems = false
-    internal var isLoading = false
+    var isPostRequestSent: Boolean = false
+    var isLoadPending = false
+    var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
 
     init {
         profilePostAdapter.setHasStableIds(true)
@@ -164,43 +167,53 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getPosts() {
+        setLoaderLiveData(true, true, false)
         if (isInitialized)
             updatePostAdapter()
         else
             fetchPosts()
     }
 
-    private fun fetchPosts() {
-        isLoading = true
-        hasNewItems = false
+    fun getMorePosts() {
+        fetchPosts()
+    }
 
-        contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
-                .subscribeOn(Schedulers.io())
-                .flatMap { nextPosts ->
-                    if (!isInitialized)
-                        isInitialized = true
-                    val context: Context = getApplication()
-                    for (post in nextPosts) {
-                        post.initExtraInfo(context.getString(R.string.server_url), token)
-                    }
-                    return@flatMap Observable.from(nextPosts)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            postList.add(it)
-                            hasNewItems = true
-                        },
-                        {
-                            it.printStackTrace()
-                        },
-                        {
-                            Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
-                            if (hasNewItems) {
-                                updatePostAdapter()
-                            }
+    private fun fetchPosts() {
+        if (!isPostRequestSent) {
+            isPostRequestSent = true
+            hasNewItems = false
+
+            contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap { nextPosts ->
+                        if (!isInitialized)
+                            isInitialized = true
+                        val context: Context = getApplication()
+                        for (post in nextPosts) {
+                            post.initExtraInfo(context.getString(R.string.server_url), token)
                         }
-                )
+                        return@flatMap Observable.from(nextPosts)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            {
+                                postList.add(it)
+                                hasNewItems = true
+                            },
+                            {
+                                isPostRequestSent = false
+                                setLoaderLiveData(true, false, true)
+                                it.printStackTrace()
+                            },
+                            {
+                                isPostRequestSent = false
+                                Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
+                                if (hasNewItems) {
+                                    updatePostAdapter()
+                                }
+                            }
+                    )
+        }
     }
 
     private fun updatePostAdapter() {
@@ -210,8 +223,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         profilePostAdapter.postList.clear()
         profilePostAdapter.postList.addAll(postList)
         lastTimestamp = postList.last().getTimestamp()
-        isLoading = false
         diffUtil.dispatchUpdatesTo(profilePostAdapter)
+
+        setLoaderLiveData(false, false, false)
     }
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
@@ -222,8 +236,26 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
     }
 
-    fun getMorePosts() {
-        fetchPosts()
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
+        isLoadPending = isLoaderVisible
+
+        val tempList = ArrayList<Boolean>()
+        tempList.add(isLoaderVisible)
+        tempList.add(isAnimationVisible)
+        tempList.add(isErrorVisible)
+        mutableLoaderConfig.value = tempList
     }
 
+    fun refreshData() {
+        profilePostAdapter.postList.clear()
+        postList.clear()
+
+        isInitialized = false
+        lastTimestamp = Calendar.getInstance().timeInMillis
+
+        updatePostAdapter()
+
+        getPosts()
+    }
 }

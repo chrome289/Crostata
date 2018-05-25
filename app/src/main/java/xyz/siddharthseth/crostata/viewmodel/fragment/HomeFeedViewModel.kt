@@ -100,18 +100,17 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var isInitialized = false
     private var postList: ArrayList<Post> = ArrayList()
 
-    var isLoading: Boolean = false
+    var isPostRequestSent: Boolean = false
+    var isLoadPending = false
     var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     var mutablePost: SingleLivePost = SingleLivePost()
     var mutableBirthId: SingleBirthId = SingleBirthId()
     // var width: Int = 1080
-    var hasNewItems = false
+    private var hasNewItems = false
 
     lateinit var glide: GlideRequests
 
-    var mutableShowAnimation = MutableLiveData<Boolean>()
-    var mutableShowError = MutableLiveData<Boolean>()
-    var mutableShowLoader = MutableLiveData<Boolean>()
+    var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
 
     init {
         homeFeedAdapter.setHasStableIds(true)
@@ -125,63 +124,87 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
             fetchPosts()
     }
 
+    fun getNextPosts() {
+        fetchPosts()
+    }
+
     private fun updatePostAdapter() {
         val diffUtil = DiffUtil.calculateDiff(
                 PostDiffUtilCallback(homeFeedAdapter.postList, postList))
         postList.sort()
         homeFeedAdapter.postList.clear()
         homeFeedAdapter.postList.addAll(postList)
-        lastTimestamp = postList[postList.size - 1].getTimestamp()
-        isLoading = false
+        if (postList.isEmpty()) {
+            lastTimestamp = Calendar.getInstance().timeInMillis
+        } else {
+            lastTimestamp = postList[postList.size - 1].getTimestamp()
+        }
         diffUtil.dispatchUpdatesTo(homeFeedAdapter)
 
         setLoaderLiveData(false, false, false)
     }
 
-    fun getNextPosts() {
-        fetchPosts()
-    }
-
     private fun fetchPosts() {
         // val birthId = sharedPreferencesService.getUserDetails(getApplication())
-        isLoading = true
-        hasNewItems = false
-        Log.v(TAG, "making a request for posts")
+        if (!isPostRequestSent) {
+            isPostRequestSent = true
+            hasNewItems = false
+            Log.v(TAG, "making a request for posts")
 
-        contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, LoggedSubject.birthId)
-                .subscribeOn(Schedulers.io())
-                .flatMap { nextPosts ->
-                    if (!isInitialized)
-                        isInitialized = true
-                    val context: Context = getApplication()
-                    for (post in nextPosts) {
-                        post.initExtraInfo(context.getString(R.string.server_url), token)
-                    }
-                    return@flatMap Observable.from(nextPosts)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            postList.add(it)
-                            hasNewItems = true
-                        },
-                        {
-                            it.printStackTrace()
-                            setLoaderLiveData(true, false, true)
-                        },
-                        {
-                            Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
-                            if (hasNewItems) {
-                                updatePostAdapter()
-                            }
+            contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, LoggedSubject.birthId)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap { nextPosts ->
+                        if (!isInitialized)
+                            isInitialized = true
+                        val context: Context = getApplication()
+                        for (post in nextPosts) {
+                            post.initExtraInfo(context.getString(R.string.server_url), token)
                         }
-                )
+                        return@flatMap Observable.from(nextPosts)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            {
+                                postList.add(it)
+                                hasNewItems = true
+                            },
+                            {
+                                it.printStackTrace()
+                                isPostRequestSent = false
+                                setLoaderLiveData(true, false, true)
+                            },
+                            {
+                                isPostRequestSent = false
+                                Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
+                                if (hasNewItems) {
+                                    updatePostAdapter()
+                                }
+                            }
+                    )
+        }
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        mutableShowLoader.value = isLoaderVisible
-        mutableShowAnimation.value = isAnimationVisible
-        mutableShowError.value = isErrorVisible
+        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
+        isLoadPending = isLoaderVisible
+
+        val tempList = ArrayList<Boolean>()
+        tempList.add(isLoaderVisible)
+        tempList.add(isAnimationVisible)
+        tempList.add(isErrorVisible)
+        mutableLoaderConfig.value = tempList
+    }
+
+    fun refreshData() {
+        homeFeedAdapter.postList.clear()
+        postList.clear()
+
+        isInitialized = false
+        lastTimestamp = Calendar.getInstance().timeInMillis
+
+        updatePostAdapter()
+
+        getPosts()
     }
 
 }

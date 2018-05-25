@@ -119,6 +119,11 @@ interface CrostataApiService {
             @Part("generate") generated: RequestBody
     ): Observable<Response<ResponseBody>>
 
+    @GET("subject/posts")
+    fun getServerStatus(
+            @Header("authorization") token: String
+    ): Observable<Response<ResponseBody>>
+
     companion object {
         fun create(): CrostataApiService {
             val retrofit = Retrofit.Builder()

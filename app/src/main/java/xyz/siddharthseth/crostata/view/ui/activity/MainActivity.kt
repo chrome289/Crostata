@@ -1,6 +1,7 @@
 package xyz.siddharthseth.crostata.view.ui.activity
 
 import android.app.AlertDialog
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_home_feed.*
+import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
@@ -33,7 +36,56 @@ class MainActivity : AppCompatActivity()
         , BackStackListener
         , ViewPostInteractionListener
         , ProfileInteractionListener
-        , PostInteractionListener {
+        , PostInteractionListener
+        , View.OnClickListener {
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.refreshButton -> {
+                isNetAvailable()
+            }
+        }
+    }
+
+    override fun isNetAvailable() {
+        mainActivityViewModel.checkNetworkAvailable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mutableNetStatusChanged.value = true
+                }, {
+                    mutableNetStatusChanged.value = false
+                    it.printStackTrace()
+                })
+    }
+
+    override fun showError(isShown: Boolean) {
+        errorLayout.visibility = if (isShown) View.VISIBLE else View.GONE
+    }
+
+    override fun showLoader(isShown: Boolean) {
+        loadingFrame.visibility = if (isShown) View.VISIBLE else View.GONE
+    }
+
+    override fun showAnimation(isShown: Boolean) {
+        if (isShown) {
+            animationView.setAnimation(R.raw.loader1)
+            animationView.scale = 0.2f
+            animationView.visibility = View.VISIBLE
+            animationView.playAnimation()
+        } else {
+            animationView.cancelAnimation()
+            animationView.visibility = View.GONE
+        }
+    }
+
+    override fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
+
+        showLoader(isLoaderVisible)
+        showAnimation(isAnimationVisible)
+        showError(isErrorVisible)
+        swipeRefresh.isRefreshing = false
+    }
 
     override fun showBackButton(isShown: Boolean) {
         val toolbar: ActionBar = this.supportActionBar!!
@@ -135,6 +187,7 @@ class MainActivity : AppCompatActivity()
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
         customFragmentManager = BackStackManager(this, supportFragmentManager)
 
+        refreshButton.setOnClickListener(this)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
 
         //workaround, dummy load
@@ -173,6 +226,7 @@ class MainActivity : AppCompatActivity()
             }
         }
         customFragmentManager.addRootFragment(fragment, item.itemId.toString(), R.id.frame)
+        mainActivityViewModel.getToolbarTitle(item.itemId)
         return true
     }
 
@@ -204,11 +258,14 @@ class MainActivity : AppCompatActivity()
             }
             R.id.selfProfile -> {
                 //if (selfProfileFragment == null) {
-                selfProfileFragment = SelfProfileFragment.newInstance()
-                selfProfileFragment as SelfProfileFragment
-                /*} else {
-                    selfProfileFragment as SelfProfileFragment
-                }*/
+                val bundleTemp = Bundle()
+                bundleTemp.putString("birthId", LoggedSubject.birthId)
+                if (selfProfileFragment == null) {
+                    selfProfileFragment = ProfileFragment.newInstance(bundleTemp)
+                    selfProfileFragment as ProfileFragment
+                } else {
+                    selfProfileFragment as ProfileFragment
+                }
             }
             else -> {
                 if (homeFeedFragment == null) {
@@ -223,13 +280,15 @@ class MainActivity : AppCompatActivity()
 
     private val TAG = javaClass.simpleName
     private var homeFeedFragment: HomeFeedFragment? = null
-    private var selfProfileFragment: SelfProfileFragment? = null
+    private var selfProfileFragment: ProfileFragment? = null
     private var profileFragment: ProfileFragment? = null
     private var communityFragment: CommunityFragment? = null
     private var vigilanceFragment: VigilanceFragment? = null
     private var viewPostFragment: ViewPostFragment? = null
 
-    var isMainToolbarMenuShown = true
+    private var isMainToolbarMenuShown = true
     private lateinit var mainActivityViewModel: MainActivityViewModel
     private lateinit var customFragmentManager: BackStackManager
+
+    override var mutableNetStatusChanged = MutableLiveData<Boolean>()
 }

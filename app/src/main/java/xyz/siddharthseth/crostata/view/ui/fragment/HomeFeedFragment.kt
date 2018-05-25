@@ -24,43 +24,17 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
 import java.util.*
 
 
-class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
-    override fun showError(isShown: Boolean) {
-        if (isShown) {
-            errorLayout.visibility = View.VISIBLE
-        } else {
-            errorLayout.visibility = View.GONE
-        }
-    }
-
-    override fun showLoader(isShown: Boolean) {
-        if (isShown) {
-            loadingFrame.visibility = View.VISIBLE
-        } else {
-            loadingFrame.visibility = View.GONE
-        }
-    }
-
-    override fun showAnimation(isShown: Boolean) {
-        if (isShown) {
-            animationView.setAnimation(R.raw.loader1)
-            animationView.scale = 0.2f
-            animationView.visibility = View.VISIBLE
-            animationView.playAnimation()
-        } else {
-            animationView.cancelAnimation()
-            animationView.visibility = View.GONE
-        }
-    }
+class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v != null && mListener != null) {
+            when (v.id) {
+            }
         }
     }
 
@@ -75,9 +49,8 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
         // homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
         homeFeedViewModel.mutablePost.observe(this, observer)
         homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
-        homeFeedViewModel.mutableShowAnimation.observe(this, observerShowAnimation)
-        homeFeedViewModel.mutableShowError.observe(this, observerShowError)
-        homeFeedViewModel.mutableShowLoader.observe(this, observerShowLoader)
+        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
     }
 
     override fun onPause() {
@@ -90,9 +63,8 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
         Log.v(TAG, "onstop")
         homeFeedViewModel.mutablePost.removeObserver(observer)
         homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
-        homeFeedViewModel.mutableShowAnimation.removeObserver(observerShowAnimation)
-        homeFeedViewModel.mutableShowError.removeObserver(observerShowError)
-        homeFeedViewModel.mutableShowLoader.removeObserver(observerShowLoader)
+        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
 
     override fun onAttach(context: Context?) {
@@ -110,6 +82,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
         Log.v(TAG, "onResume")
 
         if (!isInitialized) {
+
             val manager = LinearLayoutManager(context)
             manager.isItemPrefetchEnabled = true
 
@@ -128,6 +101,11 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
                     }
                 }
             })
+
+            swipeRefresh.setOnRefreshListener {
+                Log.v(TAG, "refresh called")
+                homeFeedViewModel.refreshData()
+            }
 
             homeFeedViewModel.getPosts()
             isInitialized = true
@@ -162,22 +140,18 @@ class HomeFeedFragment : Fragment(), View.OnClickListener, BusyLoaderListener {
         }
     }
 
-    private val observerShowError: Observer<Boolean> = Observer {
+    private val observerLoaderConfig: Observer<List<Boolean>> = Observer {
         if (it != null) {
-            showError(it)
+            mListener!!.setLoaderVisibility(it[0], it[1], it[2])
         }
     }
 
-
-    private val observerShowAnimation: Observer<Boolean> = Observer {
+    private val observerNetStatus: Observer<Boolean> = Observer {
         if (it != null) {
-            showAnimation(it)
-        }
-    }
-
-    private val observerShowLoader: Observer<Boolean> = Observer {
-        if (it != null) {
-            showLoader(it)
+            if (it && homeFeedViewModel.isLoadPending) {
+                mListener!!.setLoaderVisibility(true, true, false)
+                homeFeedViewModel.refreshData()
+            }
         }
     }
 
