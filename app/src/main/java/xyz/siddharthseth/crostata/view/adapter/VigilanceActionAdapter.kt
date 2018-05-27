@@ -8,7 +8,7 @@ import xyz.siddharthseth.crostata.data.model.VigilanceAction
 import xyz.siddharthseth.crostata.util.recyclerView.VigilanceActionListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.VigilanceActionViewHolder
 
-class VigilanceActionAdapter(var vigilanceActionListener: VigilanceActionListener) : RecyclerView.Adapter<VigilanceActionViewHolder>() {
+class VigilanceActionAdapter(private var vigilanceActionListener: VigilanceActionListener) : RecyclerView.Adapter<VigilanceActionViewHolder>() {
 
     var actionReportList = ArrayList<VigilanceAction>()
 

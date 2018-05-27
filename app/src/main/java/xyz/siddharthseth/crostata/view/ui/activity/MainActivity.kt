@@ -6,7 +6,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.ActionBar
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -21,23 +22,25 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.backstack.BackStackListener
-import xyz.siddharthseth.crostata.util.backstack.BackStackManager
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
-import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
-import xyz.siddharthseth.crostata.view.ui.customView.BottomNavigationViewHelper
-import xyz.siddharthseth.crostata.view.ui.fragment.*
+import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
+import xyz.siddharthseth.crostata.view.ui.fragment.VigilanceFragment
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
+
 
 class MainActivity : AppCompatActivity()
         , CommunityFragment.OnFragmentInteractionListener
         , VigilanceFragment.OnFragmentInteractionListener
-        , BackStackListener
-        , ViewPostInteractionListener
         , ProfileInteractionListener
         , PostInteractionListener
         , View.OnClickListener {
+
+    override fun enableNavigationDrawer(isEnabled: Boolean) {
+        navigationView.visibility = if (isEnabled) View.VISIBLE else View.GONE
+    }
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -87,31 +90,14 @@ class MainActivity : AppCompatActivity()
         swipeRefresh.isRefreshing = false
     }
 
-    override fun showBackButton(isShown: Boolean) {
-        val toolbar: ActionBar = this.supportActionBar!!
-        toolbar.setDisplayHomeAsUpEnabled(isShown)
-        toolbar.setDisplayShowHomeEnabled(isShown)
-        isMainToolbarMenuShown = !isShown
-        invalidateOptionsMenu()
-    }
-
-    override fun showNavBar(isShown: Boolean) {
-        bottomNavigationView.visibility = if (isShown) View.VISIBLE else View.GONE
-    }
-
-    override fun finishActivity() {
-        finish()
-    }
-
-    override fun tabReselected() {}
-
     override fun openProfile(birthId: String) {
         val bundle = Bundle()
         if (LoggedSubject.birthId == birthId) {
-            bottomNavigationView.selectedItemId = R.id.selfProfile
+            navigationDrawerListener(navigationView.menu.findItem(R.id.selfProfile))
         } else {
             bundle.putString("birthId", birthId)
-            customFragmentManager.addChildFragment(getFragment(R.id.profile, bundle), R.id.frame)
+
+            //TODO customFragmentManager.addChildFragment(getFragment(R.id.profile, bundle), R.id.frame)
         }
     }
 
@@ -173,11 +159,12 @@ class MainActivity : AppCompatActivity()
 
     override fun openFullPost(post: Post) {
         Log.v(TAG, "activity click listener")
-        val bundle = Bundle()
-        bundle.putParcelable("post", post)
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra("post", post)
 
-        val fragment = getFragment(R.id.viewPost, bundle)
-        customFragmentManager.addChildFragment(fragment, R.id.frame)
+        /*val fragment = getFragment(R.id.viewPost, bundle)
+        customFragmentManager.addChildFragment(fragment, R.id.frame)*/
+        startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -185,52 +172,105 @@ class MainActivity : AppCompatActivity()
         setContentView(activity_main)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        customFragmentManager = BackStackManager(this, supportFragmentManager)
+        //customFragmentManager = supportFragmentManager
 
         refreshButton.setOnClickListener(this)
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
 
-        //workaround, dummy load
-        bottomNavigationView.selectedItemId = R.id.community
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            Log.v(TAG, "loading once")
-            getBottomNavigationListener(it)
+        setupToolbarAndDrawer()
+    }
+
+    private fun setupToolbarAndDrawer() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+
+        drawerToggle.isDrawerIndicatorEnabled = true
+        drawerToggle.syncState()
+
+        navigationView.setNavigationItemSelectedListener {
+            navigationDrawerListener(it)
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+            true
         }
-        bottomNavigationView.setOnNavigationItemReselectedListener { Log.v(TAG, "no reloading for you") }
-        bottomNavigationView.selectedItemId = R.id.home
+        navigationDrawerListener(navigationView.menu.getItem(0))
     }
 
     override fun onBackPressed() {
-        val fragment = customFragmentManager.onBackPressed()
-        if (fragment != null) {
-            //Log.v(TAG, fragment.tag!!.toInt().toString() + " " + R.id.home)
-            bottomNavigationView.setOnNavigationItemSelectedListener { true }
-            bottomNavigationView.selectedItemId = fragment.tag!!.toInt()
+        //  Log.v(TAG, "toolbar ${title}")
+        /* val fragment = customFragmentManager.onBackPressed()
+         if (fragment != null) {
+             //resetting toolbar & title for roots
+             navigationDrawerListener(navigationView.menu.findItem(fragment.tag!!.toInt()))
+         } else {
+             //resetting toolbar title for children
+             val temp = customFragmentManager.getCurrentFragmentId()
+             if (temp != null) {
+                 //Log.v(TAG,"a one")
+                 titleTextView.text = mainActivityViewModel.getToolbarTitle(temp)
+             }
+         }*/
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            DETAIL_ACTIVITY_RESULT_CODE -> {
+                if (data != null) {
+                    val openItemId = data.getIntExtra("openItem", R.id.home)
+                    navigationDrawerListener(navigationView.menu.findItem(openItemId))
+                }
+            }
         }
     }
 
-    private fun getBottomNavigationListener(item: MenuItem): Boolean {
-        Log.v(TAG, item.order.toString())
+    private fun navigationDrawerListener(item: MenuItem): Boolean {
+        // Log.v(TAG, item.order.toString())
         val fragment = when (item.itemId) {
             R.id.community -> {
-                getFragment(R.id.community, null)
+                getFragment(R.id.community)
             }
             R.id.selfProfile -> {
-                getFragment(R.id.selfProfile, null)
+                getFragment(R.id.selfProfile)
             }
             R.id.vigilance -> {
-                getFragment(R.id.vigilance, null)
+                getFragment(R.id.vigilance)
             }
             else -> {
-                getFragment(R.id.home, null)
+                getFragment(R.id.home)
             }
         }
-        customFragmentManager.addRootFragment(fragment, item.itemId.toString(), R.id.frame)
-        mainActivityViewModel.getToolbarTitle(item.itemId)
+        navigationView.menu.findItem(item.itemId).isChecked = true
+
+        performFragmentTransaction(fragment, item.itemId.toString())
+
         return true
     }
 
-    private fun getFragment(fragmentId: Int, bundle: Bundle?): Fragment {
+    private fun performFragmentTransaction(fragment: Fragment, fragmentTag: String) {
+        val fragmentEntry = supportFragmentManager.findFragmentByTag(fragmentTag)
+        if (fragmentEntry != null) {
+            val transaction = supportFragmentManager.beginTransaction()
+            for (tempFragment in supportFragmentManager.fragments) {
+                if (tempFragment.tag != fragmentTag)
+                    transaction.hide(tempFragment)
+            }
+            transaction.show(fragmentEntry)
+                    .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.frame, fragment, fragmentTag)
+                    .commit()
+        }
+    }
+
+    private fun getFragment(fragmentId: Int): Fragment {
+        Log.v(TAG, "toolbar ${mainActivityViewModel.getToolbarTitle(fragmentId)}")
+        titleTextView.text = mainActivityViewModel.getToolbarTitle(fragmentId)
+
         return when (fragmentId) {
             R.id.community -> {
                 if (communityFragment == null) {
@@ -240,10 +280,6 @@ class MainActivity : AppCompatActivity()
                     communityFragment as CommunityFragment
                 }
             }
-            R.id.profile -> {
-                profileFragment = ProfileFragment.newInstance(bundle!!)
-                profileFragment as ProfileFragment
-            }
             R.id.vigilance -> {
                 if (vigilanceFragment == null) {
                     vigilanceFragment = VigilanceFragment.newInstance()
@@ -252,12 +288,7 @@ class MainActivity : AppCompatActivity()
                     vigilanceFragment as VigilanceFragment
                 }
             }
-            R.id.viewPost -> {
-                viewPostFragment = ViewPostFragment.newInstance(bundle!!)
-                viewPostFragment as ViewPostFragment
-            }
             R.id.selfProfile -> {
-                //if (selfProfileFragment == null) {
                 val bundleTemp = Bundle()
                 bundleTemp.putString("birthId", LoggedSubject.birthId)
                 if (selfProfileFragment == null) {
@@ -278,17 +309,18 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    private val TAG = javaClass.simpleName
+    private val TAG: String = javaClass.simpleName
     private var homeFeedFragment: HomeFeedFragment? = null
     private var selfProfileFragment: ProfileFragment? = null
-    private var profileFragment: ProfileFragment? = null
     private var communityFragment: CommunityFragment? = null
     private var vigilanceFragment: VigilanceFragment? = null
-    private var viewPostFragment: ViewPostFragment? = null
 
     private var isMainToolbarMenuShown = true
     private lateinit var mainActivityViewModel: MainActivityViewModel
-    private lateinit var customFragmentManager: BackStackManager
 
     override var mutableNetStatusChanged = MutableLiveData<Boolean>()
+
+    private lateinit var drawerToggle: ActionBarDrawerToggle
+
+    private val DETAIL_ACTIVITY_RESULT_CODE: Int = 0
 }

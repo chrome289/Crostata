@@ -107,7 +107,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList
@@ -136,7 +136,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     private var hasNewItems = false
-    var isPostRequestSent: Boolean = false
+    private var isPostRequestSent: Boolean = false
     var isLoadPending = false
     var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
 
@@ -179,7 +179,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun fetchPosts() {
+        Log.v(TAG,"onScroll 1 $isPostRequestSent")
         if (!isPostRequestSent) {
+            Log.v(TAG,"onScroll 2")
             isPostRequestSent = true
             hasNewItems = false
 
@@ -201,11 +203,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                                 hasNewItems = true
                             },
                             {
+                                Log.v(TAG,"onScroll 3")
                                 isPostRequestSent = false
                                 setLoaderLiveData(true, false, true)
                                 it.printStackTrace()
                             },
                             {
+                                Log.v(TAG,"onScroll 4")
                                 isPostRequestSent = false
                                 Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
                                 if (hasNewItems) {
@@ -226,6 +230,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         diffUtil.dispatchUpdatesTo(profilePostAdapter)
 
         setLoaderLiveData(false, false, false)
+        Log.v(TAG,"onScroll 5")
     }
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {

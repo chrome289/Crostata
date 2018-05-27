@@ -101,7 +101,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     override val unSelectedGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList

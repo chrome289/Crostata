@@ -94,4 +94,9 @@
     <string name="be_an_informer">Be an Informer</string>
     <string name="enlist">Enlist</string>
     <string name="_86_comments">86 Comments</string>
+    <string name="close">close</string>
+    <string name="open">open</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:checkable="true"
+            android:checked="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_home"
+            android:orderInCategory="0"
+            android:title="@string/toolbar_home"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/community"
+            android:enabled="true"
+            android:icon="@drawable/ic_location_city"
+            android:orderInCategory="1"
+            android:title="@string/toolbar_community"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/selfProfile"
+            android:enabled="true"
+            android:icon="@drawable/ic_person"
+            android:orderInCategory="2"
+            android:title="@string/toolbar_profile"
+            app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/vigilance"
+            android:enabled="true"
+            android:icon="@drawable/ic_supervisor_account"
+            android:orderInCategory="3"
+            android:title="@string/toolbar_vigilance"
+            app:showAsAction="ifRoom" />
+    </group>
+</menu>

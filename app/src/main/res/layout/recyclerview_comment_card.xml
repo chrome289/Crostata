@@ -24,7 +24,7 @@
         android:layout_marginStart="16dp"
         android:fontFamily="@font/roboto"
         android:text="@string/sample_text"
-        android:textColor="#424242"
+        android:textColor="@color/greyExtraDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profileImage"

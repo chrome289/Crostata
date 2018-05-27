@@ -157,10 +157,8 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     private fun checkMorePostsNeeded(recyclerView: RecyclerView) {
         val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-        if (!homeFeedViewModel.isLoading &&
-                layoutManager.itemCount <=
+        if (layoutManager.itemCount <=
                 (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
-            homeFeedViewModel.isLoading = true
             homeFeedViewModel.getNextPosts()
         }
     }

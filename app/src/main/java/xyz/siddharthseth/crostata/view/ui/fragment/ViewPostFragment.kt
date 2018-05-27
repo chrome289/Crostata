@@ -60,8 +60,8 @@ class ViewPostFragment : Fragment() {
             viewPostViewModel.initPost(post)
             isInitialized = true
         }
-        listener?.showNavBar(false)
-        listener?.showBackButton(true)
+        listener?.enableNavigationDrawer(false)
+        listener?.showBackNavigationButton(true)
     }
 
     override fun onAttach(context: Context) {
@@ -83,8 +83,8 @@ class ViewPostFragment : Fragment() {
 
         viewPostViewModel.mutablePost.removeObserver(observer)
         viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
-        listener?.showNavBar(true)
-        listener?.showBackButton(false)
+        listener?.enableNavigationDrawer(true)
+        listener?.showBackNavigationButton(false)
     }
 
     private lateinit var viewPostViewModel: ViewPostViewModel
@@ -95,10 +95,10 @@ class ViewPostFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(bundle: Bundle) =
+        fun newInstance(post: Post) =
                 ViewPostFragment().apply {
                     arguments = Bundle().apply {
-                        putParcelable("post", bundle.getParcelable("post"))
+                        putParcelable("post", post)
                     }
                 }
     }

@@ -149,11 +149,9 @@ class ProfileFragment : Fragment() {
 
     private fun checkMorePostsNeeded(recyclerView: RecyclerView) {
         val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-        if (!profileViewModel.isLoading &&
-                layoutManager.itemCount <=
+        if (layoutManager.itemCount <=
                 (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
-            profileViewModel.isLoading = true
-            profileViewModel.getMorePosts()
+             profileViewModel.getMorePosts()
         }
     }
 

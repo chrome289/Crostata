@@ -81,7 +81,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override fun onReportButtonClick(post: Post) {}
 
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.extraDarkGrey))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList
@@ -91,7 +91,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override val unSelectedGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
 
-    private val TAG = javaClass.simpleName
+    private val TAG:String = javaClass.simpleName
     private val sharedPreferencesService = SharedPreferencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())
@@ -100,7 +100,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var isInitialized = false
     private var postList: ArrayList<Post> = ArrayList()
 
-    var isPostRequestSent: Boolean = false
+    private var isPostRequestSent: Boolean = false
     var isLoadPending = false
     var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     var mutablePost: SingleLivePost = SingleLivePost()
@@ -134,10 +134,10 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         postList.sort()
         homeFeedAdapter.postList.clear()
         homeFeedAdapter.postList.addAll(postList)
-        if (postList.isEmpty()) {
-            lastTimestamp = Calendar.getInstance().timeInMillis
+        lastTimestamp = if (postList.isEmpty()) {
+            Calendar.getInstance().timeInMillis
         } else {
-            lastTimestamp = postList[postList.size - 1].getTimestamp()
+            postList[postList.size - 1].getTimestamp()
         }
         diffUtil.dispatchUpdatesTo(homeFeedAdapter)
 

@@ -5,16 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="@color/greyLightest"
+    android:descendantFocusability="blocksDescendants"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/profileImage"
@@ -32,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto"
             android:text="@string/sample_name"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
@@ -58,11 +56,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto"
             android:gravity="start|center_vertical"
             android:text="@string/sample_text"
-            android:textColor="#424242"
+            android:textColor="@color/greyDark"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +73,7 @@
             android:layout_height="0dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_weight="0"
             android:contentDescription="@string/content_image"
             android:scaleType="centerCrop"
@@ -90,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto_light"
             android:text="@string/sample_time"
             android:textSize="12sp"
@@ -103,7 +101,6 @@
             android:layout_height="18dp"
             android:layout_gravity="center"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="16dp"
             android:layout_weight="0"
             android:background="@color/white"
             android:contentDescription="@string/up_vote_button"
@@ -113,7 +110,7 @@
             android:tint="@color/greyUnselected"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toStartOf="@+id/votesTotal"
-            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+            app:layout_constraintTop_toTopOf="@+id/timeText" />
 
         <TextView
             android:id="@+id/votesTotal"
@@ -125,7 +122,7 @@
             android:gravity="center"
             android:minWidth="36dp"
             android:text="@string/_123"
-            android:textColor="@color/extraDarkGrey"
+            android:textColor="@color/greyDarkest"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/upVoteButton"
             app:layout_constraintEnd_toStartOf="@+id/downVoteButton"
@@ -154,11 +151,10 @@
             android:id="@+id/commentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/greyLightest"
-            android:elevation="2dp"
+            android:layout_marginBottom="16dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/upVoteButton">
@@ -173,15 +169,15 @@
                 android:fontFamily="@font/roboto_light"
                 android:gravity="center"
                 android:text="@string/_86_comments"
-                android:textColor="@color/extraDarkGrey"
+                android:textColor="@color/greyDarkest"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/profileImage2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -192,12 +188,13 @@
                 android:id="@+id/addComment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:background="@color/greyLightest"
                 android:ems="10"
                 android:hint="@string/add_a_comment"
                 android:inputType="text|textMultiLine"
+                android:paddingStart="8dp"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/profileImage2"
                 app:layout_constraintEnd_toStartOf="@+id/commentButton"
@@ -206,18 +203,18 @@
 
             <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
                 android:background="@color/greyLightest"
                 android:contentDescription="@string/add_a_comment"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_send"
                 android:tint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="@+id/addComment"
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentsTotal" />
+                app:layout_constraintTop_toTopOf="@+id/addComment" />
 
             <View
                 android:id="@+id/seperator2"
@@ -234,7 +231,7 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -18,13 +18,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()
-        when (fragmentId) {
-            R.id.home -> return context.resources.getString(R.string.toolbar_home)
-            R.id.community -> return context.resources.getString(R.string.toolbar_community)
-            R.id.selfProfile -> return context.resources.getString(R.string.toolbar_profile)
-            R.id.vigilance -> return context.resources.getString(R.string.toolbar_vigilance)
+        return when (fragmentId) {
+            R.id.community -> context.resources.getString(R.string.toolbar_community)
+            R.id.selfProfile -> context.resources.getString(R.string.toolbar_profile)
+            R.id.vigilance -> context.resources.getString(R.string.toolbar_vigilance)
+            R.id.viewPost -> context.resources.getString(R.string.comments)
+            else -> context.resources.getString(R.string.toolbar_home)
         }
-        return ""
     }
 
     fun checkNetworkAvailable(): Observable<Boolean> {

@@ -20,7 +20,7 @@ import java.util.*
 class VigilanceFragment : Fragment() {
 
     private var mListener: OnFragmentInteractionListener? = null
-    lateinit var vigilanceViewModel: VigilanceViewModel
+    private lateinit var vigilanceViewModel: VigilanceViewModel
     private var isInitialized = false
 
     private val observerSubject: Observer<Subject> = Observer {

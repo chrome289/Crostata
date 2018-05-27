@@ -60,7 +60,7 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
         showError(isErrorVisible)
     }
 
-    lateinit var addPostActivityViewModel: AddPostActivityViewModel
+    private lateinit var addPostActivityViewModel: AddPostActivityViewModel
     val TAG: String = javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {

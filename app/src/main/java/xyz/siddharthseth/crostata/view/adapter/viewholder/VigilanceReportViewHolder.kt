@@ -6,7 +6,7 @@ import kotlinx.android.synthetic.main.recyclerview_vigilance_report.view.*
 import xyz.siddharthseth.crostata.data.model.retrofit.Report
 import xyz.siddharthseth.crostata.util.recyclerView.VigilanceReportListener
 
-class VigilanceReportViewHolder(itemView: View?, val vigilanceReportListener: VigilanceReportListener) : RecyclerView.ViewHolder(itemView) {
+class VigilanceReportViewHolder(itemView: View?, private val vigilanceReportListener: VigilanceReportListener) : RecyclerView.ViewHolder(itemView) {
 
     fun init(report: Report) {
         itemView.reportId.text = "Report #" + report._id

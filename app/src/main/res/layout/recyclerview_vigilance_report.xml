@@ -29,6 +29,7 @@
             android:fontFamily="@font/roboto_light"
             android:maxLines="1"
             android:text="Report# 35d51rg9vce999rg1vse1"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,8 +44,7 @@
             android:fontFamily="@font/roboto"
             android:text="Reported Alan Parker (045719438) for a post."
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textColor="#424242"
-            android:textSize="16sp"
+            android:textColor="@color/greyExtraDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reportId" />
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto"
             android:text="Status : "
             android:textSize="12sp"
@@ -71,8 +71,7 @@
             android:text="APPROVED"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="@+id/statusHeading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/statusHeading" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/timeText"
@@ -80,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto"
             android:text="September 1, 2018"
             android:textSize="12sp"

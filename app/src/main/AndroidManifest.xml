@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".Crostata"
         android:allowBackup="true"
@@ -36,14 +37,26 @@
         </activity>
         <activity android:name=".view.ui.activity.MainActivity" />
 
+        <activity
+            android:name=".view.ui.activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".view.ui.activity.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="xyz.siddharthseth.crostata.view.ui.activity.MainActivity" />
+        </activity>
+
+        <activity android:name=".view.ui.activity.AddPostActivity" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".view.ui.activity.AddPostActivity" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c56b795ee9ade0d24c258152610ed617aa0aaf6e" />
+
     </application>
 
 </manifest>

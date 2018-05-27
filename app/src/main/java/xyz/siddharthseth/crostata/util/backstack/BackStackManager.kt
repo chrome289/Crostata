@@ -9,7 +9,7 @@ class BackStackManager(private val backStackListener: BackStackListener, fragmen
 
     private val backStackList: ArrayList<BackStack> = ArrayList()
     private val fragmentManager: BackStackFragmentManager = BackStackFragmentManager(fragmentManager)
-    val TAG: String = javaClass.simpleName
+    private val TAG: String = javaClass.simpleName
 
     fun addRootFragment(fragment: Fragment, fragmentTag: String, layoutId: Int) {
         if (!isAdded(fragment)) {
@@ -29,6 +29,14 @@ class BackStackManager(private val backStackListener: BackStackListener, fragmen
             removeRoot(current)
         } else {
             fragmentManager.popBackStack(id)
+            null
+        }
+    }
+
+    fun getCurrentFragmentId(): Int? {
+        return if (!backStackList.isEmpty()) {
+            backStackList.last().rootFragment.id
+        } else {
             null
         }
     }
