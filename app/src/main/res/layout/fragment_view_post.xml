@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
+    android:background="@color/greyLightest"
     android:descendantFocusability="blocksDescendants"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -16,8 +17,8 @@
 
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/profile_image"
@@ -88,54 +89,54 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto_light"
             android:text="@string/sample_time"
             android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
 
         <ImageButton
             android:id="@+id/upVoteButton"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_marginEnd="8dp"
             android:layout_weight="0"
-            android:background="@color/white"
+            android:background="@color/greyLightest"
             android:contentDescription="@string/up_vote_button"
             android:padding="2dp"
             android:scaleType="fitCenter"
             android:src="@drawable/arrow"
             android:tint="@color/greyUnselected"
-            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/votesTotal"
-            app:layout_constraintTop_toTopOf="@+id/timeText" />
+            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
 
         <TextView
             android:id="@+id/votesTotal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="0"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto_medium"
             android:gravity="center"
             android:minWidth="36dp"
             android:text="@string/_123"
-            android:textColor="@color/greyDarkest"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/upVoteButton"
+            android:textColor="@color/greyExtraDark"
             app:layout_constraintEnd_toStartOf="@+id/downVoteButton"
-            app:layout_constraintTop_toTopOf="@+id/upVoteButton" />
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
         <ImageButton
             android:id="@+id/downVoteButton"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_marginEnd="16dp"
             android:layout_weight="0"
-            android:background="@color/white"
+            android:background="@color/greyLightest"
             android:contentDescription="@string/down_vote_button"
             android:padding="2dp"
             android:rotation="180"
@@ -143,105 +144,113 @@
             android:src="@drawable/arrow"
             android:tint="@color/greyUnselected"
             app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
-            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/votesTotal" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/commentLayout"
+        <View
+            android:id="@+id/seperator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/greyMaybeLight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/votesTotal" />
+
+        <TextView
+            android:id="@+id/commentsTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:text="@string/_86_comments"
+            android:textColor="@color/greyExtraDark"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seperator" />
+
+        <ImageView
+            android:id="@+id/profileImage2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/commentsTotal"
+            app:srcCompat="@drawable/farmer" />
+
+        <EditText
+            android:id="@+id/addComment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/greyLightest"
+            android:ems="10"
+            android:hint="@string/add_a_comment"
+            android:inputType="text|textMultiLine"
+            android:paddingStart="8dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage2"
+            app:layout_constraintEnd_toStartOf="@+id/commentButton"
+            app:layout_constraintStart_toEndOf="@+id/profileImage2"
+            app:layout_constraintTop_toTopOf="@+id/profileImage2" />
+
+        <ImageButton
+            android:id="@+id/commentButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/greyLightest"
+            android:contentDescription="@string/add_a_comment"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_send"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/addComment"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/addComment" />
+
+        <View
+            android:id="@+id/seperator2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/greyMaybeLight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImage2" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seperator2"
+            tools:listitem="@layout/recyclerview_comment_card">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
+            android:text="No more comments"
+            android:textColor="@color/greyExtraDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/upVoteButton">
-
-            <TextView
-                android:id="@+id/commentsTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_weight="0"
-                android:fontFamily="@font/roboto_light"
-                android:gravity="center"
-                android:text="@string/_86_comments"
-                android:textColor="@color/greyDarkest"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/profileImage2"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentsTotal"
-                app:srcCompat="@drawable/farmer" />
-
-            <EditText
-                android:id="@+id/addComment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:background="@color/greyLightest"
-                android:ems="10"
-                android:hint="@string/add_a_comment"
-                android:inputType="text|textMultiLine"
-                android:paddingStart="8dp"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/profileImage2"
-                app:layout_constraintEnd_toStartOf="@+id/commentButton"
-                app:layout_constraintStart_toEndOf="@+id/profileImage2"
-                app:layout_constraintTop_toTopOf="@+id/profileImage2" />
-
-            <ImageButton
-                android:id="@+id/commentButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/greyLightest"
-                android:contentDescription="@string/add_a_comment"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_send"
-                android:tint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@+id/addComment"
-                app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/addComment" />
-
-            <View
-                android:id="@+id/seperator2"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/greyLighter"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileImage2" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_weight="0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seperator2"
-                tools:listitem="@layout/recyclerview_comment_card">
-
-            </android.support.v7.widget.RecyclerView>
-        </android.support.constraint.ConstraintLayout>
-
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
     </android.support.constraint.ConstraintLayout>
-
 </android.support.v4.widget.NestedScrollView>

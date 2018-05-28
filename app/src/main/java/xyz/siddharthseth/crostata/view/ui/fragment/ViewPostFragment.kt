@@ -60,8 +60,6 @@ class ViewPostFragment : Fragment() {
             viewPostViewModel.initPost(post)
             isInitialized = true
         }
-        listener?.enableNavigationDrawer(false)
-        listener?.showBackNavigationButton(true)
     }
 
     override fun onAttach(context: Context) {
@@ -83,8 +81,6 @@ class ViewPostFragment : Fragment() {
 
         viewPostViewModel.mutablePost.removeObserver(observer)
         viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
-        listener?.enableNavigationDrawer(true)
-        listener?.showBackNavigationButton(false)
     }
 
     private lateinit var viewPostViewModel: ViewPostViewModel

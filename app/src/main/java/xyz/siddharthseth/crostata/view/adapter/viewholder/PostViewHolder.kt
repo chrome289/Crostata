@@ -53,6 +53,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             postItemListener.clearPostedImageGlide(itemView.contentImage)
         } else {
             itemView.contentImage.visibility = View.VISIBLE
+            itemView.contentImage.setOnClickListener { postItemListener.openProfile(post.creatorId) }
             postItemListener.loadPostedImage(post, 640, itemView.contentImage)
             itemView.contentImage.setOnClickListener(this)
             //itemView.imageView.requestLayout()

@@ -5,5 +5,4 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Post
 interface ProfileInteractionListener : BusyLoaderListener {
     fun openProfile(birthId: String)
     fun openFullPost(post: Post)
-    fun enableNavigationDrawer(isEnabled: Boolean)
 }

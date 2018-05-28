@@ -19,4 +19,5 @@
     <color name="black">#000</color>
     <color name="greyLightish">#eeeeee</color>
     <color name="greyDark">#616161</color>
+    <color name="greyMaybeLight">#e0e0e0</color>
 </resources>

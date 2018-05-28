@@ -43,28 +43,22 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onCreate")
         if (arguments != null) {
         }
-
         homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
         homeFeedViewModel.glide = GlideApp.with(this)
-        // homeFeedViewModel.width = DeviceUtils.getScreenWidth(this.context!!)
-        homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
-        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
     }
 
     override fun onPause() {
         super.onPause()
         Log.v(TAG, "onPause")
+        homeFeedViewModel.mutablePost.removeObserver(observer)
+        homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
+        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
 
     override fun onStop() {
         super.onStop()
         Log.v(TAG, "onstop")
-        homeFeedViewModel.mutablePost.removeObserver(observer)
-        homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
-        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
 
     override fun onAttach(context: Context?) {
@@ -80,6 +74,11 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         Log.v(TAG, "onResume")
+
+        homeFeedViewModel.mutablePost.observe(this, observer)
+        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
+        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
 
         if (!isInitialized) {
 

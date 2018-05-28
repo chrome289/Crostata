@@ -15,6 +15,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val token = SharedPreferencesService().getToken(application)
     private val TAG: String = this::class.java.simpleName
+    var isDetailActivityOpen: Boolean = false
 
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()

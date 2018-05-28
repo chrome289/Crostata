@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/profile_image"
@@ -22,43 +22,47 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/roboto"
         android:text="@string/sample_text"
         android:textColor="@color/greyExtraDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="@+id/profileImage" />
+        app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
     <TextView
         android:id="@+id/profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:fontFamily="@font/roboto"
         android:text="@string/sample_name"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
     <TextView
         android:id="@+id/timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/roboto_light"
         android:text="@string/sample_time"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/profileName"
         app:layout_constraintStart_toEndOf="@+id/profileName"
-        app:layout_constraintTop_toTopOf="@+id/profileName" />
+        app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
     <ImageButton
         android:id="@+id/reportButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:background="#00ffffff"
         android:contentDescription="@string/report"
         android:scaleType="centerInside"
@@ -67,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/timeText"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/timeText" />
+        app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
     <View
         android:id="@+id/seperator"
@@ -78,7 +82,7 @@
         android:background="@color/greyLighter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
 
 </android.support.constraint.ConstraintLayout>

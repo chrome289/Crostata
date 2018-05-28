@@ -32,7 +32,6 @@ import xyz.siddharthseth.crostata.viewmodel.fragment.ProfileViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class ProfileFragment : Fragment() {
 
     private var mListener: ProfileInteractionListener? = null
@@ -182,10 +181,10 @@ class ProfileFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(bundle: Bundle) =
+        fun newInstance(birthId: String) =
                 ProfileFragment().apply {
                     arguments = Bundle().apply {
-                        this.putString("birthId", bundle.getString("birthId"))
+                        this.putString("birthId", birthId)
                     }
                 }
     }

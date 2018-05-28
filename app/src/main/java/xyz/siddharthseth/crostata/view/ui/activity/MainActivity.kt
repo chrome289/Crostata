@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity()
         , PostInteractionListener
         , View.OnClickListener {
 
-    override fun enableNavigationDrawer(isEnabled: Boolean) {
-        navigationView.visibility = if (isEnabled) View.VISIBLE else View.GONE
-    }
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.refreshButton -> {
@@ -91,13 +87,16 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun openProfile(birthId: String) {
-        val bundle = Bundle()
         if (LoggedSubject.birthId == birthId) {
             navigationDrawerListener(navigationView.menu.findItem(R.id.selfProfile))
         } else {
-            bundle.putString("birthId", birthId)
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra("birthId", birthId)
 
-            //TODO customFragmentManager.addChildFragment(getFragment(R.id.profile, bundle), R.id.frame)
+            if (!mainActivityViewModel.isDetailActivityOpen) {
+                mainActivityViewModel.isDetailActivityOpen = true
+                startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
+            }
         }
     }
 
@@ -162,9 +161,10 @@ class MainActivity : AppCompatActivity()
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra("post", post)
 
-        /*val fragment = getFragment(R.id.viewPost, bundle)
-        customFragmentManager.addChildFragment(fragment, R.id.frame)*/
-        startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
+        if (!mainActivityViewModel.isDetailActivityOpen) {
+            mainActivityViewModel.isDetailActivityOpen = true
+            startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,31 +200,23 @@ class MainActivity : AppCompatActivity()
         navigationDrawerListener(navigationView.menu.getItem(0))
     }
 
-    override fun onBackPressed() {
-        //  Log.v(TAG, "toolbar ${title}")
-        /* val fragment = customFragmentManager.onBackPressed()
-         if (fragment != null) {
-             //resetting toolbar & title for roots
-             navigationDrawerListener(navigationView.menu.findItem(fragment.tag!!.toInt()))
-         } else {
-             //resetting toolbar title for children
-             val temp = customFragmentManager.getCurrentFragmentId()
-             if (temp != null) {
-                 //Log.v(TAG,"a one")
-                 titleTextView.text = mainActivityViewModel.getToolbarTitle(temp)
-             }
-         }*/
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             DETAIL_ACTIVITY_RESULT_CODE -> {
                 if (data != null) {
-                    val openItemId = data.getIntExtra("openItem", R.id.home)
-                    navigationDrawerListener(navigationView.menu.findItem(openItemId))
+                    if (data.hasExtra("openItem")) {
+                        Log.d(TAG, "i am not working 2")
+                        val openItemId = data.getIntExtra("openItem", R.id.home)
+                        navigationDrawerListener(navigationView.menu.findItem(openItemId))
+                    }
                 }
+                mainActivityViewModel.isDetailActivityOpen = false
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 
     private fun navigationDrawerListener(item: MenuItem): Boolean {
@@ -289,10 +281,8 @@ class MainActivity : AppCompatActivity()
                 }
             }
             R.id.selfProfile -> {
-                val bundleTemp = Bundle()
-                bundleTemp.putString("birthId", LoggedSubject.birthId)
                 if (selfProfileFragment == null) {
-                    selfProfileFragment = ProfileFragment.newInstance(bundleTemp)
+                    selfProfileFragment = ProfileFragment.newInstance(LoggedSubject.birthId)
                     selfProfileFragment as ProfileFragment
                 } else {
                     selfProfileFragment as ProfileFragment
