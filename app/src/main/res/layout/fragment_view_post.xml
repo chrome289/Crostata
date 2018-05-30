@@ -33,7 +33,7 @@
             android:layout_weight="1"
 
             android:text="@string/sample_name"
-            android:textColor="@color/colorPrimaryDark"
+            android:theme="@style/Text.Medium.Red"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
             app:layout_constraintStart_toEndOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="@+id/profileImage" />
@@ -61,7 +61,7 @@
 
             android:gravity="start|center_vertical"
             android:text="@string/sample_text"
-            android:textColor="@color/grey_700"
+            android:theme="@style/Text.Regular"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +91,7 @@
             android:layout_marginStart="16dp"
 
             android:text="@string/sample_time"
-            android:textSize="12sp"
+            android:theme="@style/Text.Light"
             app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/votesTotal" />
@@ -125,7 +125,7 @@
             android:gravity="center"
             android:minWidth="36dp"
             android:text="@string/_123"
-            android:textColor="@color/grey_800"
+            android:theme="@style/Text.Bold.Red"
             app:layout_constraintEnd_toStartOf="@+id/downVoteButton"
             app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
@@ -164,12 +164,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="0"
 
             android:gravity="center"
             android:text="@string/_86_comments"
-            android:textColor="@color/grey_800"
-            android:textSize="18sp"
+            android:theme="@style/Text.Medium.Red"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seperator" />
 
@@ -194,7 +192,7 @@
             android:hint="@string/add_a_comment"
             android:inputType="text|textMultiLine"
             android:paddingStart="8dp"
-            android:textSize="14sp"
+            android:theme="@style/Text.Regular"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage2"
             app:layout_constraintEnd_toStartOf="@+id/commentButton"
             app:layout_constraintStart_toEndOf="@+id/profileImage2"
@@ -245,7 +243,7 @@
             android:layout_marginTop="8dp"
 
             android:text="No more comments"
-            android:textColor="@color/grey_800"
+            android:theme="@style/Text.Regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

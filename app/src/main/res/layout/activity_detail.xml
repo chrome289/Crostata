@@ -26,8 +26,7 @@
             android:layout_gravity="start"
             android:gravity="center"
             android:text="@string/comments"
-            android:textColor="@color/white"
-            android:textSize="18sp"
+            android:theme="@style/Text.Medium.Large.Inverse"
             tools:layout_editor_absoluteX="72dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -91,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/internet_connection_failed"
-                android:textColor="@color/grey_900"
+                android:theme="@style/Text.Light.Large"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"

@@ -46,8 +46,7 @@
                         android:layout_marginTop="8dp"
 
                         android:text="@string/your_patriot_index_is_385"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="20sp"
+                        android:theme="@style/Text.Medium.Red"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -79,8 +78,7 @@
                 android:layout_marginTop="16dp"
 
                 android:text="Past Reports"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="20sp"
+                android:theme="@style/Text.Medium.Red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView" />

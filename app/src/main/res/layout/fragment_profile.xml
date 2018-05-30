@@ -57,14 +57,11 @@
                     android:id="@+id/profileName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
-                    android:layout_weight="1"
 
                     android:text="@string/sample_name"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="20sp"
+                    android:theme="@style/Text.Medium.Large.Red"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,8 +75,7 @@
 
                     android:text="@string/posts"
                     android:textAllCaps="true"
-                    android:textColor="@color/grey_600"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintEnd_toStartOf="@+id/commentHeading"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/commentHeading" />
@@ -90,8 +86,7 @@
                     android:layout_height="wrap_content"
 
                     android:text="@string/_48"
-                    android:textColor="@color/grey_900"
-                    android:textSize="20sp"
+                    android:theme="@style/Text.Medium.Large"
                     app:layout_constraintEnd_toEndOf="@+id/postHeading"
                     app:layout_constraintStart_toStartOf="@+id/postHeading"
                     app:layout_constraintTop_toBottomOf="@+id/postHeading" />
@@ -100,14 +95,11 @@
                     android:id="@+id/commentHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
-                    android:layout_weight="1"
 
                     android:text="@string/comments"
                     android:textAllCaps="true"
-                    android:textColor="@color/grey_600"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profileName" />
@@ -119,8 +111,7 @@
                     android:layout_gravity="center_horizontal"
 
                     android:text="@string/_123"
-                    android:textColor="@color/grey_900"
-                    android:textSize="20sp"
+                    android:theme="@style/Text.Medium.Large"
                     app:layout_constraintEnd_toEndOf="@+id/commentHeading"
                     app:layout_constraintStart_toStartOf="@+id/commentHeading"
                     app:layout_constraintTop_toBottomOf="@+id/commentHeading" />
@@ -131,12 +122,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
-                    android:layout_weight="1"
 
                     android:text="@string/p_index"
                     android:textAllCaps="true"
-                    android:textColor="@color/grey_600"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/commentHeading"
                     app:layout_constraintTop_toBottomOf="@+id/profileName" />
@@ -147,8 +136,7 @@
                     android:layout_height="wrap_content"
 
                     android:text="@string/_837"
-                    android:textColor="@color/grey_900"
-                    android:textSize="20sp"
+                    android:theme="@style/Text.Medium.Large"
                     app:layout_constraintEnd_toEndOf="@+id/patriotIndexHeading"
                     app:layout_constraintStart_toStartOf="@+id/patriotIndexHeading"
                     app:layout_constraintTop_toBottomOf="@+id/commentHeading" />
@@ -175,8 +163,7 @@
 
                     android:gravity="center_vertical"
                     android:text="@string/profile_gender"
-                    android:textColor="@color/grey_700"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView9"
                     app:layout_constraintStart_toEndOf="@+id/imageView9"
                     app:layout_constraintTop_toTopOf="@+id/imageView9" />
@@ -201,8 +188,7 @@
 
                     android:gravity="center_vertical"
                     android:text="@string/profile_dob"
-                    android:textColor="@color/grey_700"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView10"
                     app:layout_constraintStart_toStartOf="@+id/gender"
                     app:layout_constraintTop_toTopOf="@+id/imageView10" />
@@ -228,8 +214,7 @@
 
                     android:gravity="center_vertical"
                     android:text="@string/profile_profession"
-                    android:textColor="@color/grey_700"
-                    android:textSize="12sp"
+                    android:theme="@style/Text.Light"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView11"
                     app:layout_constraintStart_toStartOf="@+id/dateOfBirth"
                     app:layout_constraintTop_toTopOf="@+id/imageView11" />
@@ -238,15 +223,14 @@
             <TextView
                 android:id="@+id/rank"
                 android:layout_width="wrap_content"
-                android:layout_height="34dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@color/colorAccent"
                 android:elevation="2dp"
 
                 android:padding="8dp"
                 android:text="@string/ranked"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:theme="@style/Text.Medium.Inverse"
                 app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/constraintLayout" />

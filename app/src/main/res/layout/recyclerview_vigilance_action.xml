@@ -10,6 +10,7 @@
         android:layout_height="24dp"
         android:contentDescription="@string/action"
         android:src="@drawable/ic_action_minus"
+        android:tint="@color/grey_900"
         app:layout_constraintBottom_toBottomOf="@+id/actionDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/actionDetail" />
@@ -22,7 +23,7 @@
         android:layout_marginTop="8dp"
 
         android:text="@string/negetive_con1"
-        android:textColor="@color/grey_700"
+        android:theme="@style/Text.Regular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/actionPolarity"

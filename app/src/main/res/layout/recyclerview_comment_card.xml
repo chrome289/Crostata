@@ -17,31 +17,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-
-        android:text="@string/sample_text"
-        android:textColor="@color/grey_900"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/profileImage"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
-
-    <TextView
         android:id="@+id/profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
 
         android:text="@string/sample_name"
-        android:textColor="@color/grey_800"
-        android:textSize="12sp"
+        android:theme="@style/Text.Medium.Small"
         app:layout_constraintStart_toEndOf="@+id/profileImage"
         app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
@@ -54,9 +37,25 @@
 
         android:text="@string/sample_time"
         android:textSize="10sp"
+        android:theme="@style/Text.Light"
         app:layout_constraintBottom_toBottomOf="@+id/profileName"
         app:layout_constraintStart_toEndOf="@+id/profileName"
         app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+
+        android:text="@string/sample_text"
+        android:theme="@style/Text.Regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/profileImage"
+        app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
     <ImageButton
         android:id="@+id/reportButton"

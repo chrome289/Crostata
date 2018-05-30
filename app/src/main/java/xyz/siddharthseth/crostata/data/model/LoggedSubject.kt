@@ -2,6 +2,7 @@ package xyz.siddharthseth.crostata.data.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 
 object LoggedSubject {
     var birthId = ""
@@ -11,6 +12,12 @@ object LoggedSubject {
         LoggedSubject.birthId = birthId
         LoggedSubject.password = password
         return this
+    }
+
+    fun clear(context: Context) {
+        val sharedPreferencesService = SharedPreferencesService()
+        init("", "")
+        sharedPreferencesService.saveSubjectDetails(context)
     }
 
     fun init(context: Context) {

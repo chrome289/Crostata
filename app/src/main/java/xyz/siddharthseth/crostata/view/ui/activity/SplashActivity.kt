@@ -25,10 +25,11 @@ class SplashActivity : AppCompatActivity() {
 
         splashActivityViewModel = ViewModelProviders.of(this).get(SplashActivityViewModel::class.java)
 
-        if (splashActivityViewModel.savedLoginDetailsAvailable())
+        if (splashActivityViewModel.savedLoginDetailsAvailable()) {
             signInSilently()
-        else
+        } else {
             openLoginActivity()
+        }
     }
 
     private fun showErrorMessage() {
@@ -48,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it) {
-                        hideErrorMessage()
+                        hideLoadingAnimation()
                         openHomePage()
                     } else {
                         signIn()
@@ -63,9 +64,8 @@ class SplashActivity : AppCompatActivity() {
     private fun signIn() {
         splashActivityViewModel.signIn().subscribe({ resultCode ->
             if (resultCode == 0) {
-                openHomePage()
                 hideLoadingAnimation()
-                finish()
+                openHomePage()
             } else {
                 openLoginActivity()
             }

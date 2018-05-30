@@ -18,8 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home_feed.*
-import kotlinx.android.synthetic.main.header_navigation_drawer.*
+import kotlinx.android.synthetic.main.header_navigation_drawer.view.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity()
         showLoader(isLoaderVisible)
         showAnimation(isAnimationVisible)
         showError(isErrorVisible)
-        swipeRefresh.isRefreshing = false
+        //swipeRefresh.isRefreshing = false
     }
 
     override fun openProfile(birthId: String, name: String) {
@@ -154,7 +153,7 @@ class MainActivity : AppCompatActivity()
     }
 
     private fun signOut() {
-        LoggedSubject.init("", "")
+        LoggedSubject.clear(applicationContext)
         val sharedPreferences = SharedPreferencesService()
         sharedPreferences.saveToken(Token(), applicationContext)
         startActivity(Intent(this, LoginActivity::class.java))
@@ -177,6 +176,10 @@ class MainActivity : AppCompatActivity()
         setContentView(activity_main)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+
+        refreshButton.setOnClickListener(this)
+        setupToolbarAndDrawer()
+
         mainActivityViewModel.getPatriotIndex()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -185,14 +188,11 @@ class MainActivity : AppCompatActivity()
                 }, {
                     it.printStackTrace()
                 })
-
-        refreshButton.setOnClickListener(this)
-
-        setupToolbarAndDrawer()
     }
 
+
     private fun setNavigationHeader() {
-        profileName.text = mainActivityViewModel.subject.name
+        navigationView.getHeaderView(0).profileName.text = mainActivityViewModel.subject.name
         // patriotIndex.text = String.format(getString(R.string.your_patriot_index_is_385), mainActivityViewModel.subject.patriotIndex)
         GlideApp.with(this)
                 .load(getProfileImageLink())
@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity()
                 .circleCrop()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .fallback(R.drawable.home_feed_content_placeholder)
-                .into(profileImage)
+                .into(navigationView.getHeaderView(0).profileImage)
 
     }
 

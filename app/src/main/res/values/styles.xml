@@ -16,6 +16,108 @@
 
     </style>
 
+    <style name="Text.Light" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.Light.Large" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.Medium" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Medium.Red" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Text.Medium.Inverse" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text.Medium.Small" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Medium.Large" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Medium.Large.Inverse" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text.Medium.Large.Red" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Text.Medium.Larger" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_semibold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Bold.Red" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Text.Regular" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Regular.Red" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Text.Regular.Yellow" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="Text.Regular.Large" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
+    <style name="Text.Regular.Large.Inverse" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text.Regular.Larger" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+    </style>
+
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/view_splash</item>
     </style>

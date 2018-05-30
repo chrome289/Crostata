@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_login.*
@@ -115,7 +114,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
 
-        becomeCitizen.movementMethod = LinkMovementMethod.getInstance()
         signIn.setOnClickListener(this)
     }
 }
