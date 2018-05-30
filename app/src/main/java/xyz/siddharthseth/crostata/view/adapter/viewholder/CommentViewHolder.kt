@@ -12,6 +12,9 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
     private val TAG = javaClass.simpleName
     fun init(comment: Comment) {
         itemView.profileName.text = comment.name
+        itemView.profileName.setOnClickListener {
+            commentItemListener.openProfile(comment.birthId, comment.name)
+        }
         itemView.title.text = comment.text
 
         itemView.timeText.text = comment.timeCreatedText
@@ -19,5 +22,8 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
 
     fun loadImages(comment: Comment) {
         commentItemListener.loadProfileImage(comment, 128, itemView.profileImage)
+        itemView.profileImage.setOnClickListener {
+            commentItemListener.openProfile(comment.birthId, comment.name)
+        }
     }
 }

@@ -5,21 +5,45 @@
     android:id="@+id/theParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/greyLightest"
+    android:background="@color/grey_50"
     tools:context="xyz.siddharthseth.crostata.view.ui.activity.AddPostActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarColoredBackArrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_close"
+            app:title="">
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/toolbar_add_post"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="156dp"
+                tools:layout_editor_absoluteY="16dp" />
+        </android.support.v7.widget.Toolbar>
+
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:srcCompat="@drawable/farmer" />
 
         <TextView
@@ -28,9 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/roboto"
+
             android:text="@string/sample_name"
-            android:textColor="@color/greyExtraDark"
+            android:textColor="@color/grey_800"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profileImage"
@@ -41,7 +65,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:tint="@color/greyUnselected"
+            android:tint="@color/grey_400"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toEndOf="@+id/profileImage"
@@ -110,7 +134,7 @@
                     android:id="@+id/viewe3"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:background="@color/greyLighter"
+                    android:background="@color/grey_100"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -140,7 +164,7 @@
                     android:padding="0dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_action_cancel"
-                    android:tint="@color/greyLighter"
+                    android:tint="@color/grey_100"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/contentImage"
                     app:layout_constraintTop_toTopOf="@+id/contentImage" />
@@ -154,7 +178,7 @@
                     android:padding="0dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_action_add"
-                    android:tint="@color/greyUnselected"
+                    android:tint="@color/grey_400"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/contentImage"
                     app:layout_constraintEnd_toEndOf="@+id/contentImage"
@@ -169,7 +193,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:text="This image will be uploaded with your post"
-                    android:textColor="@color/greyUnselected"
+                    android:textColor="@color/grey_400"
                     android:textSize="12sp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -245,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/internet_connection_failed"
-                android:textColor="@color/greyDarkest"
+                android:textColor="@color/grey_900"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView7"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView7"

@@ -5,20 +5,21 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.support.annotation.MainThread
 import android.util.Log
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SingleBirthId : MutableLiveData<String>() {
+class SingleSubject : MutableLiveData<Subject>() {
     val TAG: String = javaClass.simpleName
 
     private val mPending: AtomicBoolean = AtomicBoolean(false)
 
     @MainThread
-    override fun observe(owner: LifecycleOwner, observer: Observer<String>) {
+    override fun observe(owner: LifecycleOwner, observer: Observer<Subject>) {
         if (hasActiveObservers()) {
             Log.w(TAG, "Multiple observers registered but only one will be notified of changes.")
         }
 
-        super.observe(owner, Observer<String> { t ->
+        super.observe(owner, Observer<Subject> { t ->
             if (mPending.compareAndSet(true, false)) {
                 observer.onChanged(t)
             }
@@ -26,7 +27,7 @@ class SingleBirthId : MutableLiveData<String>() {
     }
 
     @MainThread
-    override fun setValue(value: String?) {
+    override fun setValue(value: Subject?) {
         mPending.set(true)
         super.setValue(value)
     }

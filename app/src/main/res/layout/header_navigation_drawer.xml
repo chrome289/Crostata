@@ -2,44 +2,44 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#444"
-    android:elevation="1dp">
+    android:layout_height="@dimen/nav_header_height"
+    android:background="@color/grey_800"
+    android:elevation="2dp">
 
     <ImageView
-        android:contentDescription="@string/profile"
-        android:id="@+id/profileImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="24dp"
+        android:id="@+id/imageView13"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".5"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/flag" />
+
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="32dp"
+        android:background="#00ffffff"
+        android:contentDescription="@string/profile"
+        app:layout_constraintBottom_toTopOf="@+id/profileName"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/farmer" />
 
     <TextView
         android:id="@+id/profileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="60dp"
-        android:fontFamily="@font/roboto_medium"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="32dp"
         android:text="@string/sample_name"
-        android:textColor="@color/greyLightest"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/patriotIndex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:layout_marginStart="24dp"
-        android:text="@string/your_patriot_index_is_385"
-        android:textColor="@color/greyUnselected"
-        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profileImage"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

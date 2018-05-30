@@ -6,6 +6,8 @@ import android.content.Context
 import rx.Observable
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
@@ -16,6 +18,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val token = SharedPreferencesService().getToken(application)
     private val TAG: String = this::class.java.simpleName
     var isDetailActivityOpen: Boolean = false
+    var subject: Subject = Subject(LoggedSubject.birthId, "")
 
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()
@@ -34,5 +37,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 .flatMap {
                     Observable.just(it.isSuccessful)
                 }
+    }
+
+    fun getPatriotIndex(): Observable<Subject> {
+        return contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
+    fun getToken(): String {
+        return token
     }
 }

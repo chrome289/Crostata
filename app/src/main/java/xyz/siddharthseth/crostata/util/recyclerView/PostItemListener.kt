@@ -24,5 +24,5 @@ interface PostItemListener {
 
     fun openFullPost(index: Int)
     fun handleVote(post: Post, value: Int)
-    fun openProfile(birthId: String)
+    fun openProfile(birthId: String, name: String)
 }

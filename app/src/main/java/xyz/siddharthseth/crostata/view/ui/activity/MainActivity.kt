@@ -13,12 +13,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home_feed.*
+import kotlinx.android.synthetic.main.header_navigation_drawer.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
@@ -86,12 +92,13 @@ class MainActivity : AppCompatActivity()
         swipeRefresh.isRefreshing = false
     }
 
-    override fun openProfile(birthId: String) {
+    override fun openProfile(birthId: String, name: String) {
         if (LoggedSubject.birthId == birthId) {
             navigationDrawerListener(navigationView.menu.findItem(R.id.selfProfile))
         } else {
             val intent = Intent(this, DetailActivity::class.java)
             intent.putExtra("birthId", birthId)
+            intent.putExtra("name", name)
 
             if (!mainActivityViewModel.isDetailActivityOpen) {
                 mainActivityViewModel.isDetailActivityOpen = true
@@ -121,10 +128,8 @@ class MainActivity : AppCompatActivity()
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return if (item != null) {
             when (item.itemId) {
-                R.id.addPost -> addNewPost()
                 R.id.search -> {
                 }
-                R.id.signOut -> showSignOutDialog()
                 android.R.id.home -> this.onBackPressed()
             }
             true
@@ -172,11 +177,40 @@ class MainActivity : AppCompatActivity()
         setContentView(activity_main)
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        //customFragmentManager = supportFragmentManager
+        mainActivityViewModel.getPatriotIndex()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mainActivityViewModel.subject = it
+                    setNavigationHeader()
+                }, {
+                    it.printStackTrace()
+                })
 
         refreshButton.setOnClickListener(this)
 
         setupToolbarAndDrawer()
+    }
+
+    private fun setNavigationHeader() {
+        profileName.text = mainActivityViewModel.subject.name
+        // patriotIndex.text = String.format(getString(R.string.your_patriot_index_is_385), mainActivityViewModel.subject.patriotIndex)
+        GlideApp.with(this)
+                .load(getProfileImageLink())
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(profileImage)
+
+    }
+
+    private fun getProfileImageLink(): GlideUrl {
+        return GlideUrl(getString(R.string.server_url) +
+                "subject/profileImage?birthId=${LoggedSubject.birthId}&dimen=320&quality=80"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", mainActivityViewModel.getToken())
+                .build())
     }
 
     private fun setupToolbarAndDrawer() {
@@ -215,30 +249,31 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
     private fun navigationDrawerListener(item: MenuItem): Boolean {
         // Log.v(TAG, item.order.toString())
-        val fragment = when (item.itemId) {
-            R.id.community -> {
-                getFragment(R.id.community)
-            }
-            R.id.selfProfile -> {
-                getFragment(R.id.selfProfile)
-            }
-            R.id.vigilance -> {
-                getFragment(R.id.vigilance)
-            }
+        when {
+            item.itemId == R.id.addPost -> addNewPost()
+            item.itemId == R.id.signOut -> showSignOutDialog()
             else -> {
-                getFragment(R.id.home)
+                val fragment = when (item.itemId) {
+                    R.id.community -> {
+                        getFragment(R.id.community)
+                    }
+                    R.id.selfProfile -> {
+                        getFragment(R.id.selfProfile)
+                    }
+                    R.id.vigilance -> {
+                        getFragment(R.id.vigilance)
+                    }
+                    else -> {
+                        getFragment(R.id.home)
+                    }
+                }
+                navigationView.menu.findItem(item.itemId).isChecked = true
+
+                performFragmentTransaction(fragment, item.itemId.toString())
             }
         }
-        navigationView.menu.findItem(item.itemId).isChecked = true
-
-        performFragmentTransaction(fragment, item.itemId.toString())
-
         return true
     }
 

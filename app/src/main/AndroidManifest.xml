@@ -15,9 +15,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".view.ui.activity.LoginActivity" />
         <activity
-            android:name=".view.ui.activity.LoginActivity"
-            android:theme="@style/LoginTheme">
+            android:name=".view.ui.activity.MainActivity"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".view.ui.activity.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".view.ui.activity.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="xyz.siddharthseth.crostata.view.ui.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".view.ui.activity.AddPostActivity"
+            android:label="@string/toolbar_add_post"
+            android:parentActivityName=".view.ui.activity.MainActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c56b795ee9ade0d24c258152610ed617aa0aaf6e" />
+
+        <activity
+            android:name=".view.ui.activity.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,28 +59,6 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.ui.activity.MainActivity" />
-
-        <activity
-            android:name=".view.ui.activity.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".view.ui.activity.MainActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="xyz.siddharthseth.crostata.view.ui.activity.MainActivity" />
-        </activity>
-
-        <activity android:name=".view.ui.activity.AddPostActivity" />
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="c56b795ee9ade0d24c258152610ed617aa0aaf6e" />
-
     </application>
 
 </manifest>

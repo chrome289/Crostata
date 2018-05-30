@@ -16,7 +16,6 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.viewmodel.activity.LoginActivityViewModel
 
-
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private val TAG = "LoginActivity"
@@ -24,33 +23,31 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private var compositeSubscription = CompositeSubscription()
 
-    override fun onClick(view: View?) {
-        if (view != null) {
-            when (view.id) {
-                R.id.signIn -> {
-                    showLoadingDialog()
-                    // Log.v(TAG, "here0")
-                    loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
-                            .subscribe({ resultCode ->
-                                if (resultCode == 0) {
-                                    openHomePage()
-                                    hideLoadingDialog()
-                                    finish()
-                                } else {
-                                    showErrorAlert(resultCode)
-                                    hideLoadingDialog()
-                                }
-                            }, { onError ->
-                                onError.printStackTrace()
-                                Log.v(TAG, "Network Error")
+    override fun onClick(view: View) {
+        when (view.id) {
+            R.id.signIn -> {
+                showLoadingDialog()
+                // Log.v(TAG, "here0")
+                loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ resultCode ->
+                            if (resultCode == 0) {
+                                openHomePage()
                                 hideLoadingDialog()
-                                showErrorAlert(3)
-                            })
+                                finish()
+                            } else {
+                                showErrorAlert(resultCode)
+                                hideLoadingDialog()
+                            }
+                        }, { onError ->
+                            onError.printStackTrace()
+                            Log.v(TAG, "Network Error")
+                            hideLoadingDialog()
+                            showErrorAlert(3)
+                        })
 
-                }
             }
-        } else
-            Log.v(TAG, "view is null")
+        }
     }
 
     private fun hideLoadingDialog() {
@@ -95,7 +92,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_login)
 
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
-        LoggedSubject.init(applicationContext)
 
         loadingFrame.setOnTouchListener { _, _ ->
             Log.v(TAG, "Don't click")
@@ -107,22 +103,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         if (token.isNotEmpty()) {
             showLoadingDialog()
             autoFillFields()
-            loginActivityViewModel.signInSilently(token)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ resultCode ->
-                        if (resultCode == 0) {
-                            openHomePage()
-                            hideLoadingDialog()
-                            finish()
-                        } else {
-                            showErrorAlert(resultCode)
-                            hideLoadingDialog()
-                        }
-                    }, { error ->
-                        Log.v(TAG, "Network Error " + error.message)
-                        hideLoadingDialog()
-                        showErrorAlert(3)
-                    })
         }
     }
 

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_detail.*
 import rx.android.schedulers.AndroidSchedulers
@@ -21,10 +22,16 @@ import xyz.siddharthseth.crostata.viewmodel.activity.DetailActivityViewModel
 
 class DetailActivity : AppCompatActivity()
         , ViewPostInteractionListener
-        , ProfileInteractionListener {
+        , ProfileInteractionListener
+        , View.OnClickListener {
+    override fun onClick(v: View) {
+        when (v.id) {
+            android.R.id.home -> onBackPressed()
+        }
+    }
 
     override fun openFullPost(post: Post) {
-        viewPostFragment = ViewPostFragment.newInstance(post)
+        val viewPostFragment = ViewPostFragment.newInstance(post)
 
         detailActivityViewModel.toolbarTitle.add(getString(R.string.comments))
         titleTextView.text = getString(R.string.comments)
@@ -35,15 +42,15 @@ class DetailActivity : AppCompatActivity()
                 .commit()
     }
 
-    override fun openProfile(birthId: String) {
+    override fun openProfile(birthId: String, name: String) {
         if (LoggedSubject.birthId == birthId) {
             setProfileNavigation()
             finish()
         } else {
-            profileFragment = ProfileFragment.newInstance(birthId)
+            val profileFragment = ProfileFragment.newInstance(birthId)
 
-            detailActivityViewModel.toolbarTitle.add(getString(R.string.profile))
-            titleTextView.text = getString(R.string.profile)
+            detailActivityViewModel.toolbarTitle.add(name)
+            titleTextView.text = name
 
             supportFragmentManager.beginTransaction()
                     .add(R.id.detailFrame, profileFragment, R.id.profile.toString())
@@ -92,6 +99,16 @@ class DetailActivity : AppCompatActivity()
         //swipeRefresh.isRefreshing = false
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return false
+    }
+
     override var mutableNetStatusChanged = MutableLiveData<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +125,8 @@ class DetailActivity : AppCompatActivity()
             openFullPost(intent.getParcelableExtra("post"))
         } else if (intent.hasExtra("birthId")) {
             val birthId = intent.getStringExtra("birthId")
-            openProfile(birthId)
+            val name = intent.getStringExtra("name")
+            openProfile(birthId, name)
         }
     }
 
@@ -134,8 +152,6 @@ class DetailActivity : AppCompatActivity()
         intentData.putExtra("openItem", R.id.selfProfile)
     }
 
-    private var viewPostFragment: ViewPostFragment? = null
-    private var profileFragment: ProfileFragment? = null
     private val intentData = Intent()
     private val TAG: String = javaClass.simpleName
     private lateinit var detailActivityViewModel: DetailActivityViewModel

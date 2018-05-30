@@ -18,10 +18,11 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
-import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
+import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
@@ -107,7 +108,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList
@@ -115,11 +116,11 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
     override val unSelectedGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
 
-    override fun openProfile(birthId: String) {
+    override fun openProfile(birthId: String, name: String) {
         Log.v(TAG, "setting birthid")
-        mutableBirthId.value = birthId
+        mutableSubject.value = Subject(birthId, name)
     }
 
     private val token = SharedPreferencesService().getToken(application)
@@ -131,7 +132,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private var postList = ArrayList<Post>()
     private var isInitialized = false
     val mutablePost: SingleLivePost = SingleLivePost()
-    private var mutableBirthId: SingleBirthId = SingleBirthId()
+    private var mutableSubject: SingleSubject = SingleSubject()
     lateinit var glide: GlideRequests
 
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
@@ -179,13 +180,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun fetchPosts() {
-        Log.v(TAG,"onScroll 1 $isPostRequestSent")
+        Log.v(TAG, "onScroll 1 $isPostRequestSent")
         if (!isPostRequestSent) {
-            Log.v(TAG,"onScroll 2")
+            Log.v(TAG, "onScroll 2")
             isPostRequestSent = true
             hasNewItems = false
 
-            contentRepository.getSubjectPosts(token, birthId, size, lastTimestamp)
+            contentRepository.getSubjectPosts(token, birthId, LoggedSubject.birthId, size, lastTimestamp)
                     .subscribeOn(Schedulers.io())
                     .flatMap { nextPosts ->
                         if (!isInitialized)
@@ -203,13 +204,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                                 hasNewItems = true
                             },
                             {
-                                Log.v(TAG,"onScroll 3")
+                                Log.v(TAG, "onScroll 3")
                                 isPostRequestSent = false
                                 setLoaderLiveData(true, false, true)
                                 it.printStackTrace()
                             },
                             {
-                                Log.v(TAG,"onScroll 4")
+                                Log.v(TAG, "onScroll 4")
                                 isPostRequestSent = false
                                 Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
                                 if (hasNewItems) {
@@ -230,7 +231,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         diffUtil.dispatchUpdatesTo(profilePostAdapter)
 
         setLoaderLiveData(false, false, false)
-        Log.v(TAG,"onScroll 5")
+        Log.v(TAG, "onScroll 5")
     }
 
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {

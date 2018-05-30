@@ -4,6 +4,6 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Post
 
 interface PostInteractionListener : BusyLoaderListener {
     fun openFullPost(post: Post)
-    fun openProfile(birthId: String)
+    fun openProfile(birthId: String, name: String)
     fun addNewPost()
 }

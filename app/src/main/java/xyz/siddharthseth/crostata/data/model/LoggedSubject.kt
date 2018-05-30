@@ -18,4 +18,8 @@ object LoggedSubject {
         init(sharedPreferences.getString("birthId", "")
                 , sharedPreferences.getString("password", ""))
     }
+
+    fun isInitDone(): Boolean {
+        return birthId.length == 9
+    }
 }

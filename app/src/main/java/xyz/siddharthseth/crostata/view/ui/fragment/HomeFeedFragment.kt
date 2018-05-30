@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_home_feed.*
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.HomeFeedViewModel
@@ -51,7 +52,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         super.onPause()
         Log.v(TAG, "onPause")
         homeFeedViewModel.mutablePost.removeObserver(observer)
-        homeFeedViewModel.mutableBirthId.removeObserver(observerBirthId)
+        homeFeedViewModel.mutableSubject.removeObserver(observerSubject)
         homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
         mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
@@ -76,7 +77,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         Log.v(TAG, "onResume")
 
         homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableBirthId.observe(this, observerBirthId)
+        homeFeedViewModel.mutableSubject.observe(this, observerSubject)
         homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
         mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
 
@@ -132,10 +133,10 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private val observerBirthId: Observer<String> = Observer {
+    private val observerSubject: Observer<Subject> = Observer {
         Log.v(TAG, "birthid observer called")
         if (it != null) {
-            mListener?.openProfile(it)
+            mListener?.openProfile(it.birthId, it.name)
         }
     }
 

@@ -16,6 +16,7 @@ import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.viewmodel.fragment.ViewPostViewModel
 
@@ -41,10 +42,10 @@ class ViewPostFragment : Fragment() {
         }
     }
 
-    private val observerBirthId: Observer<String> = Observer {
+    private val observerSubject: Observer<Subject> = Observer {
         Log.v(TAG, "birthid observer called")
         if (it != null) {
-            listener?.openProfile(it)
+            listener?.openProfile(it.birthId, it.name)
         }
     }
 
@@ -54,7 +55,7 @@ class ViewPostFragment : Fragment() {
         viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
         viewPostViewModel.glide = GlideApp.with(this)
         viewPostViewModel.mutablePost.observe(this, observer)
-        viewPostViewModel.mutableBirthId.observe(this, observerBirthId)
+        viewPostViewModel.mutableSubject.observe(this, observerSubject)
 
         if (!isInitialized) {
             viewPostViewModel.initPost(post)
@@ -80,7 +81,7 @@ class ViewPostFragment : Fragment() {
         super.onStop()
 
         viewPostViewModel.mutablePost.removeObserver(observer)
-        viewPostViewModel.mutableBirthId.removeObserver(observerBirthId)
+        viewPostViewModel.mutableSubject.removeObserver(observerSubject)
     }
 
     private lateinit var viewPostViewModel: ViewPostViewModel
@@ -103,7 +104,7 @@ class ViewPostFragment : Fragment() {
         val post = viewPostViewModel.mutablePost.value!!
 
         profileName.text = post.creatorName
-        profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId) }
+        profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId, post.creatorName) }
 
         timeText.text = post.timeCreatedText.capitalize()
 
@@ -125,9 +126,9 @@ class ViewPostFragment : Fragment() {
         votesTotal.text = "${post.votes}"
         votesTotal.setTextColor(
                 when {
-                    post.opinion == 0 -> viewPostViewModel.extraDarkGrey
+                    post.opinion == -1 -> viewPostViewModel.downVoteColorTint
                     post.opinion == 1 -> viewPostViewModel.upVoteColorTint
-                    else -> viewPostViewModel.downVoteColorTint
+                    else -> viewPostViewModel.extraDarkGrey
                 }
         )
         upVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, 1) }

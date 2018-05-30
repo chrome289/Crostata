@@ -18,10 +18,11 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
-import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
+import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Comment
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
@@ -99,9 +100,9 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     }
 
     override val unSelectedGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList
@@ -143,9 +144,9 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     override fun onReportButtonClick(post: Post) {}
 
-    override fun openProfile(birthId: String) {
+    override fun openProfile(birthId: String, name: String) {
         Log.v(TAG, "setting birthid")
-        mutableBirthId.value = birthId
+        mutableSubject.value = Subject(birthId, name)
     }
 
     private fun updatePostItem(post: Post) {
@@ -171,7 +172,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     internal var adapter: ViewPostCommentAdapter = ViewPostCommentAdapter(this)
     lateinit var glide: GlideRequests
 
-    internal var mutableBirthId: SingleBirthId = SingleBirthId()
+    internal var mutableSubject: SingleSubject = SingleSubject()
     var mutablePost: SingleLivePost = SingleLivePost()
 
     init {

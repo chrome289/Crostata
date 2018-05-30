@@ -85,11 +85,9 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
             addPostActivityViewModel.isImagePost = false
         }
 
-        val toolbar = supportActionBar
-        if (toolbar != null) {
-            toolbar.setDisplayShowHomeEnabled(true)
-            toolbar.setDisplayHomeAsUpEnabled(true)
-        }
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,8 +1,6 @@
 package xyz.siddharthseth.crostata.data.model.retrofit
 
-class Subject {
-    val birthId: String = ""
-    val name: String = ""
+class Subject(val birthId: String, val name: String) {
     val dob: String = ""
     val profession: String = ""
     val gender: Int = Int.MAX_VALUE

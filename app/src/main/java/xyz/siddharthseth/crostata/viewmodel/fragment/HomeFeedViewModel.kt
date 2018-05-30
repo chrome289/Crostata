@@ -18,9 +18,10 @@ import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
-import xyz.siddharthseth.crostata.data.model.livedata.SingleBirthId
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
+import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
+import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
@@ -61,9 +62,9 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         mutablePost.value = postList[index]
     }
 
-    override fun openProfile(birthId: String) {
+    override fun openProfile(birthId: String, name: String) {
         Log.v(TAG, "setting birthid $birthId")
-        mutableBirthId.value = birthId
+        mutableSubject.value = Subject(birthId, name)
     }
 
     override fun clearPostedImageGlide(imageView: ImageView) {
@@ -81,7 +82,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override fun onReportButtonClick(post: Post) {}
 
     override val extraDarkGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyDarkest))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val upVoteColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
     override val downVoteColorTint: ColorStateList
@@ -89,7 +90,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
     override val unSelectedGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.greyUnselected))
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
 
     private val TAG:String = javaClass.simpleName
     private val sharedPreferencesService = SharedPreferencesService()
@@ -104,7 +105,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     var isLoadPending = false
     var homeFeedAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     var mutablePost: SingleLivePost = SingleLivePost()
-    var mutableBirthId: SingleBirthId = SingleBirthId()
+    var mutableSubject: SingleSubject = SingleSubject()
     // var width: Int = 1080
     private var hasNewItems = false
 

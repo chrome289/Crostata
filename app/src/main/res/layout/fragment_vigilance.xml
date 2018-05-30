@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/greyLightest"
+    android:background="@color/grey_50"
     tools:context=".view.ui.fragment.VigilanceFragment">
 
     <android.support.v4.widget.NestedScrollView
@@ -44,7 +44,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_light"
+
                         android:text="@string/your_patriot_index_is_385"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="20sp"
@@ -77,7 +77,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_light"
+
                 android:text="Past Reports"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp"

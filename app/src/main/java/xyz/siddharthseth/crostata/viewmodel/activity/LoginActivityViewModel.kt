@@ -3,10 +3,8 @@ package xyz.siddharthseth.crostata.viewmodel.activity
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.content.Context
 import android.util.Log
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.providers.LoginRepositoryProvider
@@ -25,7 +23,6 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 
         return loginRepository.signIn()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .flatMap({ responseToken ->
                     val token = responseToken.body()
@@ -44,22 +41,6 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
                             Observable.just(1)
                         else
                             Observable.just(2)
-                    }
-                })
-
-    }
-
-    fun signInSilently(token: String): Observable<Int> {
-        val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
-        val context: Context = getApplication()
-        return loginRepository.signInSilently(token)
-                .subscribeOn(Schedulers.io())
-                .flatMap({ response ->
-                    Log.v(TAG, "here")
-                    if (response.isSuccessful) {
-                        Observable.just(0)
-                    } else {
-                        signIn(LoggedSubject.birthId, LoggedSubject.password)
                     }
                 })
 

@@ -79,6 +79,7 @@ interface CrostataApiService {
     @GET("subject/posts")
     fun getProfilePosts(
             @Header("authorization") token: String,
+            @Query("creatorId") creatorId: String,
             @Query("birthId") birthId: String,
             @Query("size") noOfPosts: Int,
             @Query("lastTimestamp") lastTimestamp: Long

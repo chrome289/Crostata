@@ -28,7 +28,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     fun init(post: Post) {
 
         itemView.profileName.text = post.creatorName
-        itemView.profileName.setOnClickListener { postItemListener.openProfile(post.creatorId) }
+        itemView.profileName.setOnClickListener { postItemListener.openProfile(post.creatorId, post.creatorName) }
 
         itemView.timeText.text = post.timeCreatedText
 
@@ -53,7 +53,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             postItemListener.clearPostedImageGlide(itemView.contentImage)
         } else {
             itemView.contentImage.visibility = View.VISIBLE
-            itemView.contentImage.setOnClickListener { postItemListener.openProfile(post.creatorId) }
+            itemView.contentImage.setOnClickListener { postItemListener.openProfile(post.creatorId, post.creatorName) }
             postItemListener.loadPostedImage(post, 640, itemView.contentImage)
             itemView.contentImage.setOnClickListener(this)
             //itemView.imageView.requestLayout()

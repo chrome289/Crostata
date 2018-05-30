@@ -90,14 +90,14 @@ class Post() : Comparable<Post>, Parcelable {
     var timeCreated = ""
     var contentType = ""
     var text = ""
-    var upVotes = 0
-    var downVotes = 0
-    var comments = 0
+    var upVotes = Int.MAX_VALUE
+    var downVotes = Int.MAX_VALUE
+    var comments = Int.MAX_VALUE
     var isCensored = false
-    var opinion = 0
+    var opinion = Int.MAX_VALUE
     var imageId = ""
 
-    var votes: Int = 0
+    var votes: Int = Int.MAX_VALUE
     lateinit var timeCreatedText: String
     lateinit var date: Date
     lateinit var glideUrl: GlideUrl
