@@ -19,8 +19,28 @@ class AddPostActivityViewModel(application: Application) : AndroidViewModel(appl
                 Log.v(TAG, "file not found $imageFile")
                 return Observable.just(false)
             } else {
-                return contentRepository.submitImagePost(token, LoggedSubject.birthId, text, imageFile, false)
+                if (!isUploadRequestSent) {
+                    isUploadRequestSent = true
+                    return contentRepository.submitImagePost(token, LoggedSubject.birthId, text, imageFile, false)
+                            .subscribeOn(Schedulers.io())
+                            .doOnNext { isUploadRequestSent = false }
+                            .doOnError { isUploadRequestSent = false }
+                            .flatMap {
+                                if (it.isSuccessful)
+                                    return@flatMap Observable.just(true)
+                                else
+                                    return@flatMap Observable.just(false)
+                            }
+
+                }
+            }
+        } else {
+            if (!isUploadRequestSent) {
+                isUploadRequestSent = true
+                return contentRepository.submitTextPost(token, LoggedSubject.birthId, text, false)
                         .subscribeOn(Schedulers.io())
+                        .doOnNext { isUploadRequestSent = false }
+                        .doOnError { isUploadRequestSent = false }
                         .flatMap {
                             if (it.isSuccessful)
                                 return@flatMap Observable.just(true)
@@ -28,19 +48,12 @@ class AddPostActivityViewModel(application: Application) : AndroidViewModel(appl
                                 return@flatMap Observable.just(false)
                         }
             }
-        } else {
-            return contentRepository.submitTextPost(token, LoggedSubject.birthId, text, false)
-                    .subscribeOn(Schedulers.io())
-                    .flatMap {
-                        if (it.isSuccessful)
-                            return@flatMap Observable.just(true)
-                        else
-                            return@flatMap Observable.just(false)
-                    }
         }
+        return Observable.empty()
     }
 
     var isImagePost: Boolean = false
+    private var isUploadRequestSent = false
     lateinit var imageFile: File
     val TAG: String = javaClass.simpleName
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()

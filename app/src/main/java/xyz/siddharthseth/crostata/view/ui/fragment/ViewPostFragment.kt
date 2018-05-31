@@ -84,6 +84,7 @@ class ViewPostFragment : Fragment() {
         viewPostViewModel.mutableSubject.removeObserver(observerSubject)
     }
 
+
     private lateinit var viewPostViewModel: ViewPostViewModel
     private val TAG: String? = javaClass.simpleName
     private var listener: ViewPostInteractionListener? = null

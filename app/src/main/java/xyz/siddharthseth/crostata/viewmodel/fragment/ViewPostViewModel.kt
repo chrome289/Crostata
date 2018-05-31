@@ -29,11 +29,12 @@ import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
+import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener {
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener, ViewPostInteractionListener {
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
@@ -68,22 +69,26 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     override fun onCommentButtonClick(comment: String): Observable<Boolean> {
         val post: Post = mutablePost.value!!
         val context: Context = getApplication()
-        isLoading = true
-        return contentRepository.submitComment(token, post._id, LoggedSubject.birthId, comment)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap {
-                    if (it != null) {
-                        it.initExtraInfo(context.getString(R.string.server_url), token)
-                        commentList.add(it)
-                        updateCommentAdapter()
-                        isLoading = false
-                        return@flatMap Observable.just(true)
-                    } else {
-                        isLoading = false
-                        Observable.just(false)
+        return if (!isSubmitCommentRequestSent) {
+            isSubmitCommentRequestSent = true
+            contentRepository.submitComment(token, post._id, LoggedSubject.birthId, comment)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap {
+                        if (it != null) {
+                            it.initExtraInfo(context.getString(R.string.server_url), token)
+                            commentList.add(it)
+                            updateCommentAdapter()
+                            isSubmitCommentRequestSent = false
+                            return@flatMap Observable.just(true)
+                        } else {
+                            isSubmitCommentRequestSent = false
+                            Observable.just(false)
+                        }
                     }
-                }
+        } else {
+            Observable.empty()
+        }
     }
 
     override fun onClearVote(postId: String): Observable<VoteTotal> {
@@ -145,8 +150,13 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     override fun onReportButtonClick(post: Post) {}
 
     override fun openProfile(birthId: String, name: String) {
-        Log.v(TAG, "setting birthid")
         mutableSubject.value = Subject(birthId, name)
+    }
+
+    override fun openProfile(index: Int) {
+        Log.v(TAG, "setting birthid")
+        val comment = commentList[index]
+        mutableSubject.value = Subject(comment.birthId, comment.name)
     }
 
     private fun updatePostItem(post: Post) {
@@ -168,9 +178,10 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     private var noOfComments: Int = 10
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
-    private var isLoading = false
     internal var adapter: ViewPostCommentAdapter = ViewPostCommentAdapter(this)
     lateinit var glide: GlideRequests
+    private var isCommentRequestSent = false
+    private var isSubmitCommentRequestSent = false
 
     internal var mutableSubject: SingleSubject = SingleSubject()
     var mutablePost: SingleLivePost = SingleLivePost()
@@ -180,35 +191,36 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getComments() {
-        isLoading = true
-        var hasNewItems = false
-        val post: Post = mutablePost.value!!
-        contentRepository.getComments(token, post._id, noOfComments, lastTimestamp)
-                .subscribeOn(Schedulers.io())
-                .flatMap { nextComments ->
-                    if (!isInitialized)
-                        isInitialized = true
-                    val context: Context = getApplication()
-                    for (comment in nextComments) {
-                        comment.initExtraInfo(context.getString(R.string.server_url), token)
+        if (!isCommentRequestSent) {
+            isCommentRequestSent = true
+            var hasNewItems = false
+            val post: Post = mutablePost.value!!
+            contentRepository.getComments(token, post._id, noOfComments, lastTimestamp)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap { nextComments ->
+                        if (!isInitialized)
+                            isInitialized = true
+                        val context: Context = getApplication()
+                        for (comment in nextComments) {
+                            comment.initExtraInfo(context.getString(R.string.server_url), token)
+                        }
+                        return@flatMap Observable.from(nextComments)
                     }
-                    return@flatMap Observable.from(nextComments)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ comment: Comment ->
-                    commentList.add(comment)
-                    hasNewItems = true
-                }, { error ->
-                    error.printStackTrace()
-                    isLoading = false
-                }
-                        , {
-                    Log.v(TAG, "oncomplete called " + adapter.commentList.size)
-                    if (hasNewItems) {
-                        updateCommentAdapter()
-                        isLoading = false
-                    }
-                })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ comment: Comment ->
+                        commentList.add(comment)
+                        hasNewItems = true
+                    }, { error ->
+                        isCommentRequestSent = false
+                        error.printStackTrace()
+                    }, {
+                        //Log.v(TAG, "oncomplete called " + adapter.commentList.size)
+                        if (hasNewItems) {
+                            isCommentRequestSent = false
+                            updateCommentAdapter()
+                        }
+                    })
+        }
     }
 
     private fun updateCommentAdapter() {

@@ -12,7 +12,6 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_detail.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
-import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
@@ -43,21 +42,17 @@ class DetailActivity : AppCompatActivity()
     }
 
     override fun openProfile(birthId: String, name: String) {
-        if (LoggedSubject.birthId == birthId) {
-            setProfileNavigation()
-            finish()
-        } else {
-            val profileFragment = ProfileFragment.newInstance(birthId)
+        val profileFragment = ProfileFragment.newInstance(birthId)
 
-            detailActivityViewModel.toolbarTitle.add(name)
-            titleTextView.text = name
+        detailActivityViewModel.toolbarTitle.add(name)
+        titleTextView.text = name
 
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.detailFrame, profileFragment, R.id.profile.toString())
-                    .addToBackStack(null)
-                    .commit()
-        }
+        supportFragmentManager.beginTransaction()
+                .add(R.id.detailFrame, profileFragment, R.id.profile.toString())
+                .addToBackStack(null)
+                .commit()
     }
+
 
     override fun isNetAvailable() {
         detailActivityViewModel.checkNetworkAvailable()
@@ -148,9 +143,6 @@ class DetailActivity : AppCompatActivity()
         setResult(Activity.RESULT_OK, intentData)
     }
 
-    private fun setProfileNavigation() {
-        intentData.putExtra("openItem", R.id.selfProfile)
-    }
 
     private val intentData = Intent()
     private val TAG: String = javaClass.simpleName

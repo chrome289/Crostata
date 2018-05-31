@@ -19,12 +19,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val TAG: String = this::class.java.simpleName
     var isDetailActivityOpen: Boolean = false
     var subject: Subject = Subject(LoggedSubject.birthId, "")
+    var isServerStatusRequestSent = false
+    var isPiRequestSent = false
 
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()
         return when (fragmentId) {
             R.id.community -> context.resources.getString(R.string.toolbar_community)
-            R.id.selfProfile -> context.resources.getString(R.string.toolbar_profile)
             R.id.vigilance -> context.resources.getString(R.string.toolbar_vigilance)
             R.id.viewPost -> context.resources.getString(R.string.comments)
             else -> context.resources.getString(R.string.toolbar_home)
@@ -32,16 +33,30 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun checkNetworkAvailable(): Observable<Boolean> {
-        return contentRepository.serverStatus(token)
-                .subscribeOn(Schedulers.io())
-                .flatMap {
-                    Observable.just(it.isSuccessful)
-                }
+        return if (!isServerStatusRequestSent) {
+            isServerStatusRequestSent = true
+            contentRepository.serverStatus(token)
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { isServerStatusRequestSent = false }
+                    .doOnError { isServerStatusRequestSent = false }
+                    .flatMap {
+                        Observable.just(it.isSuccessful)
+                    }
+        } else {
+            Observable.empty()
+        }
     }
 
     fun getPatriotIndex(): Observable<Subject> {
-        return contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
-                .subscribeOn(Schedulers.io())
+        return if (!isPiRequestSent) {
+            isPiRequestSent = true
+            contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { isPiRequestSent = false }
+                    .doOnError { isPiRequestSent = false }
+        } else {
+            Observable.empty()
+        }
     }
 
     fun getToken(): String {

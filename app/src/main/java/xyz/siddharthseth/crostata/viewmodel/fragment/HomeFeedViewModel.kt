@@ -58,13 +58,14 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun openFullPost(index: Int) {
-        Log.v(TAG, "viewmodel click listener")
+        //Log.v(TAG, "viewmodel click listener")
         mutablePost.value = postList[index]
     }
 
-    override fun openProfile(birthId: String, name: String) {
-        Log.v(TAG, "setting birthid $birthId")
-        mutableSubject.value = Subject(birthId, name)
+    override fun openProfile(index: Int) {
+        // Log.v(TAG, "setting birthid $birthId")
+        val post = postList[index]
+        mutableSubject.value = Subject(post.creatorId, post.creatorName)
     }
 
     override fun clearPostedImageGlide(imageView: ImageView) {
@@ -92,7 +93,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     override val unSelectedGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
 
-    private val TAG:String = javaClass.simpleName
+    private val TAG: String = javaClass.simpleName
     private val sharedPreferencesService = SharedPreferencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())

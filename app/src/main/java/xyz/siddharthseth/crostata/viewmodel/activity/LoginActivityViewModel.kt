@@ -16,33 +16,40 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
 
     private val TAG = "LoginActivityViewModel"
     private val sharedPreferencesService = SharedPreferencesService()
+    var isSignInRequestSent = false
 
 
     fun signIn(birthId: String, password: String): Observable<Int> {
         LoggedSubject.init(birthId, password)
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 
-        return loginRepository.signIn()
-                .subscribeOn(Schedulers.io())
-                .flatMap({ responseToken ->
-                    val token = responseToken.body()
-                    Log.v(TAG, "here")
-                    if (token == null)
-                        Observable.just(4)
-                    else {
-                        if (token.success) {
-                            val isSavedLocally = sharedPreferencesService.saveToken(token, getApplication())
-                                    && sharedPreferencesService.saveSubjectDetails(getApplication())
-                            if (isSavedLocally)
-                                Observable.just(0)
+        return if (!isSignInRequestSent) {
+            isSignInRequestSent = true
+            loginRepository.signIn()
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { isSignInRequestSent = false }
+                    .doOnError { isSignInRequestSent = false }
+                    .flatMap({ responseToken ->
+                        val token = responseToken.body()
+                        Log.v(TAG, "here")
+                        if (token == null)
+                            Observable.just(4)
+                        else {
+                            if (token.success) {
+                                val isSavedLocally = sharedPreferencesService.saveToken(token, getApplication())
+                                        && sharedPreferencesService.saveSubjectDetails(getApplication())
+                                if (isSavedLocally)
+                                    Observable.just(0)
+                                else
+                                    Observable.just(3)
+                            } else if (!token.success && responseToken.code() == 404)
+                                Observable.just(1)
                             else
-                                Observable.just(3)
-                        } else if (!token.success && responseToken.code() == 404)
-                            Observable.just(1)
-                        else
-                            Observable.just(2)
-                    }
-                })
-
+                                Observable.just(2)
+                        }
+                    })
+        } else {
+            Observable.empty()
+        }
     }
 }

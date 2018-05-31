@@ -118,9 +118,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     override val unSelectedGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
 
-    override fun openProfile(birthId: String, name: String) {
+    override fun openProfile(index: Int) {
         Log.v(TAG, "setting birthid")
-        mutableSubject.value = Subject(birthId, name)
+        val post = postList[index]
+        mutableSubject.value = Subject(post.creatorId, post.creatorName)
     }
 
     private val token = SharedPreferencesService().getToken(application)
@@ -138,6 +139,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     private var hasNewItems = false
     private var isPostRequestSent: Boolean = false
+    var isVoteRequestSent = false
     var isLoadPending = false
     var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
 
@@ -237,9 +239,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
         Log.v(TAG, "upVoteButtonClick")
         //val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
-        return contentRepository.submitVote(token, postId, birthId, value)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+        return if (!isVoteRequestSent) {
+            isVoteRequestSent = true
+            contentRepository.submitVote(token, postId, birthId, value)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext { isVoteRequestSent = false }
+                    .doOnError { isVoteRequestSent = false }
+                    .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
+        } else {
+            Observable.empty()
+        }
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {

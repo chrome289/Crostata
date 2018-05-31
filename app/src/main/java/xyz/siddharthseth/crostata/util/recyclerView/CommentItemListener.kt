@@ -7,7 +7,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Post
 interface CommentItemListener {
     fun onReportButtonClick(post: Post)
 
-    fun openProfile(birthId: String, name: String)
+    fun openProfile(index: Int)
 
     fun clearPostedImageGlide(imageView: ImageView)
     fun loadProfileImage(comment: Comment, dimen: Int, imageView: ImageView)

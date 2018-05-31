@@ -150,7 +150,7 @@ class ProfileFragment : Fragment() {
         val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
         if (layoutManager.itemCount <=
                 (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
-             profileViewModel.getMorePosts()
+            profileViewModel.getMorePosts()
         }
     }
 

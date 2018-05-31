@@ -33,7 +33,7 @@
         <item
             android:id="@+id/addPost"
             android:checkable="false"
-            android:icon="@drawable/ic_action_add"
+            android:icon="@drawable/ic_add_circle"
             android:orderInCategory="4"
             android:title="@string/add_post"
             app:showAsAction="ifRoom" />
@@ -43,10 +43,11 @@
         android:id="@+id/group3"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/selfProfile"
+            android:id="@+id/profile"
             android:icon="@drawable/ic_person"
             android:orderInCategory="5"
             android:title="@string/toolbar_profile"
+            android:checkable="false"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/signOut"

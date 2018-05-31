@@ -13,7 +13,7 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
     fun init(comment: Comment) {
         itemView.profileName.text = comment.name
         itemView.profileName.setOnClickListener {
-            commentItemListener.openProfile(comment.birthId, comment.name)
+            commentItemListener.openProfile(adapterPosition)
         }
         itemView.title.text = comment.text
 
@@ -23,7 +23,7 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
     fun loadImages(comment: Comment) {
         commentItemListener.loadProfileImage(comment, 128, itemView.profileImage)
         itemView.profileImage.setOnClickListener {
-            commentItemListener.openProfile(comment.birthId, comment.name)
+            commentItemListener.openProfile(adapterPosition)
         }
     }
 }

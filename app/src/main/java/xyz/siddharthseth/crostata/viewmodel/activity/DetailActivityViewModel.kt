@@ -14,12 +14,20 @@ class DetailActivityViewModel(application: Application) : AndroidViewModel(appli
     private val TAG: String = this::class.java.simpleName
     var isDetailActivityOpen: Boolean = false
     val toolbarTitle = ArrayList<String>()
+    var isRequestSent = false
 
     fun checkNetworkAvailable(): Observable<Boolean> {
-        return contentRepository.serverStatus(token)
-                .subscribeOn(Schedulers.io())
-                .flatMap {
-                    Observable.just(it.isSuccessful)
-                }
+        if (!isRequestSent) {
+            isRequestSent = true
+            return contentRepository.serverStatus(token)
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext { isRequestSent = false }
+                    .doOnError { isRequestSent = false }
+                    .flatMap {
+                        Observable.just(it.isSuccessful)
+                    }
+        } else {
+            return Observable.empty()
+        }
     }
 }

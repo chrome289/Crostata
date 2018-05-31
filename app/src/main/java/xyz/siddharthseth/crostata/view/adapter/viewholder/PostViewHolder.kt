@@ -13,8 +13,11 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.contentImage, R.id.contentText, R.id.commentButton, R.id.title -> {
+                R.id.postContainer -> {
                     postItemListener.openFullPost(adapterPosition)
+                }
+                R.id.profileName, R.id.profileImage -> {
+                    postItemListener.openProfile(adapterPosition)
                 }
             }
         }
@@ -27,13 +30,14 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
     fun init(post: Post) {
 
+        itemView.postContainer.setOnClickListener { this.onClick(it) }
+
         itemView.profileName.text = post.creatorName
-        itemView.profileName.setOnClickListener { postItemListener.openProfile(post.creatorId, post.creatorName) }
+        itemView.profileName.setOnClickListener { this.onClick(it) }
 
         itemView.timeText.text = post.timeCreatedText
 
         itemView.contentText.text = post.text
-        itemView.contentText.setOnClickListener { this.onClick(it) }
 
         itemView.votesTotal.text = "${post.votes} votes"
         itemView.votesTotal.setTextColor(
@@ -53,9 +57,8 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             postItemListener.clearPostedImageGlide(itemView.contentImage)
         } else {
             itemView.contentImage.visibility = View.VISIBLE
-            itemView.contentImage.setOnClickListener { postItemListener.openProfile(post.creatorId, post.creatorName) }
+            itemView.contentImage.setOnClickListener { this.onClick(it) }
             postItemListener.loadPostedImage(post, 640, itemView.contentImage)
-            itemView.contentImage.setOnClickListener(this)
             //itemView.imageView.requestLayout()
         }
         //Log.v(TAG, post.glideUrlProfileThumb.toStringUrl())

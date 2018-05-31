@@ -31,7 +31,6 @@ import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
-import xyz.siddharthseth.crostata.view.ui.fragment.ProfileFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.VigilanceFragment
 import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 
@@ -92,17 +91,17 @@ class MainActivity : AppCompatActivity()
     }
 
     override fun openProfile(birthId: String, name: String) {
+        val intent = Intent(this, DetailActivity::class.java)
         if (LoggedSubject.birthId == birthId) {
-            navigationDrawerListener(navigationView.menu.findItem(R.id.selfProfile))
+            intent.putExtra("birthId", birthId)
+            intent.putExtra("name", "My Profile")
         } else {
-            val intent = Intent(this, DetailActivity::class.java)
             intent.putExtra("birthId", birthId)
             intent.putExtra("name", name)
-
-            if (!mainActivityViewModel.isDetailActivityOpen) {
-                mainActivityViewModel.isDetailActivityOpen = true
-                startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
-            }
+        }
+        if (!mainActivityViewModel.isDetailActivityOpen) {
+            mainActivityViewModel.isDetailActivityOpen = true
+            startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
         }
     }
 
@@ -254,13 +253,11 @@ class MainActivity : AppCompatActivity()
         when {
             item.itemId == R.id.addPost -> addNewPost()
             item.itemId == R.id.signOut -> showSignOutDialog()
+            item.itemId == R.id.profile -> openProfile(LoggedSubject.birthId, "My Profile")
             else -> {
                 val fragment = when (item.itemId) {
                     R.id.community -> {
                         getFragment(R.id.community)
-                    }
-                    R.id.selfProfile -> {
-                        getFragment(R.id.selfProfile)
                     }
                     R.id.vigilance -> {
                         getFragment(R.id.vigilance)
@@ -315,14 +312,6 @@ class MainActivity : AppCompatActivity()
                     vigilanceFragment as VigilanceFragment
                 }
             }
-            R.id.selfProfile -> {
-                if (selfProfileFragment == null) {
-                    selfProfileFragment = ProfileFragment.newInstance(LoggedSubject.birthId)
-                    selfProfileFragment as ProfileFragment
-                } else {
-                    selfProfileFragment as ProfileFragment
-                }
-            }
             else -> {
                 if (homeFeedFragment == null) {
                     homeFeedFragment = HomeFeedFragment.newInstance()
@@ -336,7 +325,6 @@ class MainActivity : AppCompatActivity()
 
     private val TAG: String = javaClass.simpleName
     private var homeFeedFragment: HomeFeedFragment? = null
-    private var selfProfileFragment: ProfileFragment? = null
     private var communityFragment: CommunityFragment? = null
     private var vigilanceFragment: VigilanceFragment? = null
 

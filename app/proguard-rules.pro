@@ -51,3 +51,10 @@
 #If you're targeting any API level less than Android API 27, also include:
 ##pro
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+
+#crashlytics
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-printmapping mapping.txt
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**

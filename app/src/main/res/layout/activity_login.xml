@@ -19,7 +19,7 @@
         android:padding="32dp"
         android:scaleType="fitCenter"
         android:src="@drawable/flag"
-        app:layout_constraintDimensionRatio="3:2"
+        app:layout_constraintDimensionRatio="17:10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
