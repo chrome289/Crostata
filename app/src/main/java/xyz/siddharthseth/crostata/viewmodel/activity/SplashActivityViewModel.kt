@@ -18,10 +18,6 @@ class SplashActivityViewModel(application: Application) : AndroidViewModel(appli
     private var isSignInSilentlyRequestSent = false
     private var isSignInRequestSent = false
 
-    init {
-        initLoggedSubject()
-    }
-
     fun signInSilently(): Observable<Boolean> {
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
         return if (!isSignInSilentlyRequestSent) {
@@ -60,7 +56,6 @@ class SplashActivityViewModel(application: Application) : AndroidViewModel(appli
                         else {
                             if (token.success) {
                                 val isSavedLocally = sharedPreferencesService.saveToken(token, getApplication())
-                                        && sharedPreferencesService.saveSubjectDetails(getApplication())
                                 if (isSavedLocally)
                                     Observable.just(0)
                                 else
@@ -79,9 +74,5 @@ class SplashActivityViewModel(application: Application) : AndroidViewModel(appli
 
     fun savedLoginDetailsAvailable(): Boolean {
         return LoggedSubject.isInitDone()
-    }
-
-    fun initLoggedSubject() {
-        LoggedSubject.init(getApplication())
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -14,6 +13,36 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/approveImage"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            android:elevation="2dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/approveText"
+            app:layout_constraintEnd_toStartOf="@+id/approveText"
+            app:layout_constraintTop_toTopOf="@+id/approveText"
+            app:srcCompat="@drawable/ic_check" />
+
+        <TextView
+            android:id="@+id/approveText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:elevation="2dp"
+            android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:text="Approved"
+            android:textSize="12sp"
+            android:theme="@style/Text.Medium.Inverse"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/commentsTotal"
@@ -109,14 +138,18 @@
 
         <TextView
             android:id="@+id/profileName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
 
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:minLines="1"
             android:text="@string/sample_name"
             android:theme="@style/Text.Medium.Red"
             app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintEnd_toStartOf="@+id/approveImage"
             app:layout_constraintStart_toEndOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="@+id/profileImage" />
 

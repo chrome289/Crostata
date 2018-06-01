@@ -30,6 +30,14 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
     fun init(post: Post) {
 
+        if (post.isCensored || post.isGenerated) {
+            itemView.approveImage.visibility = View.VISIBLE
+            itemView.approveText.visibility = View.VISIBLE
+        } else {
+            itemView.approveImage.visibility = View.GONE
+            itemView.approveText.visibility = View.GONE
+        }
+
         itemView.postContainer.setOnClickListener { this.onClick(it) }
 
         itemView.profileName.text = post.creatorName

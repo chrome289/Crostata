@@ -12,7 +12,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
-import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.viewmodel.activity.LoginActivityViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -26,14 +25,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         when (view.id) {
             R.id.signIn -> {
                 showLoadingDialog()
-                // Log.v(TAG, "here0")
+
+                Log.v(TAG, "birthId-${birthId.text}-password-${password.text}")
                 loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ resultCode ->
+                            Log.v(TAG, "code-$resultCode")
                             if (resultCode == 0) {
-                                openHomePage()
-                                hideLoadingDialog()
-                                finish()
+                                getSubjectDetails()
                             } else {
                                 showErrorAlert(resultCode)
                                 hideLoadingDialog()
@@ -44,23 +43,38 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             hideLoadingDialog()
                             showErrorAlert(3)
                         })
-
             }
         }
     }
 
     private fun hideLoadingDialog() {
         loadingFrame.visibility = View.GONE
+        animationView.visibility = View.GONE
         animationView.cancelAnimation()
     }
 
     private fun showLoadingDialog() {
         loadingFrame.visibility = View.VISIBLE
+        animationView.visibility = View.VISIBLE
         animationView.playAnimation()
     }
 
     private fun openHomePage() {
         startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun getSubjectDetails() {
+        loginActivityViewModel.getSubjectDetails()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    loginActivityViewModel.subject = it
+                    loginActivityViewModel.saveSubjectDetails(it.name)
+                    hideLoadingDialog()
+                    openHomePage()
+                }, {
+                    it.printStackTrace()
+                })
     }
 
     private fun showErrorAlert(resultCode: Int) {
@@ -98,8 +112,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
         animationView.setAnimation(R.raw.loader1)
 
-        val token = SharedPreferencesService().getToken(applicationContext)
-        if (token.isNotEmpty()) {
+        if (LoggedSubject.isInitDone()) {
             showLoadingDialog()
             autoFillFields()
         }

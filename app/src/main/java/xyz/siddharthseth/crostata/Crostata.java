@@ -2,16 +2,16 @@ package xyz.siddharthseth.crostata;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.LeakCanary;
 
-import io.fabric.sdk.android.Fabric;
+import xyz.siddharthseth.crostata.data.model.LoggedSubject;
 
 public class Crostata extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        LoggedSubject.INSTANCE.init(getApplicationContext());
+        // Fabric.with(this, new Crashlytics());
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }

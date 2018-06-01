@@ -9,9 +9,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import kotlinx.android.synthetic.main.activity_add_post.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.viewmodel.activity.AddPostActivityViewModel
@@ -88,7 +93,29 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
         setSupportActionBar(toolbar)
         supportActionBar?.title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setProfileDetails()
     }
+
+    private fun setProfileDetails() {
+        profileName.text = LoggedSubject.name
+        GlideApp.with(this)
+                .load(getProfileImageLink())
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(profileImage)
+    }
+
+    private fun getProfileImageLink(): GlideUrl {
+        return GlideUrl(getString(R.string.server_url) +
+                "subject/profileImage?birthId=${LoggedSubject.birthId}&dimen=320&quality=80"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", addPostActivityViewModel.token)
+                .build())
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar_add_post, menu)

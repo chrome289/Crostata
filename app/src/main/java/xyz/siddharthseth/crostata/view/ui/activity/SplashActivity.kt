@@ -3,14 +3,17 @@ package xyz.siddharthseth.crostata.view.ui.activity
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.Keep
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_splash_actvity.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.R.layout.activity_splash_actvity
 import xyz.siddharthseth.crostata.viewmodel.activity.SplashActivityViewModel
 
+@Keep
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var splashActivityViewModel: SplashActivityViewModel
@@ -19,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_splash_actvity)
+        setContentView(activity_splash_actvity)
 
         animationView.setAnimation(R.raw.loader1)
 

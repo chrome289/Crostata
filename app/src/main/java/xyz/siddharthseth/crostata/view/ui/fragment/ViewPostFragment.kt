@@ -104,6 +104,14 @@ class ViewPostFragment : Fragment() {
     private fun initView() {
         val post = viewPostViewModel.mutablePost.value!!
 
+        if (post.isCensored || post.isGenerated) {
+            approveImage.visibility = View.VISIBLE
+            approveText.visibility = View.VISIBLE
+        } else {
+            approveImage.visibility = View.GONE
+            approveText.visibility = View.GONE
+        }
+
         profileName.text = post.creatorName
         profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId, post.creatorName) }
 

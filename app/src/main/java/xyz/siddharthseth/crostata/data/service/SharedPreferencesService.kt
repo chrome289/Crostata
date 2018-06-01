@@ -24,6 +24,7 @@ class SharedPreferencesService {
         sharedPreferences.edit()
                 .putString("birthId", LoggedSubject.birthId)
                 .putString("password", LoggedSubject.password)
+                .putString("name", LoggedSubject.name)
                 .apply()
         return true
     }

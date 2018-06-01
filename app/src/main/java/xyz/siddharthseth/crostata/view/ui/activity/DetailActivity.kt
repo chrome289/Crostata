@@ -134,7 +134,7 @@ class DetailActivity : AppCompatActivity()
             val temp = detailActivityViewModel.toolbarTitle.last()
             titleTextView.text = temp
         } else {
-            finish()
+            finishAfterTransition()
         }
     }
 

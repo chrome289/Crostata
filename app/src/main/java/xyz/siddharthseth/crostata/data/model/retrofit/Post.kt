@@ -42,6 +42,7 @@ class Post() : Comparable<Post>, Parcelable {
         parcel.writeInt(downVotes)
         parcel.writeInt(comments)
         parcel.writeByte(if (isCensored) 1 else 0)
+        parcel.writeByte(if (isGenerated) 1 else 0)
         parcel.writeInt(opinion)
         parcel.writeString(imageId)
 
@@ -75,6 +76,7 @@ class Post() : Comparable<Post>, Parcelable {
         result = 31 * result + downVotes
         result = 31 * result + comments
         result = 31 * result + isCensored.hashCode()
+        result = 31 * result + isGenerated.hashCode()
         result = 31 * result + opinion
         result = 31 * result + imageId.hashCode()
 
@@ -94,6 +96,7 @@ class Post() : Comparable<Post>, Parcelable {
     var downVotes = Int.MAX_VALUE
     var comments = Int.MAX_VALUE
     var isCensored = false
+    var isGenerated = false
     var opinion = Int.MAX_VALUE
     var imageId = ""
 
@@ -116,6 +119,8 @@ class Post() : Comparable<Post>, Parcelable {
         downVotes = parcel.readInt()
         comments = parcel.readInt()
         isCensored = parcel.readByte() != 0.toByte()
+        isGenerated = parcel.readByte() != 0.toByte()
+
         opinion = parcel.readInt()
         imageId = parcel.readString()
 

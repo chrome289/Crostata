@@ -52,12 +52,13 @@ class AddPostActivityViewModel(application: Application) : AndroidViewModel(appl
         return Observable.empty()
     }
 
+
     var isImagePost: Boolean = false
     private var isUploadRequestSent = false
     lateinit var imageFile: File
     val TAG: String = javaClass.simpleName
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val sharedPreferences = SharedPreferencesService()
-    private val token: String = sharedPreferences.getToken(application)
+    internal val token: String = sharedPreferences.getToken(application)
 
 }

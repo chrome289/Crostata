@@ -178,21 +178,12 @@ class MainActivity : AppCompatActivity()
 
         refreshButton.setOnClickListener(this)
         setupToolbarAndDrawer()
-
-        mainActivityViewModel.getPatriotIndex()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mainActivityViewModel.subject = it
-                    setNavigationHeader()
-                }, {
-                    it.printStackTrace()
-                })
+        setNavigationHeader()
     }
 
 
     private fun setNavigationHeader() {
-        navigationView.getHeaderView(0).profileName.text = mainActivityViewModel.subject.name
-        // patriotIndex.text = String.format(getString(R.string.your_patriot_index_is_385), mainActivityViewModel.subject.patriotIndex)
+        navigationView.getHeaderView(0).profileName.text = LoggedSubject.name
         GlideApp.with(this)
                 .load(getProfileImageLink())
                 .priority(Priority.LOW)

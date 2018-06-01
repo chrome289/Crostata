@@ -14,7 +14,7 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -52,9 +52,89 @@
 ##pro
 -dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
 
-#crashlytics
--keepattributes *Annotation*
--keepattributes SourceFile,LineNumberTable
--printmapping mapping.txt
--keep class com.crashlytics.** { *; }
--dontwarn com.crashlytics.**
+##crashlytics
+#-keepattributes *Annotation*
+#-keepattributes SourceFile,LineNumberTable
+#-printmapping mapping.txt
+#-keep class com.crashlytics.** { *; }
+#-dontwarn com.crashlytics.**
+
+#arch components
+## Android architecture components: Lifecycle
+# LifecycleObserver's empty constructor is considered to be unused by proguard
+-keepclassmembers class * implements android.arch.lifecycle.LifecycleObserver {
+    <init>(...);
+}
+# ViewModel's empty constructor is considered to be unused by proguard
+-keepclassmembers class * extends android.arch.lifecycle.ViewModel {
+    <init>(...);
+}
+# keep Lifecycle State and Event enums values
+-keepclassmembers class android.arch.lifecycle.Lifecycle$State { *; }
+-keepclassmembers class android.arch.lifecycle.Lifecycle$Event { *; }
+# keep methods annotated with @OnLifecycleEvent even if they seem to be unused
+# (Mostly for LiveData.LifecycleBoundObserver.onStateChange(), but who knows)
+-keepclassmembers class * {
+    @android.arch.lifecycle.OnLifecycleEvent *;
+}
+
+-keepclassmembers class * implements android.arch.lifecycle.LifecycleObserver {
+    <init>(...);
+}
+
+-keep class * implements android.arch.lifecycle.LifecycleObserver {
+    <init>(...);
+}
+-keepclassmembers class android.arch.** { *; }
+-keep class android.arch.** { *; }
+-dontwarn android.arch.**
+
+##leak canary
+-dontwarn com.squareup.haha.guava.**
+-dontwarn com.squareup.haha.perflib.**
+-dontwarn com.squareup.haha.trove.**
+-dontwarn com.squareup.leakcanary.**
+-keep class com.squareup.haha.** { *; }
+-keep class com.squareup.leakcanary.** { *; }
+
+# Marshmallow removed Notification.setLatestEventInfo()
+-dontwarn android.app.Notification
+
+##rxjava
+-dontwarn sun.misc.**
+-dontwarn com.github.davidmoten.rx2.flowable.Serialized*
+-dontwarn com.github.davidmoten.rx2.internal.flowable.buffertofile.MemoryMappedFile
+-dontwarn com.github.davidmoten.rx2.internal.flowable.buffertofile.UnsafeAccess
+
+
+#build.gradle
+#
+#    compile 'io.reactivex:rxandroid:1.0.1'
+#    compile 'io.reactivex:rxjava:1.0.14'
+#    compile 'io.reactivex:rxjava-math:1.0.0'
+#    compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
+
+# rxjava
+-keep class rx.schedulers.Schedulers {
+    public static <methods>;
+}
+-keep class rx.schedulers.ImmediateScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.TestScheduler {
+    public <methods>;
+}
+-keep class rx.schedulers.Schedulers {
+    public static ** test();
+}
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    long producerNode;
+    long consumerNode;
+}
+
+-keep class xyz.siddharthseth.crostata.** {*;}
+-keep interface xyz.siddharthseth.crostata.** {*;}

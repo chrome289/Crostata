@@ -16,10 +16,11 @@
         android:layout_height="0dp"
         android:contentDescription="@string/brplogo"
         android:elevation="4dp"
-        android:padding="32dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="32dp"
         android:scaleType="fitCenter"
         android:src="@drawable/flag"
-        app:layout_constraintDimensionRatio="17:10"
+        app:layout_constraintDimensionRatio="7:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,77 +30,61 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:theme="@style/Text.Regular.Larger"
+        android:textSize="30sp"
+        android:theme="@style/Text.Light.Larger"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/brpLogo" />
 
-    <ImageView
-        android:id="@+id/imageView12"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/useravatar"
-        android:tint="@color/grey_500"
-        app:layout_constraintBottom_toBottomOf="@+id/birthId"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintStart_toStartOf="@+id/birthId"
-        app:srcCompat="@drawable/ic_person" />
-
-    <EditText
-        android:id="@+id/birthId"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/userLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:ellipsize="end"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/birth_id"
-        android:inputType="number"
-        android:maxLength="9"
-        android:maxLines="1"
-        android:textSize="18sp"
-        android:theme="@style/Text.Regular.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appHeading" />
+        app:layout_constraintTop_toBottomOf="@+id/appHeading">
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:contentDescription="@string/keyavatar"
-        android:tint="@color/grey_500"
-        app:layout_constraintBottom_toBottomOf="@+id/password"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:srcCompat="@drawable/ic_action_key" />
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/birthId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/birth_id"
+            android:inputType="number"
+            android:maxLength="32"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:theme="@style/Text.Regular.Large" />
+    </android.support.design.widget.TextInputLayout>
 
-    <EditText
-        android:id="@+id/password"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/passwordLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:maxLength="32"
-        android:maxLines="1"
-        android:paddingEnd="48dp"
-        android:paddingStart="48dp"
-        android:textSize="18sp"
-        android:theme="@style/Text.Regular.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/birthId" />
+        app:layout_constraintTop_toBottomOf="@+id/userLayout"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorAccent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:maxLength="32"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:theme="@style/Text.Regular.Large" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/signIn"
@@ -108,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:paddingBottom="18dp"
         android:paddingEnd="36dp"
         android:paddingStart="36dp"
@@ -117,7 +102,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout" />
 
     <TextView
         android:id="@+id/credit"
@@ -134,29 +119,36 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_weight="5"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/passwordLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/userLayout"
+        app:lottie_cacheStrategy="strong"
+        app:lottie_enableMergePathsForKitKatAndAbove="true"
+        app:lottie_loop="true" />
+
     <LinearLayout
         android:id="@+id/loadingFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#149e9e9e"
+        android:background="#00f5f5f5"
         android:elevation="2dp"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationView"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_weight="5"
-            android:scaleType="fitCenter"
-            app:lottie_cacheStrategy="strong"
-            app:lottie_enableMergePathsForKitKatAndAbove="true"
-            app:lottie_loop="true" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

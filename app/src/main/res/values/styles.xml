@@ -10,7 +10,6 @@
         <item name="android:colorPrimary">@color/colorPrimary</item>
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
-
         <item name="android:listDivider">@color/grey_200</item>
         <item name="cardViewStyle">@style/CardView</item>
 
@@ -18,107 +17,124 @@
 
     <style name="Text.Light" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_light</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Text.Light.Large" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_light</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.Light.Larger" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:textSize">@dimen/font_size_larger</item>
+        <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Medium" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Medium.Red" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="Text.Medium.Inverse" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Text.Medium.Small" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Medium.Large" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Medium.Large.Inverse" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Text.Medium.Large.Red" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="Text.Medium.Larger" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_semibold</item>
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">@dimen/font_size_larger</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Bold.Red" parent="AppTheme">
         <item name="fontFamily">@font/open_sans_bold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="Text.Regular" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Regular.Red" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="Text.Regular.Yellow" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="Text.Regular.Large" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Regular.Large.Inverse" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/font_size_large</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Text.Regular.Larger" parent="AppTheme">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">@dimen/font_size_larger</item>
         <item name="android:textColor">@color/grey_900</item>
     </style>
 
-    <style name="SplashTheme" parent="AppTheme">
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+
+        <item name="android:listDivider">@color/grey_200</item>
+        <item name="cardViewStyle">@style/CardView</item>
         <item name="android:windowBackground">@drawable/view_splash</item>
     </style>
 
@@ -129,4 +145,9 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <dimen name="font_size_normal">14sp</dimen>
+    <dimen name="font_size_small">12sp</dimen>
+    <dimen name="font_size_large">18sp</dimen>
+    <dimen name="font_size_larger">24sp</dimen>
 </resources>
