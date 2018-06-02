@@ -49,8 +49,8 @@ class ViewPostFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
         viewPostViewModel.glide = GlideApp.with(this)
@@ -107,9 +107,11 @@ class ViewPostFragment : Fragment() {
         if (post.isCensored || post.isGenerated) {
             approveImage.visibility = View.VISIBLE
             approveText.visibility = View.VISIBLE
+            reportButton.isEnabled = false
         } else {
             approveImage.visibility = View.GONE
             approveText.visibility = View.GONE
+            reportButton.isEnabled = true
         }
 
         profileName.text = post.creatorName
@@ -127,7 +129,7 @@ class ViewPostFragment : Fragment() {
             viewPostViewModel.loadPostedImage(post, 640, contentImage)
         }
         viewPostViewModel.loadProfileImage(post, 128, profileImage)
-        viewPostViewModel.loadProfileImage(post, 128, profileImage2)
+        viewPostViewModel.loadProfileImage(128, profileImage2)
 
         contentText.text = post.text
 
@@ -143,12 +145,12 @@ class ViewPostFragment : Fragment() {
         upVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, 1) }
         upVoteButton.imageTintList =
                 (if (post.opinion == 1) viewPostViewModel.upVoteColorTint
-                else viewPostViewModel.unSelectedGrey)
+                else viewPostViewModel.grey600)
 
         downVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, -1) }
         downVoteButton.imageTintList =
                 (if (post.opinion == -1) viewPostViewModel.downVoteColorTint
-                else viewPostViewModel.unSelectedGrey)
+                else viewPostViewModel.grey600)
 
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recyclerView.adapter = viewPostViewModel.adapter
@@ -156,7 +158,7 @@ class ViewPostFragment : Fragment() {
         commentButton.setOnClickListener {
             viewPostViewModel.onCommentButtonClick(addComment.text.toString())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ Log.v(TAG, "the result $it") }, {
+                    .subscribe({ viewPostViewModel.refreshComments() }, {
                         it.printStackTrace()
                         hideKeyboard()
                     })

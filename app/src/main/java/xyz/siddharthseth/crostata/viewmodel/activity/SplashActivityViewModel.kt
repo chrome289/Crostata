@@ -44,7 +44,7 @@ class SplashActivityViewModel(application: Application) : AndroidViewModel(appli
 
         return if (!isSignInRequestSent) {
             isSignInRequestSent = true
-            loginRepository.signIn()
+            loginRepository.signIn(LoggedSubject.birthId, LoggedSubject.password)
                     .subscribeOn(Schedulers.io())
                     .doOnNext { isSignInRequestSent = false }
                     .doOnError { isSignInRequestSent = false }

@@ -8,8 +8,8 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="white">#ffffff</color>
-    <color name="upVoteSelected">#2962ff</color>
-    <color name="downVoteSelected">#e53a36</color>
+    <color name="upVoteSelected">#448aff</color>
+    <color name="downVoteSelected">#f44336</color>
     <color name="commentSelected">#90caf9</color>
     <color name="reportSelected">#e53935</color>
     <color name="grey_400">#bdbdbd</color>

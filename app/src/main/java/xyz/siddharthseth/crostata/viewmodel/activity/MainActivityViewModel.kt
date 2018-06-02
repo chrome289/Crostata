@@ -24,6 +24,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             R.id.community -> context.resources.getString(R.string.toolbar_community)
             R.id.vigilance -> context.resources.getString(R.string.toolbar_vigilance)
             R.id.viewPost -> context.resources.getString(R.string.comments)
+            R.id.about -> context.resources.getString(R.string.about_crostata)
             else -> context.resources.getString(R.string.toolbar_home)
         }
     }

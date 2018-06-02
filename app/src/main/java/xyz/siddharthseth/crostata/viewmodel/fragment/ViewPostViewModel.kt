@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -104,8 +106,8 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         GlideApp.with(context).clear(imageView as View)
     }
 
-    override val unSelectedGrey: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_400))
+    override val grey600: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_600))
     override val extraDarkGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val upVoteColorTint: ColorStateList
@@ -237,5 +239,34 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         val context: Context = getApplication()
         post.initExtraInfo(context.getString(R.string.server_url), token)
         mutablePost.value = post
+    }
+
+    fun loadProfileImage(dimen: Int, profileImage: ImageView) {
+        val context: Context = getApplication()
+        val glideUrl = GlideUrl(context.getString(R.string.server_url) +
+                "subject/profileImage?birthId=${LoggedSubject.birthId}&dimen=$dimen&quality=80"
+                , LazyHeaders.Builder()
+                .addHeader("authorization", token)
+                .build())
+
+        glide.load(glideUrl)
+                .priority(Priority.LOW)
+                .placeholder(R.drawable.home_feed_content_placeholder)
+                .circleCrop()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .fallback(R.drawable.home_feed_content_placeholder)
+                .into(profileImage)
+    }
+
+    fun refreshComments() {
+        adapter.commentList.clear()
+        commentList.clear()
+
+        isInitialized = false
+        lastTimestamp = Calendar.getInstance().timeInMillis
+
+        updateCommentAdapter()
+
+        getComments()
     }
 }

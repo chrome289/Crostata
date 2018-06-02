@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_splash_actvity.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_splash_actvity
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.viewmodel.activity.SplashActivityViewModel
 
 @Keep
@@ -26,7 +27,9 @@ class SplashActivity : AppCompatActivity() {
 
         animationView.setAnimation(R.raw.loader1)
 
+        LoggedSubject.init(applicationContext)
         splashActivityViewModel = ViewModelProviders.of(this).get(SplashActivityViewModel::class.java)
+
 
         if (splashActivityViewModel.savedLoginDetailsAvailable()) {
             signInSilently()

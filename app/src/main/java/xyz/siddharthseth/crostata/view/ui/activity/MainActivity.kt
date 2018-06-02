@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -29,6 +31,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Token
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.viewModel.PostInteractionListener
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
+import xyz.siddharthseth.crostata.view.ui.fragment.AboutFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.CommunityFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.HomeFeedFragment
 import xyz.siddharthseth.crostata.view.ui.fragment.VigilanceFragment
@@ -38,6 +41,7 @@ import xyz.siddharthseth.crostata.viewmodel.activity.MainActivityViewModel
 class MainActivity : AppCompatActivity()
         , CommunityFragment.OnFragmentInteractionListener
         , VigilanceFragment.OnFragmentInteractionListener
+        , AboutFragment.OnFragmentInteractionListener
         , ProfileInteractionListener
         , PostInteractionListener
         , View.OnClickListener {
@@ -87,7 +91,6 @@ class MainActivity : AppCompatActivity()
         showLoader(isLoaderVisible)
         showAnimation(isAnimationVisible)
         showError(isErrorVisible)
-        //swipeRefresh.isRefreshing = false
     }
 
     override fun openProfile(birthId: String, name: String) {
@@ -176,9 +179,14 @@ class MainActivity : AppCompatActivity()
 
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
-        refreshButton.setOnClickListener(this)
         setupToolbarAndDrawer()
         setNavigationHeader()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        refreshButton.setOnClickListener(this)
     }
 
 
@@ -247,15 +255,18 @@ class MainActivity : AppCompatActivity()
             item.itemId == R.id.profile -> openProfile(LoggedSubject.birthId, "My Profile")
             else -> {
                 val fragment = when (item.itemId) {
-                    R.id.community -> {
-                        getFragment(R.id.community)
+                    R.id.community -> getFragment(R.id.community)
+                    R.id.vigilance -> getFragment(R.id.vigilance)
+                    R.id.about -> getFragment(R.id.about)
+                    R.id.help -> {
+                        val url = Uri.parse("https://www.google.com")
+                        val builder = CustomTabsIntent.Builder()
+                        builder.setToolbarColor(resources.getColor(R.color.colorPrimary))
+                        val customTabsIntent = builder.build()
+                        customTabsIntent.launchUrl(this, url)
+                        return true
                     }
-                    R.id.vigilance -> {
-                        getFragment(R.id.vigilance)
-                    }
-                    else -> {
-                        getFragment(R.id.home)
-                    }
+                    else -> getFragment(R.id.home)
                 }
                 navigationView.menu.findItem(item.itemId).isChecked = true
 
@@ -303,6 +314,14 @@ class MainActivity : AppCompatActivity()
                     vigilanceFragment as VigilanceFragment
                 }
             }
+            R.id.about -> {
+                if (aboutFragment == null) {
+                    aboutFragment = AboutFragment.newInstance()
+                    aboutFragment as AboutFragment
+                } else {
+                    aboutFragment as AboutFragment
+                }
+            }
             else -> {
                 if (homeFeedFragment == null) {
                     homeFeedFragment = HomeFeedFragment.newInstance()
@@ -318,6 +337,7 @@ class MainActivity : AppCompatActivity()
     private var homeFeedFragment: HomeFeedFragment? = null
     private var communityFragment: CommunityFragment? = null
     private var vigilanceFragment: VigilanceFragment? = null
+    private var aboutFragment: AboutFragment? = null
 
     private var isMainToolbarMenuShown = true
     private lateinit var mainActivityViewModel: MainActivityViewModel

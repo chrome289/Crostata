@@ -2,6 +2,7 @@ package xyz.siddharthseth.crostata.viewmodel.activity
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.net.Uri
 import android.util.Log
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -60,5 +61,6 @@ class AddPostActivityViewModel(application: Application) : AndroidViewModel(appl
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val sharedPreferences = SharedPreferencesService()
     internal val token: String = sharedPreferences.getToken(application)
+    var imageUri: Uri? = null
 
 }

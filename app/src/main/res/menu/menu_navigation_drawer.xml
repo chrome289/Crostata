@@ -57,4 +57,28 @@
             android:title="@string/toolbar_signOut"
             app:showAsAction="ifRoom" />
     </group>
+    <group
+        android:id="@+id/group4"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/about"
+            android:checkable="false"
+            android:orderInCategory="7"
+            android:title="@string/about_crostata"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/help"
+            android:checkable="false"
+            android:orderInCategory="8"
+            android:title="@string/help_amp_feedback"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/appVersion"
+            android:checkable="false"
+            android:checked="false"
+            android:enabled="false"
+            android:orderInCategory="9"
+            android:title="@string/app_version"
+            app:showAsAction="ifRoom" />
+    </group>
 </menu>

@@ -46,7 +46,7 @@
     <string name="security3">News Correction System</string>
     <string name="security2">102,794 Informers</string>
     <string name="security1">44,586 CCTVs</string>
-    <string name="security_amp_privacy">Security &amp; Privacy></string>
+    <string name="security_amp_privacy">Security &amp; Privacy</string>
     <string name="camps_raided">Camps Raided</string>
     <string name="territory_gained">Territory Gained</string>
     <string name="_7_174">7,174</string>
@@ -106,5 +106,8 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="app_version">v0.1.0 Beta</string>
+    <string name="help_amp_feedback"><![CDATA[Help & Feedback]]></string>
+    <string name="about_crostata">About Crostata</string>
 
 </resources>

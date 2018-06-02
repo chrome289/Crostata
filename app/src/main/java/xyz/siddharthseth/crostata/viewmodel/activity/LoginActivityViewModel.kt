@@ -26,12 +26,11 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
     var isPiRequestSent = false
 
     fun signIn(birthId: String, password: String): Observable<Int> {
-        LoggedSubject.init(birthId, password, "")
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()
 
         if (!isSignInRequestSent) {
             isSignInRequestSent = true
-            return loginRepository.signIn()
+            return loginRepository.signIn(birthId, password)
                     .subscribeOn(Schedulers.io())
                     .doOnNext { isSignInRequestSent = false }
                     .doOnError { isSignInRequestSent = false }
@@ -64,14 +63,14 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
     }
 
 
-    fun getSubjectDetails(): Observable<Subject> {
+    fun getSubjectDetails(birthId: String): Observable<Subject> {
         return if (!isPiRequestSent) {
             isPiRequestSent = true
             token = sharedPreferencesService.getToken(getApplication())
-            contentRepository.getSubjectInfo(token, LoggedSubject.birthId)
+            contentRepository.getSubjectInfo(token, birthId)
                     .subscribeOn(Schedulers.io())
                     .doOnNext {
-                        isPiRequestSent = false;
+                        isPiRequestSent = false
                     }
                     .doOnError { isPiRequestSent = false }
         } else {
@@ -79,7 +78,9 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    fun saveSubjectDetails(name: String) {
-        LoggedSubject.init(LoggedSubject.birthId, LoggedSubject.password, name)
+    fun saveSubjectDetails(birthId: String, password: String, name: String) {
+        LoggedSubject.init(birthId, password, name)
+
+        sharedPreferencesService.saveSubjectDetails(getApplication())
     }
 }

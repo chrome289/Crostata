@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -41,50 +42,40 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.v(TAG, "onCreate")
+        //    Log.v(TAG, "onCreate")
+
+        if (savedInstanceState != null) {
+            scrollPositionData = savedInstanceState.getParcelable("ScrollPosition")
+        }
+
         if (arguments != null) {
         }
         homeFeedViewModel = ViewModelProviders.of(this).get(HomeFeedViewModel::class.java)
         homeFeedViewModel.glide = GlideApp.with(this)
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.v(TAG, "onPause")
-        homeFeedViewModel.mutablePost.removeObserver(observer)
-        homeFeedViewModel.mutableSubject.removeObserver(observerSubject)
-        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Log.v(TAG, "onCreateView")
+        return inflater.inflate(R.layout.fragment_home_feed, container, false)
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.v(TAG, "onstop")
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("ScrollPosition", recyclerView.layoutManager.onSaveInstanceState())
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        Log.v(TAG, "onattach")
-        mListener = if (context is PostInteractionListener) {
-            context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
+    override fun onStart() {
+        super.onStart()
 
-    override fun onResume() {
-        super.onResume()
-        Log.v(TAG, "onResume")
-
-        homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableSubject.observe(this, observerSubject)
-        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
-
+        addObservers()
         if (!isInitialized) {
 
             val manager = LinearLayoutManager(context)
             manager.isItemPrefetchEnabled = true
+            if (scrollPositionData != null) {
+                manager.onRestoreInstanceState(scrollPositionData)
+            }
 
             val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
             val modelProvider = MyPreloadModelProvider()
@@ -103,20 +94,28 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
             })
 
             swipeRefresh.setOnRefreshListener {
-                Log.v(TAG, "refresh called")
                 homeFeedViewModel.refreshData()
             }
 
             homeFeedViewModel.getPosts()
             isInitialized = true
         }
-        //addPostButton.setOnClickListener { v: View -> mListener?.addNewPost() }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        Log.v(TAG, "onCreateView")
-        return inflater.inflate(R.layout.fragment_home_feed, container, false)
+    override fun onStop() {
+        super.onStop()
+        Log.v(TAG, "onstop")
+        removeObservers()
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        Log.v(TAG, "onattach")
+        mListener = if (context is PostInteractionListener) {
+            context
+        } else {
+            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+        }
     }
 
     override fun onDetach() {
@@ -142,6 +141,9 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     private val observerLoaderConfig: Observer<List<Boolean>> = Observer {
         if (it != null) {
+            if (!it[0]) {
+                swipeRefresh.isRefreshing = false
+            }
             mListener!!.setLoaderVisibility(it[0], it[1], it[2])
         }
     }
@@ -163,10 +165,25 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun addObservers() {
+        homeFeedViewModel.mutablePost.observe(this, observer)
+        homeFeedViewModel.mutableSubject.observe(this, observerSubject)
+        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
+    }
+
+    private fun removeObservers() {
+        homeFeedViewModel.mutablePost.removeObserver(observer)
+        homeFeedViewModel.mutableSubject.removeObserver(observerSubject)
+        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
+    }
+
     private lateinit var homeFeedViewModel: HomeFeedViewModel
     private var mListener: PostInteractionListener? = null
     private var isInitialized: Boolean = false
     private val toleranceEndlessScroll = 3
+    private var scrollPositionData: Parcelable? = null
 
     companion object {
         private val TAG: String = HomeFeedFragment::class.java.simpleName

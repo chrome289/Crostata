@@ -23,13 +23,11 @@ import xyz.siddharthseth.crostata.viewmodel.activity.AddPostActivityViewModel
 import java.io.File
 
 class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
-    override fun isNetAvailable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override var mutableNetStatusChanged: MutableLiveData<Boolean>
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-        set(value) {}
+    override var mutableNetStatusChanged = MutableLiveData<Boolean>()
+
+    override fun isNetAvailable() {
+    }
 
     override fun showError(isShown: Boolean) {
         if (isShown) {
@@ -74,6 +72,14 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
 
         addPostActivityViewModel = ViewModelProviders.of(this).get(AddPostActivityViewModel::class.java)
 
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         addImage.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"
@@ -88,12 +94,12 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
                     .load(R.drawable.home_feed_content_placeholder)
                     .into(contentImage)
             addPostActivityViewModel.isImagePost = false
+            addPostActivityViewModel.imageUri = null
         }
-
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = ""
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        removeImage.visibility = if (addPostActivityViewModel.imageUri == null) View.GONE else View.VISIBLE
+        addImage.visibility = if (addPostActivityViewModel.imageUri != null) View.GONE else View.VISIBLE
         setProfileDetails()
+        loadContentImage()
     }
 
     private fun setProfileDetails() {
@@ -169,9 +175,16 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
             stream.close()
             outputStream.close()
             addPostActivityViewModel.imageFile = file
+            addPostActivityViewModel.imageUri = data.data
 
+            loadContentImage()
+        }
+    }
+
+    private fun loadContentImage() {
+        if (addPostActivityViewModel.imageUri != null) {
             GlideApp.with(this)
-                    .load(data.data)
+                    .load(addPostActivityViewModel.imageUri)
                     .fitCenter()
                     .into(contentImage)
             contentImage.requestLayout()

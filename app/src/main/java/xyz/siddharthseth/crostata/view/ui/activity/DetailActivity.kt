@@ -23,6 +23,8 @@ class DetailActivity : AppCompatActivity()
         , ViewPostInteractionListener
         , ProfileInteractionListener
         , View.OnClickListener {
+
+
     override fun onClick(v: View) {
         when (v.id) {
             android.R.id.home -> onBackPressed()

@@ -65,11 +65,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getSubjectDetails() {
-        loginActivityViewModel.getSubjectDetails()
+        loginActivityViewModel.getSubjectDetails(birthId.text.toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     loginActivityViewModel.subject = it
-                    loginActivityViewModel.saveSubjectDetails(it.name)
+                    loginActivityViewModel.saveSubjectDetails(birthId.text.toString(), password.text.toString(), it.name)
                     hideLoadingDialog()
                     openHomePage()
                 }, {

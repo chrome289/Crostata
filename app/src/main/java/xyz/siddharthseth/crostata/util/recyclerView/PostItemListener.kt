@@ -20,7 +20,7 @@ interface PostItemListener {
     val downVoteColorTint: ColorStateList
     val reportColorTint: ColorStateList
     val extraDarkGrey: ColorStateList
-    val unSelectedGrey: ColorStateList
+    val grey600: ColorStateList
 
     fun openFullPost(index: Int)
     fun handleVote(post: Post, value: Int)

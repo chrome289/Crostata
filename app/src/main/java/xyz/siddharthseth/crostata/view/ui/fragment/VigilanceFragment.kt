@@ -23,11 +23,6 @@ class VigilanceFragment : Fragment() {
     private lateinit var vigilanceViewModel: VigilanceViewModel
     private var isInitialized = false
 
-    private val observerSubject: Observer<Subject> = Observer {
-        if (it != null)
-            initSubjectInfo(it)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -40,20 +35,13 @@ class VigilanceFragment : Fragment() {
         mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
     }
 
-    override fun onStop() {
-        super.onStop()
-        vigilanceViewModel.mutableSubject.removeObserver(observerSubject)
-        vigilanceViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vigilance, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         vigilanceRecyclerViewAction.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         vigilanceRecyclerViewAction.adapter = vigilanceViewModel.vigilanceActionAdapter
@@ -64,6 +52,13 @@ class VigilanceFragment : Fragment() {
             vigilanceViewModel.init()
             isInitialized = true
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        vigilanceViewModel.mutableSubject.removeObserver(observerSubject)
+        vigilanceViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
     }
 
     override fun onAttach(context: Context?) {
@@ -80,9 +75,9 @@ class VigilanceFragment : Fragment() {
         mListener = null
     }
 
-    private fun initSubjectInfo(subject: Subject) {
-        patriotIndex.text = String.format(Locale.US, getString(R.string.your_patriot_index_is_385), subject.patriotIndex)
-        vigilanceViewModel.setVigilanceActions()
+    private val observerSubject: Observer<Subject> = Observer {
+        if (it != null)
+            initSubjectInfo(it)
     }
 
     private val observerLoaderConfig: Observer<List<Boolean>> = Observer {
@@ -98,6 +93,11 @@ class VigilanceFragment : Fragment() {
                 vigilanceViewModel.refreshData()
             }
         }
+    }
+
+    private fun initSubjectInfo(subject: Subject) {
+        patriotIndex.text = String.format(Locale.US, getString(R.string.your_patriot_index_is_385), subject.patriotIndex)
+        vigilanceViewModel.setVigilanceActions()
     }
 
     interface OnFragmentInteractionListener : BusyLoaderListener

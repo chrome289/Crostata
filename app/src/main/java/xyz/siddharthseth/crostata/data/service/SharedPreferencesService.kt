@@ -6,6 +6,7 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
 
 class SharedPreferencesService {
+
     fun saveToken(token: Token, context: Context): Boolean {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
         sharedPreferences.edit().putString("token", token.tokenValue).apply()
@@ -27,5 +28,22 @@ class SharedPreferencesService {
                 .putString("name", LoggedSubject.name)
                 .apply()
         return true
+    }
+
+    fun deleteSubjectDetails(context: Context): Boolean {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        sharedPreferences.edit()
+                .putString("birthId", "")
+                .putString("password", "")
+                .putString("name", "")
+                .apply()
+        return true
+    }
+
+    fun initLoggedSubject(context: Context) {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("subject", 0)
+        LoggedSubject.init(sharedPreferences.getString("birthId", "")
+                , sharedPreferences.getString("password", "")
+                , sharedPreferences.getString("name", ""))
     }
 }
