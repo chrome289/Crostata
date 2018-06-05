@@ -106,8 +106,8 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         GlideApp.with(context).clear(imageView as View)
     }
 
-    override val grey600: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_600))
+    override val grey500: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_500))
     override val extraDarkGrey: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val upVoteColorTint: ColorStateList

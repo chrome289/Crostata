@@ -15,28 +15,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".view.ui.activity.LoginActivity" />
-
         <activity android:name=".view.ui.activity.MainActivity" />
-
         <activity
             android:name=".view.ui.activity.DetailActivity"
-            android:parentActivityName=".view.ui.activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="xyz.siddharthseth.crostata.view.ui.activity.MainActivity" />
+            android:windowSoftInputMode="stateHidden">
         </activity>
-
         <activity
             android:name=".view.ui.activity.AddPostActivity"
             android:parentActivityName=".view.ui.activity.MainActivity" />
-
         <activity
             android:name=".view.ui.activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,6 +40,16 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c56b795ee9ade0d24c258152610ed617aa0aaf6e" />
+
+        <activity
+            android:name=".view.ui.activity.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:parentActivityName=".view.ui.activity.MainActivity"
+            android:theme="@style/SearchTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="xyz.siddharthseth.crostata.view.ui.activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -107,11 +107,11 @@ class ViewPostFragment : Fragment() {
         if (post.isCensored || post.isGenerated) {
             approveImage.visibility = View.VISIBLE
             approveText.visibility = View.VISIBLE
-            reportButton.isEnabled = false
+            reportButton.visibility = View.GONE
         } else {
             approveImage.visibility = View.GONE
             approveText.visibility = View.GONE
-            reportButton.isEnabled = true
+            reportButton.visibility = View.VISIBLE
         }
 
         profileName.text = post.creatorName
@@ -134,23 +134,17 @@ class ViewPostFragment : Fragment() {
         contentText.text = post.text
 
         commentsTotal.text = "${post.comments} Comments"
-        votesTotal.text = "${post.votes}"
-        votesTotal.setTextColor(
-                when {
-                    post.opinion == -1 -> viewPostViewModel.downVoteColorTint
-                    post.opinion == 1 -> viewPostViewModel.upVoteColorTint
-                    else -> viewPostViewModel.extraDarkGrey
-                }
-        )
+        votesTotal.text = "${post.votes} votes"
+
         upVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, 1) }
         upVoteButton.imageTintList =
                 (if (post.opinion == 1) viewPostViewModel.upVoteColorTint
-                else viewPostViewModel.grey600)
+                else viewPostViewModel.grey500)
 
         downVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, -1) }
         downVoteButton.imageTintList =
                 (if (post.opinion == -1) viewPostViewModel.downVoteColorTint
-                else viewPostViewModel.grey600)
+                else viewPostViewModel.grey500)
 
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recyclerView.adapter = viewPostViewModel.adapter
@@ -160,14 +154,9 @@ class ViewPostFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ viewPostViewModel.refreshComments() }, {
                         it.printStackTrace()
-                        hideKeyboard()
                     })
         }
 
         viewPostViewModel.getComments()
-    }
-
-    private fun hideKeyboard() {
-        Log.v(TAG, "hiding keyboard")
     }
 }

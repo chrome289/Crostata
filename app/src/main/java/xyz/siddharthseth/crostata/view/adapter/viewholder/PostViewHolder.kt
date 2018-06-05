@@ -48,14 +48,6 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
         itemView.contentText.text = post.text
 
         itemView.votesTotal.text = "${post.votes} votes"
-        itemView.votesTotal.setTextColor(
-                when {
-                    post.opinion == 0 -> extraDarkGrey
-                    post.opinion == 1 -> upVoteColor
-                    else -> downVoteColor
-                }
-        )
-
         itemView.commentsTotal.text = "${post.comments} comments"
     }
 

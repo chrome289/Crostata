@@ -125,6 +125,13 @@ interface CrostataApiService {
             @Header("authorization") token: String
     ): Observable<Response<ResponseBody>>
 
+    @GET("search")
+    fun getSearchResult(
+            @Header("authorization") token: String,
+            @Query("searchText") searchText: String,
+            @Query("lastName") lastName: String
+    ): Observable<List<SearchResult>>
+
     companion object {
         fun create(): CrostataApiService {
             val retrofit = Retrofit.Builder()

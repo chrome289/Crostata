@@ -115,8 +115,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
-    override val grey600: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_600))
+    override val grey500: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_500))
 
     override fun openProfile(index: Int) {
         Log.v(TAG, "setting birthid")

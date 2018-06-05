@@ -46,19 +46,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/commentsTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-
-            android:text="86 comments"
-            android:theme="@style/Text.Medium.Small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/votesTotal"
-            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
-
-        <TextView
             android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,21 +57,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/commentsTotal" />
-
-        <ImageView
-            android:id="@+id/contentImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/content_image"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="12dp"
-            android:visibility="visible"
-            app:layout_constraintDimensionRatio="2:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
         <TextView
             android:id="@+id/contentText"
@@ -104,6 +76,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
+        <ImageView
+            android:id="@+id/contentImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_image"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:visibility="visible"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentText" />
+
+        <TextView
+            android:id="@+id/commentsTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+
+            android:text="86 comments"
+            android:textColor="#1976d2"
+            android:theme="@style/Text.Medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
+
         <TextView
             android:id="@+id/votesTotal"
             android:layout_width="wrap_content"
@@ -113,9 +114,10 @@
             android:layout_marginTop="12dp"
 
             android:text="123 votes"
-            android:theme="@style/Text.Medium.Small"
+            android:textColor="#2e7d32"
+            android:theme="@style/Text.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/commentsTotal"
             app:layout_constraintTop_toBottomOf="@+id/contentImage" />
 
         <View

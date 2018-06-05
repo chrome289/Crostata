@@ -68,4 +68,9 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
     fun serverStatus(token: String): Observable<Response<ResponseBody>> {
         return crostataApiService.getServerStatus(token)
     }
+
+    fun getSearchResults(token: String, searchText: String, lastName: String): Observable<List<SearchResult>> {
+        return crostataApiService.getSearchResult(token, searchText, lastName)
+    }
+
 }

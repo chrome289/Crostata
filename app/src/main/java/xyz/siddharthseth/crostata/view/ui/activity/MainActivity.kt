@@ -130,6 +130,8 @@ class MainActivity : AppCompatActivity()
         return if (item != null) {
             when (item.itemId) {
                 R.id.search -> {
+                    val intent = Intent(this, SearchActivity::class.java)
+                    startActivity(intent)
                 }
                 android.R.id.home -> this.onBackPressed()
             }
@@ -237,7 +239,7 @@ class MainActivity : AppCompatActivity()
             DETAIL_ACTIVITY_RESULT_CODE -> {
                 if (data != null) {
                     if (data.hasExtra("openItem")) {
-                        Log.d(TAG, "i am not working 2")
+                        //  Log.d(TAG, "i am not working 2")
                         val openItemId = data.getIntExtra("openItem", R.id.home)
                         navigationDrawerListener(navigationView.menu.findItem(openItemId))
                     }

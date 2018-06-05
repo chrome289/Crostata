@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="1"
     android:background="@color/grey_50"
-    android:descendantFocusability="blocksDescendants"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
@@ -43,8 +41,10 @@
             android:textSize="12sp"
             android:theme="@style/Text.Medium.Inverse"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/timeText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/profileName" />
+
         <ImageView
             android:id="@+id/profileImage"
             android:layout_width="48dp"
@@ -70,16 +70,19 @@
             app:layout_constraintStart_toEndOf="@+id/profileImage"
             app:layout_constraintTop_toTopOf="@+id/profileImage" />
 
-        <Button
+        <ImageButton
             android:id="@+id/reportButton"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:text="Report"
+            android:background="@color/grey_50"
+            android:contentDescription="Report"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_flag"
+            android:tint="@color/grey_500"
+            app:layout_constraintBottom_toBottomOf="@+id/timeText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+            app:layout_constraintTop_toTopOf="@+id/profileName" />
 
         <TextView
             android:id="@+id/contentText"
@@ -126,47 +129,61 @@
         <ImageButton
             android:id="@+id/upVoteButton"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
             android:background="@color/grey_50"
             android:contentDescription="@string/up_vote_button"
             android:scaleType="centerInside"
             android:src="@drawable/ic_thumb_up"
-            android:tint="@color/grey_600"
+            android:tint="@color/grey_500"
             app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/votesTotal" />
 
-        <TextView
-            android:id="@+id/votesTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-
-            android:layout_marginStart="12dp"
-            android:layout_weight="0"
-            android:gravity="center"
-            android:minWidth="36dp"
-            android:text="@string/_123"
-            android:theme="@style/Text.Medium"
-            app:layout_constraintBottom_toBottomOf="@+id/reportButton"
-            app:layout_constraintStart_toEndOf="@+id/upVoteButton"
-            app:layout_constraintTop_toTopOf="@+id/reportButton" />
-
         <ImageButton
             android:id="@+id/downVoteButton"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="12dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
             android:background="@color/grey_50"
             android:contentDescription="@string/down_vote_button"
             android:rotation="180"
             android:scaleType="centerInside"
             android:src="@drawable/ic_thumb_up"
-            android:tint="@color/grey_600"
+            android:tint="@color/grey_500"
             app:layout_constraintBottom_toBottomOf="@+id/votesTotal"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@+id/votesTotal"
+            app:layout_constraintStart_toEndOf="@+id/upVoteButton"
+            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
+
+        <TextView
+            android:id="@+id/votesTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:minWidth="36dp"
+            android:text="123 votes"
+            android:textColor="#2e7d32"
+            android:theme="@style/Text.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+
+        <TextView
+            android:id="@+id/commentsTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+
+            android:gravity="center"
+            android:text="@string/_86_comments"
+            android:textColor="#1976d2"
+            android:theme="@style/Text.Medium"
+            app:layout_constraintEnd_toStartOf="@+id/votesTotal"
             app:layout_constraintTop_toTopOf="@+id/votesTotal" />
 
         <View
@@ -174,76 +191,65 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/grey_300"
+            android:background="@color/grey_400"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reportButton" />
-
-        <TextView
-            android:id="@+id/commentsTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-
-            android:gravity="center"
-            android:text="@string/_86_comments"
-            android:theme="@style/Text.Medium.Red"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seperator" />
+            app:layout_constraintTop_toBottomOf="@+id/commentsTotal" />
 
         <ImageView
             android:id="@+id/profileImage2"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:contentDescription="@string/profile_image"
+            android:src="@drawable/farmer"
+            app:layout_constraintBottom_toBottomOf="@+id/commentButton"
+            app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/commentsTotal"
-            app:srcCompat="@drawable/farmer" />
+            app:layout_constraintTop_toTopOf="@+id/commentButton" />
 
         <EditText
             android:id="@+id/addComment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_weight="1"
             android:background="@color/grey_50"
             android:ems="10"
+            android:gravity="center_vertical|start"
             android:hint="@string/add_a_comment"
             android:inputType="text|textMultiLine"
+            android:paddingEnd="8dp"
             android:paddingStart="8dp"
-            android:paddingEnd="0dp"
             android:theme="@style/Text.Regular"
-            app:layout_constraintBottom_toBottomOf="@+id/profileImage2"
+            app:layout_constraintBottom_toBottomOf="@+id/commentButton"
             app:layout_constraintEnd_toStartOf="@+id/commentButton"
             app:layout_constraintStart_toEndOf="@+id/profileImage2"
-            app:layout_constraintTop_toTopOf="@+id/profileImage2" />
+            app:layout_constraintTop_toTopOf="@+id/commentButton" />
 
         <ImageButton
             android:id="@+id/commentButton"
-            android:layout_width="36dp"
+            android:layout_width="0dp"
             android:layout_height="36dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             android:background="@color/grey_50"
             android:contentDescription="@string/add_a_comment"
             android:scaleType="centerInside"
             android:src="@drawable/ic_send"
             android:tint="@color/colorAccent"
-            app:layout_constraintBottom_toBottomOf="@+id/addComment"
-            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/addComment" />
+            app:layout_constraintTop_toBottomOf="@+id/seperator" />
 
         <View
             android:id="@+id/seperator2"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/grey_300"
+            android:background="@color/grey_400"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileImage2" />
+            app:layout_constraintTop_toBottomOf="@+id/addComment" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -262,10 +268,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
 
             android:text="No more comments"
-            android:theme="@style/Text.Regular"
+            android:theme="@style/Text.Medium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

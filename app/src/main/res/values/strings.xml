@@ -107,7 +107,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="app_version">v0.1.0 Beta</string>
-    <string name="help_amp_feedback"><![CDATA[Help & Feedback]]></string>
+    <string name="help_amp_feedback">Help &amp; Feedback</string>
     <string name="about_crostata">About Crostata</string>
+    <string name="title_activity_search">Search</string>
 
 </resources>
