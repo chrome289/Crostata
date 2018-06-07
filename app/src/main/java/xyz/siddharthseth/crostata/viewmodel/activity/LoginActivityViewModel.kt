@@ -22,8 +22,8 @@ class LoginActivityViewModel(application: Application) : AndroidViewModel(applic
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private var token = SharedPreferencesService().getToken(application)
     private val sharedPreferencesService = SharedPreferencesService()
-    var isSignInRequestSent = false
-    var isPiRequestSent = false
+    private var isSignInRequestSent = false
+    private var isPiRequestSent = false
 
     fun signIn(birthId: String, password: String): Observable<Int> {
         val loginRepository: LoginRepository = LoginRepositoryProvider.getLoginRepository()

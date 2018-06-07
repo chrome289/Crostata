@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 class Post() : Comparable<Post>, Parcelable {
     class PostGlove {
         var requestId: String = ""
-        var list: List<Post> = ArrayList<Post>()
+        var list: List<Post> = ArrayList()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -23,7 +23,7 @@ class Post() : Comparable<Post>, Parcelable {
             return false
         if (comments != other.comments)
             return false
-        if (this.votes != other.votes)
+        if (this.likes != other.likes)
             return false
         return true
     }
@@ -39,7 +39,7 @@ class Post() : Comparable<Post>, Parcelable {
         parcel.writeString(timeCreated)
         parcel.writeString(contentType)
         parcel.writeString(text)
-        parcel.writeInt(votes)
+        parcel.writeInt(likes)
         parcel.writeInt(comments)
         parcel.writeByte(if (isCensored) 1 else 0)
         parcel.writeByte(if (isGenerated) 1 else 0)
@@ -71,7 +71,7 @@ class Post() : Comparable<Post>, Parcelable {
         result = 31 * result + timeCreated.hashCode()
         result = 31 * result + contentType.hashCode()
         result = 31 * result + text.hashCode()
-        result = 31 * result + votes
+        result = 31 * result + likes
         result = 31 * result + comments
         result = 31 * result + isCensored.hashCode()
         result = 31 * result + isGenerated.hashCode()
@@ -89,7 +89,7 @@ class Post() : Comparable<Post>, Parcelable {
     var timeCreated = ""
     var contentType = ""
     var text = ""
-    var votes = Int.MAX_VALUE
+    var likes = Int.MAX_VALUE
     var comments = Int.MAX_VALUE
     var isCensored = false
     var isGenerated = false
@@ -110,7 +110,7 @@ class Post() : Comparable<Post>, Parcelable {
         timeCreated = parcel.readString()
         contentType = parcel.readString()
         text = parcel.readString()
-        votes = parcel.readInt()
+        likes = parcel.readInt()
         comments = parcel.readInt()
         isCensored = parcel.readByte() != 0.toByte()
         isGenerated = parcel.readByte() != 0.toByte()

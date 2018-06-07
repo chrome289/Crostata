@@ -104,6 +104,7 @@
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/refresh_button"
                     android:tint="@color/grey_700"
                     app:layout_constraintBottom_toBottomOf="@+id/refreshButton"
                     app:layout_constraintEnd_toStartOf="@+id/refreshButton"

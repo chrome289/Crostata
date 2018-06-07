@@ -1,7 +1,7 @@
 package xyz.siddharthseth.crostata.data.model.retrofit
 
 
-class VoteTotal {
+class LikeTotal {
     var success: Boolean = false
     var total: Int = 0
 }

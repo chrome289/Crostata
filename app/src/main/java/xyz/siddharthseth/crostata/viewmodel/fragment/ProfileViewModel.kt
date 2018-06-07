@@ -23,9 +23,9 @@ import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
+import xyz.siddharthseth.crostata.data.model.retrofit.LikeTotal
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
@@ -57,26 +57,26 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .into(imageView)
     }
 
-    override fun handleVote(post: Post, value: Int) {
+    override fun handleLike(post: Post, value: Int) {
         if (post.opinion == value) {
-            onClearVote(post._id)
+            onClearLike(post._id)
                     .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
+                            { likeTotal: LikeTotal ->
+                                Log.v(TAG, "success :" + likeTotal.success)
+                                if (likeTotal.success) {
                                     post.opinion = 0
-                                    post.votes = voteTotal.total
+                                    post.likes = likeTotal.total
                                     // updatePostItem(post)
                                 }
                             }
                             , { error -> error.printStackTrace() })
         } else {
-            onVoteButtonClick(post._id, value)
+            onLikeButtonClick(post._id, value)
                     .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.votes = voteTotal.total
+                            { likeTotal: LikeTotal ->
+                                Log.v(TAG, "success :" + likeTotal.success)
+                                if (likeTotal.success) {
+                                    post.likes = likeTotal.total
                                     post.opinion = value
                                     // updatePostItem(post)
                                 }
@@ -103,16 +103,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onClearVote(postId: String): Observable<VoteTotal> {
+    override fun onClearLike(postId: String): Observable<LikeTotal> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val extraDarkGrey: ColorStateList
+    override val grey900: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
-    override val upVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
-    override val downVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
+    override val likeColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.likeSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
     override val grey500: ColorStateList
@@ -140,7 +138,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this)
     private var hasNewItems = false
     private var isPostRequestSent: Boolean = false
-    var isVoteRequestSent = false
+    private var isLikeRequestSent = false
     var isLoadPending = false
     var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
 
@@ -273,15 +271,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         Log.v(TAG, "onScroll 5")
     }
 
-    private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
-        Log.v(TAG, "upVoteButtonClick")
+    private fun onLikeButtonClick(postId: String, value: Int): Observable<LikeTotal> {
+        Log.v(TAG, "upLikeButtonClick")
         //val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
-        return if (!isVoteRequestSent) {
-            isVoteRequestSent = true
-            contentRepository.submitVote(token, postId, birthId, value)
+        return if (!isLikeRequestSent) {
+            isLikeRequestSent = true
+            contentRepository.submitLike(token, postId, birthId, value)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext { isVoteRequestSent = false }
-                    .doOnError { isVoteRequestSent = false }
+                    .doOnNext { isLikeRequestSent = false }
+                    .doOnError { isLikeRequestSent = false }
                     .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
         } else {
             Observable.empty()

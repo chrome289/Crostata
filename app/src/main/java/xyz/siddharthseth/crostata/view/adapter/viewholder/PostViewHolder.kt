@@ -13,23 +13,29 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.postContainer -> {
+                R.id.contentText, R.id.contentImage -> {
                     postItemListener.openFullPost(adapterPosition)
                 }
                 R.id.profileName, R.id.profileImage -> {
                     postItemListener.openProfile(adapterPosition)
+                }
+                R.id.likeButton, R.id.likesTotal -> {
+
+                }
+                R.id.commentButton, R.id.commentTotal -> {
+
                 }
             }
         }
     }
 
     private var TAG = javaClass.simpleName
-    private val upVoteColor = postItemListener.upVoteColorTint
-    private val downVoteColor = postItemListener.downVoteColorTint
-    private val extraDarkGrey = postItemListener.extraDarkGrey
+    private val likeColorTint = postItemListener.likeColorTint
+    private val extraDarkGrey = postItemListener.grey900
+    private val grey500 = postItemListener.grey500
+    private val grey900 = postItemListener.grey900
 
     fun init(post: Post) {
-
         if (post.isCensored || post.isGenerated) {
             itemView.approveImage.visibility = View.VISIBLE
             itemView.approveText.visibility = View.VISIBLE
@@ -38,8 +44,6 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             itemView.approveText.visibility = View.GONE
         }
 
-        itemView.postContainer.setOnClickListener { this.onClick(it) }
-
         itemView.profileName.text = post.creatorName
         itemView.profileName.setOnClickListener { this.onClick(it) }
 
@@ -47,7 +51,13 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
 
         itemView.contentText.text = post.text
 
-        itemView.votesTotal.text = "${post.votes} votes"
+        itemView.likeButton.setOnClickListener { this.onClick(it) }
+        itemView.likeButton.imageTintList = if (post.opinion == 1) likeColorTint else grey500
+
+        itemView.likesTotal.text = "${post.likes} likes"
+        itemView.likesTotal.setTextColor(if (post.opinion == 1) likeColorTint else grey900)
+
+        itemView.commentButton.setOnClickListener { this.onClick(it) }
         itemView.commentsTotal.text = "${post.comments} comments"
     }
 
@@ -61,7 +71,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
             postItemListener.loadPostedImage(post, 640, itemView.contentImage)
             //itemView.imageView.requestLayout()
         }
-        //Log.v(TAG, post.glideUrlProfileThumb.toStringUrl())
+        //Log.v(TAG, post.glideUrlProfileThumb.toStringUrl()).
         postItemListener.loadProfileImage(post, 128, itemView.profileImage)
     }
 

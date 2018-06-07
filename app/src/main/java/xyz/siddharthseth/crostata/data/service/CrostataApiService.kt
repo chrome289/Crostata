@@ -64,21 +64,21 @@ interface CrostataApiService {
 
 
     //opinion endpoints
-    @POST("opinion/vote")
+    @POST("opinion/like")
     @FormUrlEncoded
-    fun addVote(
+    fun addLike(
             @Header("authorization") token: String,
             @Field("postId") postId: String,
             @Field("birthId") birthId: String,
             @Field("value") value: Int
-    ): Observable<VoteTotal>
+    ): Observable<LikeTotal>
 
-    @DELETE("opinion/vote")
-    fun deleteVote(
+    @DELETE("opinion/like")
+    fun deleteLike(
             @Header("authorization") token: String,
             @Query("postId") postId: String,
             @Query("birthId") birthId: String
-    ): Observable<VoteTotal>
+    ): Observable<LikeTotal>
 
     @GET("opinion/comments")
     fun getComments(

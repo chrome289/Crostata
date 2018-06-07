@@ -62,7 +62,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/about"
-            android:checkable="false"
+            android:checkable="true"
             android:orderInCategory="7"
             android:title="@string/about_crostata"
             app:showAsAction="ifRoom" />

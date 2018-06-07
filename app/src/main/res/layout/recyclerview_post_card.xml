@@ -15,10 +15,38 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/profile_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:minLines="1"
+            android:text="@string/sample_name"
+            android:theme="@style/Text.Medium.Red"
+            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+            app:layout_constraintEnd_toStartOf="@+id/approveImage"
+            app:layout_constraintStart_toEndOf="@+id/profileImage"
+            app:layout_constraintTop_toTopOf="@+id/profileImage" />
+
+        <ImageView
             android:id="@+id/approveImage"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:contentDescription="@string/approved"
             android:elevation="2dp"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
@@ -49,12 +77,11 @@
             android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
 
+            android:layout_marginEnd="16dp"
             android:text="@string/sample_time"
             android:theme="@style/Text.Light"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/commentsTotal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/commentsTotal" />
 
@@ -91,71 +118,65 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contentText" />
 
+        <ImageButton
+            android:id="@+id/likeButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:contentDescription="@string/like"
+            android:padding="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/like"
+            android:tint="@color/grey_500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+
+        <TextView
+            android:id="@+id/likesTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:text="123 likes"
+            android:theme="@style/Text.Medium.Small"
+            app:layout_constraintBottom_toBottomOf="@+id/likeButton"
+            app:layout_constraintStart_toEndOf="@+id/likeButton"
+            app:layout_constraintTop_toTopOf="@+id/likeButton" />
+
+        <ImageButton
+            android:id="@+id/commentButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:contentDescription="@string/comment"
+            android:padding="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/chat"
+            android:tint="@color/grey_500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/likesTotal"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+
         <TextView
             android:id="@+id/commentsTotal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
             android:text="86 comments"
-            android:textColor="#1976d2"
-            android:theme="@style/Text.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/votesTotal" />
-
-        <TextView
-            android:id="@+id/votesTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-
-            android:text="123 votes"
-            android:textColor="#2e7d32"
-            android:theme="@style/Text.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/commentsTotal"
-            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
-
-        <View
-            android:id="@+id/postContainer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/profile_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/profileName"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-
-            android:layout_marginStart="16dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:minLines="1"
-            android:text="@string/sample_name"
-            android:theme="@style/Text.Medium.Red"
-            app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-            app:layout_constraintEnd_toStartOf="@+id/approveImage"
-            app:layout_constraintStart_toEndOf="@+id/profileImage"
-            app:layout_constraintTop_toTopOf="@+id/profileImage" />
-
+            android:theme="@style/Text.Medium.Small"
+            app:layout_constraintBottom_toBottomOf="@+id/commentButton"
+            app:layout_constraintStart_toEndOf="@+id/commentButton"
+            app:layout_constraintTop_toTopOf="@+id/commentButton" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

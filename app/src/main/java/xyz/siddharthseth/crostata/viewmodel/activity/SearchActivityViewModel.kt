@@ -174,13 +174,13 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
     var mutableProfile = SingleSubject()
 
     var searchText: String = ""
-    var requestId: String = ""
-    var after: Int = -1
+    private var requestId: String = ""
+    private var after: Int = -1
 
     private var isLoadPending = false
     private var isSearchRequestSent = false
     private var isServerStatusRequestSent = false
-    var isSearchResultsAvailable = false
+    private var isSearchResultsAvailable = false
     var isDetailActivityOpen: Boolean = false
 
 }

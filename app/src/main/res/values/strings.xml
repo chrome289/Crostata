@@ -23,11 +23,11 @@
     <string name="report">Report</string>
     <string name="_0">0</string>
     <string name="_123">123</string>
-    <string name="up_vote_button">up vote button</string>
+    <string name="up_like_button">up like button</string>
     <string name="comment_button">comment button</string>
     <string name="report_button">report button</string>
     <string name="content_image">content image</string>
-    <string name="down_vote_button">down vote button</string>
+    <string name="down_like_button">down like button</string>
     <string name="brplogo">brpLogo</string>
     <string name="server_url">http://192.168.1.123:3000/api/v1/</string>
 
@@ -110,5 +110,18 @@
     <string name="help_amp_feedback">Help &amp; Feedback</string>
     <string name="about_crostata">About Crostata</string>
     <string name="title_activity_search">Search</string>
+    <string name="approved">Approved</string>
+    <string name="approve_image">Approve Image</string>
+    <string name="_74_likes">74 likes</string>
+    <string name="like_button">Like Button</string>
+    <string name="no_more_comments">No more comments</string>
+    <string name="refresh_button">refresh button</string>
+    <string name="add_image">Add Image</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="attached_image">Attached Image</string>
+    <string name="a_warning">A warning</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="refresh">Refresh</string>
 
 </resources>

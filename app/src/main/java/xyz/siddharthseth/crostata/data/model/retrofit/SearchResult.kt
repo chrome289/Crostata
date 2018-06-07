@@ -6,7 +6,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 class SearchResult : Comparable<SearchResult> {
     class SearchResultGlove {
         var requestId: String = ""
-        var list: List<SearchResult> = ArrayList<SearchResult>()
+        var list: List<SearchResult> = ArrayList()
     }
 
     override fun compareTo(other: SearchResult): Int {

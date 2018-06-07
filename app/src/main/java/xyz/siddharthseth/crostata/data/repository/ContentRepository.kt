@@ -20,12 +20,12 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.getPosts(token, birthId, lastTimestamp, requestId, after)
     }
 
-    fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<VoteTotal> {
-        return crostataApiService.addVote(token, postId, birthId, value)
+    fun submitLike(token: String, postId: String, birthId: String, value: Int): Observable<LikeTotal> {
+        return crostataApiService.addLike(token, postId, birthId, value)
     }
 
-    fun clearVote(token: String, postId: String, birthId: String): Observable<VoteTotal> {
-        return crostataApiService.deleteVote(token, postId, birthId)
+    fun clearLike(token: String, postId: String, birthId: String): Observable<LikeTotal> {
+        return crostataApiService.deleteLike(token, postId, birthId)
     }
 
     fun getComments(token: String, postId: String, lastTimestamp: Long): Observable<Comment.CommentGlove> {

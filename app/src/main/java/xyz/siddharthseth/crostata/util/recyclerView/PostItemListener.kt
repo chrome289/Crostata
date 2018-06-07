@@ -3,8 +3,8 @@ package xyz.siddharthseth.crostata.util.recyclerView
 import android.content.res.ColorStateList
 import android.widget.ImageView
 import rx.Observable
+import xyz.siddharthseth.crostata.data.model.retrofit.LikeTotal
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 
 interface PostItemListener {
     fun onCommentButtonClick(comment: String): Observable<Boolean>
@@ -14,15 +14,14 @@ interface PostItemListener {
     fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView)
     fun loadProfileImage(post: Post, dimen: Int, imageView: ImageView)
 
-    fun onClearVote(postId: String): Observable<VoteTotal>
+    fun onClearLike(postId: String): Observable<LikeTotal>
 
-    val upVoteColorTint: ColorStateList
-    val downVoteColorTint: ColorStateList
+    val likeColorTint: ColorStateList
     val reportColorTint: ColorStateList
-    val extraDarkGrey: ColorStateList
+    val grey900: ColorStateList
     val grey500: ColorStateList
 
     fun openFullPost(index: Int)
-    fun handleVote(post: Post, value: Int)
+    fun handleLike(post: Post, value: Int)
     fun openProfile(index: Int)
 }

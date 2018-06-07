@@ -134,17 +134,13 @@ class ViewPostFragment : Fragment() {
         contentText.text = post.text
 
         commentsTotal.text = "${post.comments} Comments"
-        votesTotal.text = "${post.votes} votes"
+        likesTotal.text = "${post.likes} likes"
 
-        upVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, 1) }
-        upVoteButton.imageTintList =
-                (if (post.opinion == 1) viewPostViewModel.upVoteColorTint
+        likeButton.setOnClickListener { viewPostViewModel.handleLike(post, 1) }
+        likeButton.imageTintList =
+                (if (post.opinion == 1) viewPostViewModel.likeColorTint
                 else viewPostViewModel.grey500)
 
-        downVoteButton.setOnClickListener { viewPostViewModel.handleVote(post, -1) }
-        downVoteButton.imageTintList =
-                (if (post.opinion == -1) viewPostViewModel.downVoteColorTint
-                else viewPostViewModel.grey500)
 
         recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         recyclerView.adapter = viewPostViewModel.adapter

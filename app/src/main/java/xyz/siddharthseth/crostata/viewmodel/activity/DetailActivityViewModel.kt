@@ -14,7 +14,7 @@ class DetailActivityViewModel(application: Application) : AndroidViewModel(appli
     private val TAG: String = this::class.java.simpleName
     var isDetailActivityOpen: Boolean = false
     val toolbarTitle = ArrayList<String>()
-    var isRequestSent = false
+    private var isRequestSent = false
 
     fun checkNetworkAvailable(): Observable<Boolean> {
         if (!isRequestSent) {

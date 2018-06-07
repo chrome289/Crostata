@@ -10,7 +10,7 @@ open class Comment : Comparable<Comment> {
 
     class CommentGlove {
         var requestId: String = ""
-        var list: List<Comment> = ArrayList<Comment>()
+        var list: List<Comment> = ArrayList()
     }
 
     override fun compareTo(other: Comment): Int {

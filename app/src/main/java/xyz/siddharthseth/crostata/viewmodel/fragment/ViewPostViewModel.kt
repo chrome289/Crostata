@@ -23,9 +23,9 @@ import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
 import xyz.siddharthseth.crostata.data.model.retrofit.Comment
+import xyz.siddharthseth.crostata.data.model.retrofit.LikeTotal
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.CommentDiffUtilCallback
@@ -93,10 +93,10 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    override fun onClearVote(postId: String): Observable<VoteTotal> {
-        Log.v(TAG, "upVoteButtonClick")
+    override fun onClearLike(postId: String): Observable<LikeTotal> {
+        Log.v(TAG, "upLikeButtonClick")
         val birthId = LoggedSubject.birthId
-        return contentRepository.clearVote(token, postId, birthId)
+        return contentRepository.clearLike(token, postId, birthId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
@@ -108,12 +108,10 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     override val grey500: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_500))
-    override val extraDarkGrey: ColorStateList
+    override val grey900: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
-    override val upVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
-    override val downVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
+    override val likeColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.likeSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
@@ -121,26 +119,26 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         //nah
     }
 
-    override fun handleVote(post: Post, value: Int) {
+    override fun handleLike(post: Post, value: Int) {
         if (post.opinion == value) {
-            onClearVote(post._id)
+            onClearLike(post._id)
                     .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
+                            { likeTotal: LikeTotal ->
+                                Log.v(TAG, "success :" + likeTotal.success)
+                                if (likeTotal.success) {
                                     post.opinion = 0
-                                    post.votes = voteTotal.total
+                                    post.likes = likeTotal.total
                                     updatePostItem(post)
                                 }
                             }
                             , { error -> error.printStackTrace() })
         } else {
-            onVoteButtonClick(post._id, value)
+            onLikeButtonClick(post._id, value)
                     .subscribe(
-                            { voteTotal: VoteTotal ->
-                                Log.v(TAG, "success :" + voteTotal.success)
-                                if (voteTotal.success) {
-                                    post.votes = voteTotal.total
+                            { likeTotal: LikeTotal ->
+                                Log.v(TAG, "success :" + likeTotal.success)
+                                if (likeTotal.success) {
+                                    post.likes = likeTotal.total
                                     post.opinion = value
                                     updatePostItem(post)
                                 }
@@ -165,9 +163,9 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         mutablePost.value = post
     }
 
-    private fun onVoteButtonClick(postId: String, value: Int): Observable<VoteTotal> {
-        Log.v(TAG, "upVoteButtonClick")
-        return contentRepository.submitVote(token, postId, LoggedSubject.birthId, value)
+    private fun onLikeButtonClick(postId: String, value: Int): Observable<LikeTotal> {
+        Log.v(TAG, "upLikeButtonClick")
+        return contentRepository.submitLike(token, postId, LoggedSubject.birthId, value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
     }
@@ -185,7 +183,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     lateinit var glide: GlideRequests
     private var isCommentRequestSent = false
     private var isSubmitCommentRequestSent = false
-    var hasNewItems = false
+    private var hasNewItems = false
 
     internal var mutableSubject: SingleSubject = SingleSubject()
     var mutablePost: SingleLivePost = SingleLivePost()

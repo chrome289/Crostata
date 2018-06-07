@@ -20,9 +20,9 @@ import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideRequests
 import xyz.siddharthseth.crostata.data.model.livedata.SingleLivePost
 import xyz.siddharthseth.crostata.data.model.livedata.SingleSubject
+import xyz.siddharthseth.crostata.data.model.retrofit.LikeTotal
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
-import xyz.siddharthseth.crostata.data.model.retrofit.VoteTotal
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.PostDiffUtilCallback
@@ -35,7 +35,7 @@ import kotlin.collections.ArrayList
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , PostItemListener {
 
-    override fun handleVote(post: Post, value: Int) {}
+    override fun handleLike(post: Post, value: Int) {}
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
@@ -72,7 +72,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         glide.clear(imageView as View)
     }
 
-    override fun onClearVote(postId: String): Observable<VoteTotal> {
+    override fun onClearLike(postId: String): Observable<LikeTotal> {
         return Observable.empty()
     }
 
@@ -82,12 +82,10 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     override fun onReportButtonClick(post: Post) {}
 
-    override val extraDarkGrey: ColorStateList
+    override val grey900: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
-    override val upVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.upVoteSelected))
-    override val downVoteColorTint: ColorStateList
-        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.downVoteSelected))
+    override val likeColorTint: ColorStateList
+        get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.likeSelected))
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
     override val grey500: ColorStateList
