@@ -97,7 +97,8 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferencesService = SharedPreferencesService()
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private var token: String = sharedPreferencesService.getToken(getApplication())
-    private var noOfPosts: Int = 10
+    private var requestId: String = ""
+    private var after: Int = 0
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
     private var postList: ArrayList<Post> = ArrayList()
@@ -127,7 +128,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getNextPosts() {
-        fetchPosts()
+        fetchNextPosts()
     }
 
     private fun updatePostAdapter() {
@@ -141,49 +142,84 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         } else {
             postList[postList.size - 1].getTimestamp()
         }
+        after = if (postList.isEmpty()) {
+            0
+        } else {
+            postList.size
+        }
         diffUtil.dispatchUpdatesTo(homeFeedAdapter)
 
         setLoaderLiveData(false, false, false)
     }
 
     private fun fetchPosts() {
-        // val birthId = sharedPreferencesService.getUserDetails(getApplication())
         if (!isPostRequestSent) {
             isPostRequestSent = true
             hasNewItems = false
-            Log.v(TAG, "making a request for posts")
 
-            contentRepository.getNextPosts(token, noOfPosts, lastTimestamp, LoggedSubject.birthId)
+            contentRepository.getNextPosts(token, LoggedSubject.birthId, lastTimestamp)
                     .subscribeOn(Schedulers.io())
-                    .flatMap { nextPosts ->
+                    .flatMap {
                         if (!isInitialized)
                             isInitialized = true
                         val context: Context = getApplication()
-                        for (post in nextPosts) {
+                        for (post in it.list) {
                             post.initExtraInfo(context.getString(R.string.server_url), token)
                         }
-                        return@flatMap Observable.from(nextPosts)
+                        requestId = it.requestId
+                        Observable.from(it.list)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            {
-                                postList.add(it)
-                                hasNewItems = true
-                            },
-                            {
-                                it.printStackTrace()
-                                isPostRequestSent = false
-                                setLoaderLiveData(true, false, true)
-                            },
-                            {
-                                isPostRequestSent = false
-                                Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
-                                if (hasNewItems) {
-                                    updatePostAdapter()
-                                }
-                            }
+                            { onRequestNext(it) },
+                            { onRequestError(it) },
+                            { onRequestCompleted() }
                     )
         }
+    }
+
+    private fun fetchNextPosts() {
+        if (!isPostRequestSent) {
+            isPostRequestSent = true
+            hasNewItems = false
+
+            contentRepository.getNextPosts(token, LoggedSubject.birthId, lastTimestamp, requestId, after)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap {
+                        if (!isInitialized)
+                            isInitialized = true
+                        val context: Context = getApplication()
+                        for (post in it.list) {
+                            post.initExtraInfo(context.getString(R.string.server_url), token)
+                        }
+                        Observable.from(it.list)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { onRequestNext(it) },
+                            { onRequestError(it) },
+                            { onRequestCompleted() }
+                    )
+        }
+    }
+
+    private fun onRequestCompleted() {
+        isPostRequestSent = false
+        Log.v(TAG, "oncomplete called " + homeFeedAdapter.postList.size)
+        if (hasNewItems) {
+            updatePostAdapter()
+        }
+    }
+
+    private fun onRequestError(throwable: Throwable) {
+        throwable.printStackTrace()
+        isPostRequestSent = false
+        setLoaderLiveData(true, false, true)
+    }
+
+    private fun onRequestNext(post: Post) {
+        postList.add(post)
+        hasNewItems = true
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {

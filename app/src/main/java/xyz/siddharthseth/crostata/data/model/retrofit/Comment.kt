@@ -7,6 +7,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 open class Comment : Comparable<Comment> {
+
+    class CommentGlove {
+        var requestId: String = ""
+        var list: List<Comment> = ArrayList<Comment>()
+    }
+
     override fun compareTo(other: Comment): Int {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")

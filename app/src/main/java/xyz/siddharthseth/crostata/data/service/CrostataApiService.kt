@@ -12,6 +12,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.*
 
 interface CrostataApiService {
 
+    //auth endpoints
     @POST("auth/login")
     @FormUrlEncoded
     fun signIn(
@@ -24,82 +25,23 @@ interface CrostataApiService {
             @Header("authorization") token: String
     ): Observable<Response<ResponseBody>>
 
+
+    //content endpoints
     @GET("content/nextPosts")
     fun getPosts(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
-            @Query("noOfPosts") noOfPosts: Int,
             @Query("lastTimestamp") lastTimestamp: Long
-    ): Observable<List<Post>>
+    ): Observable<Post.PostGlove>
 
-    @POST("opinion/vote")
-    @FormUrlEncoded
-    fun addVote(
-            @Header("authorization") token: String,
-            @Field("postId") postId: String,
-            @Field("birthId") birthId: String,
-            @Field("value") value: Int
-    ): Observable<VoteTotal>
-
-    @DELETE("opinion/vote")
-    fun deleteVote(
-            @Header("authorization") token: String,
-            @Query("postId") postId: String,
-            @Query("birthId") birthId: String
-    ): Observable<VoteTotal>
-
-    /*@GET("/content/imageMetadata")
-    fun imageMetadata(
-            @Header("authorization") token: String,
-            @Query("postId") postId: String
-    ): Observable<ImageMetadata>*/
-
-    @GET("opinion/comments")
-    fun getComments(
-            @Header("authorization") token: String,
-            @Query("postId") postId: String,
-            @Query("noOfComments") noOfComments: Int,
-            @Query("lastTimestamp") lastTimestamp: Long
-    ): Observable<List<Comment>>
-
-    @GET("subject/info")
-    fun getSubjectInfo(
-            @Header("authorization") token: String,
-            @Query("birthId") birthId: String
-    ): Observable<xyz.siddharthseth.crostata.data.model.retrofit.Subject>
-
-    /*@GET("subject/comments")
-    fun getProfileComments(
+    @GET("content/nextPosts")
+    fun getPosts(
             @Header("authorization") token: String,
             @Query("birthId") birthId: String,
-            @Query("noOfComments") noOfComments: Int,
-            @Query("lastTimestamp") lastTimestamp: Long
-    ): Observable<List<ProfileComment>>*/
-
-    @GET("subject/posts")
-    fun getProfilePosts(
-            @Header("authorization") token: String,
-            @Query("creatorId") creatorId: String,
-            @Query("birthId") birthId: String,
-            @Query("size") noOfPosts: Int,
-            @Query("lastTimestamp") lastTimestamp: Long
-    ): Observable<List<Post>>
-
-    @POST("opinion/comment")
-    @FormUrlEncoded
-    fun addComment(
-            @Header("authorization") token: String,
-            @Field("postId") postId: String,
-            @Field("birthId") birthId: String,
-            @Field("text") comment: String,
-            @Field("generate") generate: Boolean
-    ): Observable<Comment>
-
-    @GET("report/reportMade")
-    fun getReports(
-            @Header("authorization") token: String,
-            @Query("birthId") birthId: String
-    ): Observable<List<Report>>
+            @Query("lastTimestamp") lastTimestamp: Long,
+            @Query("requestId") requestId: String,
+            @Query("after") after: Int
+    ): Observable<Post.PostGlove>
 
     @POST("content/textPost")
     @FormUrlEncoded
@@ -120,17 +62,104 @@ interface CrostataApiService {
             @Part("generate") generated: RequestBody
     ): Observable<Response<ResponseBody>>
 
+
+    //opinion endpoints
+    @POST("opinion/vote")
+    @FormUrlEncoded
+    fun addVote(
+            @Header("authorization") token: String,
+            @Field("postId") postId: String,
+            @Field("birthId") birthId: String,
+            @Field("value") value: Int
+    ): Observable<VoteTotal>
+
+    @DELETE("opinion/vote")
+    fun deleteVote(
+            @Header("authorization") token: String,
+            @Query("postId") postId: String,
+            @Query("birthId") birthId: String
+    ): Observable<VoteTotal>
+
+    @GET("opinion/comments")
+    fun getComments(
+            @Header("authorization") token: String,
+            @Query("postId") postId: String,
+            @Query("lastTimestamp") lastTimestamp: Long
+    ): Observable<Comment.CommentGlove>
+
+    @GET("opinion/comments")
+    fun getComments(
+            @Header("authorization") token: String,
+            @Query("postId") postId: String,
+            @Query("lastTimestamp") lastTimestamp: Long,
+            @Query("requestId") requestId: String,
+            @Query("after") after: Int
+    ): Observable<Comment.CommentGlove>
+
+    @POST("opinion/comment")
+    @FormUrlEncoded
+    fun addComment(
+            @Header("authorization") token: String,
+            @Field("postId") postId: String,
+            @Field("birthId") birthId: String,
+            @Field("text") comment: String,
+            @Field("generate") generate: Boolean
+    ): Observable<Comment>
+
+
+    //subject endpoints
+    @GET("subject/info")
+    fun getSubjectInfo(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String
+    ): Observable<Subject>
+
+    @GET("subject/posts")
+    fun getProfilePosts(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String,
+            @Query("creatorId") creatorId: String,
+            @Query("lastTimestamp") lastTimestamp: Long
+    ): Observable<Post.PostGlove>
+
+    @GET("subject/posts")
+    fun getProfilePosts(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String,
+            @Query("creatorId") creatorId: String,
+            @Query("lastTimestamp") lastTimestamp: Long,
+            @Query("requestId") requestId: String,
+            @Query("after") after: Int
+    ): Observable<Post.PostGlove>
+
     @GET("subject/posts")
     fun getServerStatus(
             @Header("authorization") token: String
     ): Observable<Response<ResponseBody>>
 
+
+    //report endpoints
+    @GET("report/reportMade")
+    fun getReports(
+            @Header("authorization") token: String,
+            @Query("birthId") birthId: String
+    ): Observable<List<Report>>
+
+
+    //search endpoints
+    @GET("search")
+    fun getSearchResult(
+            @Header("authorization") token: String,
+            @Query("searchText") searchText: String
+    ): Observable<SearchResult.SearchResultGlove>
+
     @GET("search")
     fun getSearchResult(
             @Header("authorization") token: String,
             @Query("searchText") searchText: String,
-            @Query("lastName") lastName: String
-    ): Observable<List<SearchResult>>
+            @Query("requestId") requestId: String,
+            @Query("after") after: Int
+    ): Observable<SearchResult.SearchResultGlove>
 
     companion object {
         fun create(): CrostataApiService {

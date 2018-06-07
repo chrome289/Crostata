@@ -7,8 +7,13 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Post() : Comparable<Post>, Parcelable {
+    class PostGlove {
+        var requestId: String = ""
+        var list: List<Post> = ArrayList<Post>()
+    }
 
     override fun equals(other: Any?): Boolean {
         other as Post
@@ -18,11 +23,7 @@ class Post() : Comparable<Post>, Parcelable {
             return false
         if (comments != other.comments)
             return false
-        if (downVotes != other.downVotes)
-            return false
-        if (upVotes != other.upVotes)
-            return false
-        if (votes != other.votes)
+        if (this.votes != other.votes)
             return false
         return true
     }
@@ -38,15 +39,13 @@ class Post() : Comparable<Post>, Parcelable {
         parcel.writeString(timeCreated)
         parcel.writeString(contentType)
         parcel.writeString(text)
-        parcel.writeInt(upVotes)
-        parcel.writeInt(downVotes)
+        parcel.writeInt(votes)
         parcel.writeInt(comments)
         parcel.writeByte(if (isCensored) 1 else 0)
         parcel.writeByte(if (isGenerated) 1 else 0)
         parcel.writeInt(opinion)
         parcel.writeString(imageId)
 
-        parcel.writeInt(votes)
         parcel.writeString(timeCreatedText)
         parcel.writeSerializable(date)
     }
@@ -72,15 +71,13 @@ class Post() : Comparable<Post>, Parcelable {
         result = 31 * result + timeCreated.hashCode()
         result = 31 * result + contentType.hashCode()
         result = 31 * result + text.hashCode()
-        result = 31 * result + upVotes
-        result = 31 * result + downVotes
+        result = 31 * result + votes
         result = 31 * result + comments
         result = 31 * result + isCensored.hashCode()
         result = 31 * result + isGenerated.hashCode()
         result = 31 * result + opinion
         result = 31 * result + imageId.hashCode()
 
-        result = 31 * result + votes
         result = 31 * result + timeCreatedText.hashCode()
 
         return result
@@ -92,15 +89,13 @@ class Post() : Comparable<Post>, Parcelable {
     var timeCreated = ""
     var contentType = ""
     var text = ""
-    var upVotes = Int.MAX_VALUE
-    var downVotes = Int.MAX_VALUE
+    var votes = Int.MAX_VALUE
     var comments = Int.MAX_VALUE
     var isCensored = false
     var isGenerated = false
     var opinion = Int.MAX_VALUE
     var imageId = ""
 
-    var votes: Int = Int.MAX_VALUE
     lateinit var timeCreatedText: String
     lateinit var date: Date
     lateinit var glideUrl: GlideUrl
@@ -115,8 +110,7 @@ class Post() : Comparable<Post>, Parcelable {
         timeCreated = parcel.readString()
         contentType = parcel.readString()
         text = parcel.readString()
-        upVotes = parcel.readInt()
-        downVotes = parcel.readInt()
+        votes = parcel.readInt()
         comments = parcel.readInt()
         isCensored = parcel.readByte() != 0.toByte()
         isGenerated = parcel.readByte() != 0.toByte()
@@ -124,7 +118,6 @@ class Post() : Comparable<Post>, Parcelable {
         opinion = parcel.readInt()
         imageId = parcel.readString()
 
-        votes = parcel.readInt()
         timeCreatedText = parcel.readString()
         date = parcel.readSerializable() as Date
     }
@@ -172,7 +165,6 @@ class Post() : Comparable<Post>, Parcelable {
     }
 
     fun initExtraInfo(baseUrl: String, token: String) {
-        votes = upVotes - downVotes
         setDate()
         setTimeCreatedText()
         setGlideUrls(baseUrl, token)

@@ -128,7 +128,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
     private val TAG: String = javaClass.simpleName
     lateinit var birthId: String
-    private var size: Int = 5
+    private var requestId: String = ""
+    private var after: Int = 0
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var postList = ArrayList<Post>()
     private var isInitialized = false
@@ -178,49 +179,76 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getMorePosts() {
-        fetchPosts()
+        fetchNextPosts()
     }
 
     private fun fetchPosts() {
-        Log.v(TAG, "onScroll 1 $isPostRequestSent")
         if (!isPostRequestSent) {
-            Log.v(TAG, "onScroll 2")
             isPostRequestSent = true
             hasNewItems = false
 
-            contentRepository.getSubjectPosts(token, birthId, LoggedSubject.birthId, size, lastTimestamp)
+            contentRepository.getSubjectPosts(token, birthId, LoggedSubject.birthId, lastTimestamp)
                     .subscribeOn(Schedulers.io())
-                    .flatMap { nextPosts ->
+                    .flatMap {
                         if (!isInitialized)
                             isInitialized = true
                         val context: Context = getApplication()
-                        for (post in nextPosts) {
+                        for (post in it.list) {
                             post.initExtraInfo(context.getString(R.string.server_url), token)
                         }
-                        return@flatMap Observable.from(nextPosts)
+                        requestId = it.requestId
+                        Observable.from(it.list)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            {
-                                postList.add(it)
-                                hasNewItems = true
-                            },
-                            {
-                                Log.v(TAG, "onScroll 3")
-                                isPostRequestSent = false
-                                setLoaderLiveData(true, false, true)
-                                it.printStackTrace()
-                            },
-                            {
-                                Log.v(TAG, "onScroll 4")
-                                isPostRequestSent = false
-                                Log.v(TAG, "onComplete called " + profilePostAdapter.postList.size)
-                                if (hasNewItems) {
-                                    updatePostAdapter()
-                                }
-                            }
+                            { onRequestNext(it) },
+                            { onRequestError(it) },
+                            { onRequestComplete() }
                     )
         }
+    }
+
+    private fun fetchNextPosts() {
+        if (!isPostRequestSent) {
+            isPostRequestSent = true
+            hasNewItems = false
+
+            contentRepository.getSubjectPosts(token, birthId, LoggedSubject.birthId, lastTimestamp, requestId, after)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap {
+                        if (!isInitialized)
+                            isInitialized = true
+                        val context: Context = getApplication()
+                        for (post in it.list) {
+                            post.initExtraInfo(context.getString(R.string.server_url), token)
+                        }
+                        Observable.from(it.list)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { onRequestNext(it) },
+                            { onRequestError(it) },
+                            { onRequestComplete() }
+                    )
+        }
+    }
+
+    private fun onRequestComplete() {
+        isPostRequestSent = false
+        if (hasNewItems) {
+            updatePostAdapter()
+        }
+    }
+
+    private fun onRequestError(throwable: Throwable) {
+        isPostRequestSent = false
+        setLoaderLiveData(true, false, true)
+        throwable.printStackTrace()
+    }
+
+    private fun onRequestNext(post: Post) {
+        postList.add(post)
+        hasNewItems = true
     }
 
     private fun updatePostAdapter() {
@@ -229,7 +257,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         postList.sort()
         profilePostAdapter.postList.clear()
         profilePostAdapter.postList.addAll(postList)
-        lastTimestamp = postList.last().getTimestamp()
+        lastTimestamp = if (postList.isEmpty()) {
+            Calendar.getInstance().timeInMillis
+        } else {
+            postList[postList.size - 1].getTimestamp()
+        }
+        after = if (postList.isEmpty()) {
+            0
+        } else {
+            postList.size
+        }
         diffUtil.dispatchUpdatesTo(profilePostAdapter)
 
         setLoaderLiveData(false, false, false)

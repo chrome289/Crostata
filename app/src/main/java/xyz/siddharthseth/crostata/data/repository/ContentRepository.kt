@@ -12,8 +12,12 @@ import java.io.File
 class ContentRepository(private var crostataApiService: CrostataApiService) {
     private val TAG = "ContentRepository"
 
-    fun getNextPosts(token: String, noOfPosts: Int, lastTimestamp: Long, birthId: String): Observable<List<Post>> {
-        return crostataApiService.getPosts(token, birthId, noOfPosts, lastTimestamp)
+    fun getNextPosts(token: String, birthId: String, lastTimestamp: Long): Observable<Post.PostGlove> {
+        return crostataApiService.getPosts(token, birthId, lastTimestamp)
+    }
+
+    fun getNextPosts(token: String, birthId: String, lastTimestamp: Long, requestId: String, after: Int): Observable<Post.PostGlove> {
+        return crostataApiService.getPosts(token, birthId, lastTimestamp, requestId, after)
     }
 
     fun submitVote(token: String, postId: String, birthId: String, value: Int): Observable<VoteTotal> {
@@ -24,24 +28,24 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.deleteVote(token, postId, birthId)
     }
 
-    /* fun getImageMetadata(token: String, postId: String): Observable<ImageMetadata> {
-         return crostataApiService.imageMetadata(token, postId)
-     }*/
+    fun getComments(token: String, postId: String, lastTimestamp: Long): Observable<Comment.CommentGlove> {
+        return crostataApiService.getComments(token, postId, lastTimestamp)
+    }
 
-    fun getComments(token: String, postId: String, noOfComments: Int, lastTimestamp: Long): Observable<List<Comment>> {
-        return crostataApiService.getComments(token, postId, noOfComments, lastTimestamp)
+    fun getComments(token: String, postId: String, lastTimestamp: Long, requestId: String, after: Int): Observable<Comment.CommentGlove> {
+        return crostataApiService.getComments(token, postId, lastTimestamp, requestId, after)
     }
 
     fun getSubjectInfo(token: String, birthId: String): Observable<Subject> {
         return crostataApiService.getSubjectInfo(token, birthId)
     }
 
-    /*fun getSubjectComments(token: String, birthId: String, size: Int, lastTimestamp: Long): Observable<List<ProfileComment>> {
-        return crostataApiService.getProfileComments(token, birthId, size, lastTimestamp)
-    }*/
+    fun getSubjectPosts(token: String, creatorId: String, birthId: String, lastTimestamp: Long): Observable<Post.PostGlove> {
+        return crostataApiService.getProfilePosts(token, birthId, creatorId, lastTimestamp)
+    }
 
-    fun getSubjectPosts(token: String, creatorId: String, birthId: String, size: Int, lastTimestamp: Long): Observable<List<Post>> {
-        return crostataApiService.getProfilePosts(token, creatorId, birthId, size, lastTimestamp)
+    fun getSubjectPosts(token: String, creatorId: String, birthId: String, lastTimestamp: Long, requestId: String, after: Int): Observable<Post.PostGlove> {
+        return crostataApiService.getProfilePosts(token, birthId, creatorId, lastTimestamp, requestId, after)
     }
 
     fun submitComment(token: String, postId: String, birthId: String, comment: String): Observable<Comment> {
@@ -57,7 +61,6 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
     }
 
     fun submitImagePost(token: String, birthId: String, postContent: String, image: File, isGenerated: Boolean): Observable<Response<ResponseBody>> {
-
         val requestBody = RequestBody.create(MediaType.parse("image/*"), image)
         val requestBody2 = RequestBody.create(MediaType.parse("text/plain"), birthId)
         val requestBody3 = RequestBody.create(MediaType.parse("text/plain"), postContent)
@@ -69,8 +72,13 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.getServerStatus(token)
     }
 
-    fun getSearchResults(token: String, searchText: String, lastName: String): Observable<List<SearchResult>> {
-        return crostataApiService.getSearchResult(token, searchText, lastName)
+    fun getSearchResults(token: String, searchText: String): Observable<SearchResult.SearchResultGlove> {
+        return crostataApiService.getSearchResult(token, searchText)
+    }
+
+
+    fun getSearchResults(token: String, requestId: String, searchText: String, after: Int): Observable<SearchResult.SearchResultGlove> {
+        return crostataApiService.getSearchResult(token, searchText, requestId, after)
     }
 
 }
