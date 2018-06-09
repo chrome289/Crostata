@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
@@ -23,6 +24,8 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import kotlinx.android.synthetic.main.fragment_profile.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.model.SnackbarMessage
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
@@ -127,7 +130,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initUi(subject: Subject) {
-        profileViewModel.loadOwnProfileImage(256, profileImage)
+        profileViewModel.loadOwnProfileImage(512, profileImage)
 
         profileName.text = subject.name.capitalize()
 
@@ -144,6 +147,27 @@ class ProfileFragment : Fragment() {
         dateOfBirth.text = getString(R.string.profile_dob, outputFormat.format(date))
         gender.text = if (subject.gender == 0) "Male" else "Female"
         profession.text = subject.profession.toLowerCase().capitalize()
+
+        if (subject.birthId == LoggedSubject.birthId) {
+            reportButton.visibility = View.GONE
+            seperator.visibility = View.INVISIBLE
+        } else {
+            reportButton.visibility = View.VISIBLE
+            seperator.visibility = View.VISIBLE
+            reportButton.setOnClickListener {
+                profileViewModel.onReportButtonClick()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            setSnackbarMessage("Profile reported successfully", Snackbar.LENGTH_SHORT)
+                        }, {
+                            setSnackbarMessage("Profile could not be reported", Snackbar.LENGTH_SHORT)
+                        })
+            }
+        }
+    }
+
+    private fun setSnackbarMessage(message: String, length: Int) {
+        mListener?.showSnackbar(SnackbarMessage(message, length))
     }
 
     private fun checkMorePostsNeeded(recyclerView: RecyclerView) {

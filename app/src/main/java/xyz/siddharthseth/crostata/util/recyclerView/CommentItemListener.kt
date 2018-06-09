@@ -1,11 +1,12 @@
 package xyz.siddharthseth.crostata.util.recyclerView
 
 import android.widget.ImageView
+import rx.Observable
 import xyz.siddharthseth.crostata.data.model.retrofit.Comment
-import xyz.siddharthseth.crostata.data.model.retrofit.Post
 
 interface CommentItemListener {
-    fun onReportButtonClick(post: Post)
+    fun onReportButtonClick(index: Int): Observable<Boolean>
+    fun onCommentButtonClick(comment: String): Observable<Boolean>
 
     fun openProfile(index: Int)
 

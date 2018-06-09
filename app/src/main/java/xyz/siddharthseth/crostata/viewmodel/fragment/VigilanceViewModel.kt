@@ -138,7 +138,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         val diffUtil = DiffUtil.calculateDiff(
                 VigilanceActionDiffUtilCallback(vigilanceActionAdapter.actionReportList, actionList))
         vigilanceActionAdapter.actionReportList.clear()
-        vigilanceActionAdapter.actionReportList.addAll(actionList)
+        vigilanceActionAdapter.actionReportList = VigilanceAction.cloneList(actionList)
         // lastTimestamp = postList[postList.size - 1].getTimestamp()
         diffUtil.dispatchUpdatesTo(vigilanceActionAdapter)
     }
@@ -148,7 +148,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
         val diffUtil = DiffUtil.calculateDiff(
                 VigilanceReportDiffUtilCallback(vigilanceReportAdapter.reportList, reportList))
         vigilanceReportAdapter.reportList.clear()
-        vigilanceReportAdapter.reportList.addAll(reportList)
+        vigilanceReportAdapter.reportList = Report.cloneList(reportList)
         // lastTimestamp = postList[postList.size - 1].getTimestamp()
         diffUtil.dispatchUpdatesTo(vigilanceReportAdapter)
     }

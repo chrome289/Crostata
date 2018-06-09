@@ -20,8 +20,8 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.getPosts(token, birthId, lastTimestamp, requestId, after)
     }
 
-    fun submitLike(token: String, postId: String, birthId: String, value: Int): Observable<LikeTotal> {
-        return crostataApiService.addLike(token, postId, birthId, value)
+    fun submitLike(token: String, postId: String, birthId: String): Observable<LikeTotal> {
+        return crostataApiService.addLike(token, postId, birthId)
     }
 
     fun clearLike(token: String, postId: String, birthId: String): Observable<LikeTotal> {
@@ -52,6 +52,10 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
         return crostataApiService.addComment(token, postId, birthId, comment, false)
     }
 
+    fun submitReport(token: String, creatorId: String, birthId: String, contentType: Int, contentId: String): Observable<Response<ResponseBody>> {
+        return crostataApiService.submitReport(token, creatorId, birthId, contentType, contentId)
+    }
+
     fun getReports(token: String, birthId: String): Observable<List<Report>> {
         return crostataApiService.getReports(token, birthId)
     }
@@ -75,7 +79,6 @@ class ContentRepository(private var crostataApiService: CrostataApiService) {
     fun getSearchResults(token: String, searchText: String): Observable<SearchResult.SearchResultGlove> {
         return crostataApiService.getSearchResult(token, searchText)
     }
-
 
     fun getSearchResults(token: String, requestId: String, searchText: String, after: Int): Observable<SearchResult.SearchResultGlove> {
         return crostataApiService.getSearchResult(token, searchText, requestId, after)

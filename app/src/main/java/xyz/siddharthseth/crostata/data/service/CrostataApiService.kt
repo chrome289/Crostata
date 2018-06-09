@@ -69,8 +69,7 @@ interface CrostataApiService {
     fun addLike(
             @Header("authorization") token: String,
             @Field("postId") postId: String,
-            @Field("birthId") birthId: String,
-            @Field("value") value: Int
+            @Field("birthId") birthId: String
     ): Observable<LikeTotal>
 
     @DELETE("opinion/like")
@@ -139,6 +138,15 @@ interface CrostataApiService {
 
 
     //report endpoints
+    @POST("report/report")
+    fun submitReport(
+            @Header("authorization") token: String,
+            @Field("creatorId") creatorId: String,
+            @Field("reporterId") birthId: String,
+            @Field("contentType") contentType: Int,
+            @Field("contentId") contentId: String
+    ): Observable<Response<ResponseBody>>
+
     @GET("report/reportMade")
     fun getReports(
             @Header("authorization") token: String,

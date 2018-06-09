@@ -3,20 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="@color/grey_900"
-    android:elevation="2dp">
+    android:background="@color/grey_900">
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="32dp"
+        android:background="@drawable/shadow"
         android:contentDescription="@string/profile"
         android:elevation="8dp"
         app:layout_constraintBottom_toTopOf="@+id/profileName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/farmer" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/profileName"

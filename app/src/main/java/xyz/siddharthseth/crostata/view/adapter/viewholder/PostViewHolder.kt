@@ -20,10 +20,10 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
                     postItemListener.openProfile(adapterPosition)
                 }
                 R.id.likeButton, R.id.likesTotal -> {
-
+                    postItemListener.handleLike(adapterPosition)
                 }
                 R.id.commentButton, R.id.commentTotal -> {
-
+                    postItemListener.openFullPost(adapterPosition)
                 }
             }
         }
@@ -50,6 +50,7 @@ class PostViewHolder(view: View, private val postItemListener: PostItemListener)
         itemView.timeText.text = post.timeCreatedText
 
         itemView.contentText.text = post.text
+        itemView.contentText.setOnClickListener { this.onClick(it) }
 
         itemView.likeButton.setOnClickListener { this.onClick(it) }
         itemView.likeButton.imageTintList = if (post.opinion == 1) likeColorTint else grey500

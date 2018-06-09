@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,8 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view_post.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.model.SnackbarMessage
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
@@ -112,14 +115,31 @@ class ViewPostFragment : Fragment() {
             approveImage.visibility = View.GONE
             approveText.visibility = View.GONE
             reportButton.visibility = View.VISIBLE
+            if (post.creatorId == LoggedSubject.birthId) {
+                reportButton.visibility = View.GONE
+            } else {
+                reportButton.setOnClickListener {
+                    viewPostViewModel.onReportButtonClick()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({
+                                if (it) {
+                                    viewPostViewModel.refreshComments()
+                                    setSnackbarMessage("Report submitted successfully", Snackbar.LENGTH_SHORT)
+                                } else {
+                                    setSnackbarMessage("Report not submitted. Try again.", Snackbar.LENGTH_SHORT)
+                                }
+                            }, {
+                                it.printStackTrace()
+                                setSnackbarMessage("Report not submitted. Try again.", Snackbar.LENGTH_SHORT)
+                            })
+                }
+            }
         }
 
         profileName.text = post.creatorName
         profileName.setOnClickListener { viewPostViewModel.openProfile(post.creatorId, post.creatorName) }
 
         timeText.text = post.timeCreatedText.capitalize()
-
-        reportButton.setOnClickListener { viewPostViewModel.onReportButtonClick(post) }
 
         if (post.contentType == "TO") {
             contentImage.visibility = View.GONE
@@ -136,7 +156,7 @@ class ViewPostFragment : Fragment() {
         commentsTotal.text = "${post.comments} Comments"
         likesTotal.text = "${post.likes} likes"
 
-        likeButton.setOnClickListener { viewPostViewModel.handleLike(post, 1) }
+        likeButton.setOnClickListener { viewPostViewModel.handleLike() }
         likeButton.imageTintList =
                 (if (post.opinion == 1) viewPostViewModel.likeColorTint
                 else viewPostViewModel.grey500)
@@ -148,11 +168,23 @@ class ViewPostFragment : Fragment() {
         commentButton.setOnClickListener {
             viewPostViewModel.onCommentButtonClick(addComment.text.toString())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ viewPostViewModel.refreshComments() }, {
+                    .subscribe({
+                        if (it) {
+                            viewPostViewModel.refreshComments()
+                            setSnackbarMessage("Comment submitted successfully", Snackbar.LENGTH_SHORT)
+                        } else {
+                            setSnackbarMessage("Comment not submitted. Try again.", Snackbar.LENGTH_SHORT)
+                        }
+                    }, {
                         it.printStackTrace()
+                        setSnackbarMessage("Comment not submitted. Try again.", Snackbar.LENGTH_SHORT)
                     })
         }
 
         viewPostViewModel.getComments()
+    }
+
+    fun setSnackbarMessage(message: String, duration: Int) {
+        listener?.showSnackbar(SnackbarMessage(message, duration))
     }
 }

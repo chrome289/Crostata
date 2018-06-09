@@ -37,6 +37,37 @@ import kotlin.collections.ArrayList
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application), PostItemListener {
 
+    override fun handleLike(index: Int) {
+        if (!isLikeRequestSent) {
+            isLikeRequestSent = true
+            val post = postList[index]
+            post.opinion = if (post.opinion == 0) 1 else 0
+            post.likes = if (post.opinion == 0) post.likes + 1 else post.likes - 1
+            postList[index] = post
+            updatePostAdapter()
+
+            val observable = if (post.opinion == 1) clearLike(post) else addLike(post)
+            observable.subscribe(
+                    {
+                        isLikeRequestSent = false
+                    }
+                    , { error ->
+                error.printStackTrace()
+                isLikeRequestSent = false
+            })
+        }
+    }
+
+    override fun addLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.submitLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
+    override fun clearLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.clearLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
                 .placeholder(R.drawable.home_feed_content_placeholder)
@@ -57,34 +88,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 .into(imageView)
     }
 
-    override fun handleLike(post: Post, value: Int) {
-        if (post.opinion == value) {
-            onClearLike(post._id)
-                    .subscribe(
-                            { likeTotal: LikeTotal ->
-                                Log.v(TAG, "success :" + likeTotal.success)
-                                if (likeTotal.success) {
-                                    post.opinion = 0
-                                    post.likes = likeTotal.total
-                                    // updatePostItem(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
-        } else {
-            onLikeButtonClick(post._id, value)
-                    .subscribe(
-                            { likeTotal: LikeTotal ->
-                                Log.v(TAG, "success :" + likeTotal.success)
-                                if (likeTotal.success) {
-                                    post.likes = likeTotal.total
-                                    post.opinion = value
-                                    // updatePostItem(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
-        }
-    }
-
     override fun openFullPost(index: Int) {
         Log.v(TAG, "viewmodel click listener")
         mutablePost.value = postList[index]
@@ -93,18 +96,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     override fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
-    }
-
-    override fun onCommentButtonClick(comment: String): Observable<Boolean> {
-        return Observable.empty()
-    }
-
-    override fun onReportButtonClick(post: Post) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onClearLike(postId: String): Observable<LikeTotal> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override val grey900: ColorStateList
@@ -141,6 +132,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private var isLikeRequestSent = false
     var isLoadPending = false
     var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
+    var isReportRequestSent = false
 
     init {
         profilePostAdapter.setHasStableIds(true)
@@ -254,7 +246,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 PostDiffUtilCallback(profilePostAdapter.postList, postList))
         postList.sort()
         profilePostAdapter.postList.clear()
-        profilePostAdapter.postList.addAll(postList)
+        profilePostAdapter.postList = Post.cloneList(postList)
         lastTimestamp = if (postList.isEmpty()) {
             Calendar.getInstance().timeInMillis
         } else {
@@ -269,21 +261,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
         setLoaderLiveData(false, false, false)
         Log.v(TAG, "onScroll 5")
-    }
-
-    private fun onLikeButtonClick(postId: String, value: Int): Observable<LikeTotal> {
-        Log.v(TAG, "upLikeButtonClick")
-        //val birthId = SharedPreferencesService().getUserDetails(getApplication()).birthId
-        return if (!isLikeRequestSent) {
-            isLikeRequestSent = true
-            contentRepository.submitLike(token, postId, birthId, value)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext { isLikeRequestSent = false }
-                    .doOnError { isLikeRequestSent = false }
-                    .subscribeOn(Schedulers.io())//.map({ it -> return@map it })
-        } else {
-            Observable.empty()
-        }
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
@@ -307,5 +284,26 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         updatePostAdapter()
 
         getPosts()
+    }
+
+    fun onReportButtonClick(): Observable<Boolean> {
+        if (!isReportRequestSent) {
+            isReportRequestSent = true
+            return contentRepository.submitReport(token, birthId, LoggedSubject.birthId, 2, birthId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        isReportRequestSent = false
+                    }
+                    .doOnError {
+                        isReportRequestSent = false
+                        it.printStackTrace()
+                    }
+                    .flatMap {
+                        if (it.isSuccessful) Observable.just(true) else Observable.just(false)
+                    }
+        } else {
+            return Observable.empty()
+        }
     }
 }

@@ -43,9 +43,8 @@
             android:textSize="12sp"
             android:theme="@style/Text.Medium.Inverse"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/timeText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/profileName" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/profileImage"
@@ -107,15 +106,14 @@
         <ImageView
             android:id="@+id/contentImage"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_weight="0"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/content_image"
-            android:scaleType="centerCrop"
             android:visibility="gone"
-            app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contentText" />
@@ -132,41 +130,41 @@
 
         <ImageButton
             android:id="@+id/likeButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:background="@color/grey_50"
             android:contentDescription="@string/like_button"
             android:padding="4dp"
             android:scaleType="centerInside"
             android:tint="@color/grey_500"
-            app:layout_constraintBottom_toBottomOf="@+id/likesTotal"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/likesTotal"
+            app:layout_constraintTop_toBottomOf="@+id/contentImage"
             app:srcCompat="@drawable/like" />
 
         <TextView
             android:id="@+id/likesTotal"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             android:text="@string/_74_likes"
             android:theme="@style/Text.Medium"
+            app:layout_constraintBottom_toBottomOf="@+id/likeButton"
             app:layout_constraintStart_toEndOf="@+id/likeButton"
-            app:layout_constraintTop_toBottomOf="@+id/contentImage" />
+            app:layout_constraintTop_toTopOf="@+id/likeButton" />
 
         <View
             android:id="@+id/seperator"
             android:layout_width="0dp"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/grey_200"
+            android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/likesTotal" />
+            app:layout_constraintTop_toBottomOf="@+id/likeButton" />
 
         <TextView
             android:id="@+id/commentsTotal"
@@ -186,7 +184,6 @@
             android:layout_marginStart="16dp"
             android:contentDescription="@string/profile_image"
             android:src="@drawable/farmer"
-            app:layout_constraintBottom_toBottomOf="@+id/addComment"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/addComment" />
@@ -204,6 +201,7 @@
             android:gravity="top|start"
             android:hint="@string/add_a_comment"
             android:inputType="text|textMultiLine"
+            android:maxLines="4"
             android:minLines="1"
             android:padding="8dp"
             android:theme="@style/Text.Regular"
@@ -227,9 +225,9 @@
         <View
             android:id="@+id/seperator2"
             android:layout_width="0dp"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/grey_200"
+            android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/commentButton" />
@@ -239,6 +237,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:background="@color/grey_100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seperator2"
@@ -248,10 +247,12 @@
 
         <TextView
             android:id="@+id/textView5"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="16dp"
+            android:background="@color/grey_50"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="16dp"
             android:text="@string/no_more_comments"
             android:theme="@style/Text.Medium"
             app:layout_constraintBottom_toBottomOf="parent"

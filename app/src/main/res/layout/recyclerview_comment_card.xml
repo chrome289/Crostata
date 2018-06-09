@@ -71,5 +71,4 @@
         app:layout_constraintStart_toEndOf="@+id/profileImage"
         app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
-
 </android.support.constraint.ConstraintLayout>

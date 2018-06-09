@@ -35,7 +35,36 @@ import kotlin.collections.ArrayList
 class HomeFeedViewModel(application: Application) : AndroidViewModel(application)
         , PostItemListener {
 
-    override fun handleLike(post: Post, value: Int) {}
+    override fun handleLike(index: Int) {
+        if (!isLikeRequestSent) {
+            isLikeRequestSent = true
+
+            val post = postList[index]
+            val observable = if (post.opinion == 1) clearLike(post) else addLike(post)
+            observable.subscribe(
+                    { isLikeRequestSent = false }
+                    , { error ->
+                error.printStackTrace()
+                isLikeRequestSent = false
+            })
+
+            post.opinion = if (post.opinion == 0) 1 else 0
+            post.likes = if (post.opinion == 0) post.likes - 1 else post.likes + 1
+            postList[index] = post
+            updatePostAdapter()
+        }
+    }
+
+    override fun addLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.submitLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
+    override fun clearLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.clearLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
@@ -72,16 +101,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
         glide.clear(imageView as View)
     }
 
-    override fun onClearLike(postId: String): Observable<LikeTotal> {
-        return Observable.empty()
-    }
-
-    override fun onCommentButtonClick(comment: String): Observable<Boolean> {
-        return Observable.empty()
-    }
-
-    override fun onReportButtonClick(post: Post) {}
-
     override val grey900: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_900))
     override val likeColorTint: ColorStateList
@@ -99,6 +118,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     private var after: Int = 0
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
+    private var isLikeRequestSent = false
     private var postList: ArrayList<Post> = ArrayList()
 
     private var isPostRequestSent: Boolean = false
@@ -130,11 +150,13 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun updatePostAdapter() {
+        postList.sort()
         val diffUtil = DiffUtil.calculateDiff(
                 PostDiffUtilCallback(homeFeedAdapter.postList, postList))
-        postList.sort()
+
         homeFeedAdapter.postList.clear()
-        homeFeedAdapter.postList.addAll(postList)
+        homeFeedAdapter.postList = Post.cloneList(postList)
+
         lastTimestamp = if (postList.isEmpty()) {
             Calendar.getInstance().timeInMillis
         } else {
@@ -232,7 +254,6 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun refreshData() {
-        homeFeedAdapter.postList.clear()
         postList.clear()
 
         isInitialized = false

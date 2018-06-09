@@ -9,10 +9,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Post() : Comparable<Post>, Parcelable {
+class Post() : Comparable<Post>, Parcelable, Cloneable {
     class PostGlove {
         var requestId: String = ""
         var list: List<Post> = ArrayList()
+    }
+
+    override fun clone(): Post {
+        return super.clone() as Post
     }
 
     override fun equals(other: Any?): Boolean {
@@ -191,6 +195,14 @@ class Post() : Comparable<Post>, Parcelable {
 
         override fun newArray(size: Int): Array<Post?> {
             return arrayOfNulls(size)
+        }
+
+        fun cloneList(postList: ArrayList<Post>): java.util.ArrayList<Post> {
+            val newList = ArrayList<Post>()
+            for (post in postList) {
+                newList.add(post.clone())
+            }
+            return newList
         }
     }
 }

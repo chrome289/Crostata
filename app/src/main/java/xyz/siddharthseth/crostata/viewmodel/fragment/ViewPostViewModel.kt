@@ -31,12 +31,52 @@ import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
-import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
 import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener, ViewPostInteractionListener {
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener {
+
+    fun handleLike() {
+        val post = mutablePost.value
+        if (post != null) {
+            if (!isLikeRequestSent) {
+                isLikeRequestSent = true
+                val observable = if (post.opinion == 1) clearLike(post) else addLike(post)
+                observable.subscribe(
+                        {
+                            isLikeRequestSent = false
+                        }
+                        , { error ->
+                    error.printStackTrace()
+                    isLikeRequestSent = false
+                })
+
+                post.opinion = if (post.opinion == 0) 1 else 0
+                post.likes = if (post.opinion == 0) post.likes - 1 else post.likes + 1
+                mutablePost.value = post
+            }
+        }
+    }
+
+    override fun handleLike(index: Int) {
+        //not needed
+    }
+
+    override fun openFullPost(index: Int) {
+        //not needed
+    }
+
+    override fun addLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.submitLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
+    override fun clearLike(post: Post): Observable<LikeTotal> {
+        return contentRepository.clearLike(token, post._id, LoggedSubject.birthId)
+                .subscribeOn(Schedulers.io())
+    }
+
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
@@ -93,14 +133,6 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    override fun onClearLike(postId: String): Observable<LikeTotal> {
-        Log.v(TAG, "upLikeButtonClick")
-        val birthId = LoggedSubject.birthId
-        return contentRepository.clearLike(token, postId, birthId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-    }
-
     override fun clearPostedImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
@@ -115,59 +147,32 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     override val reportColorTint: ColorStateList
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.reportSelected))
 
-    override fun openFullPost(index: Int) {
-        //nah
-    }
-
-    override fun handleLike(post: Post, value: Int) {
-        if (post.opinion == value) {
-            onClearLike(post._id)
-                    .subscribe(
-                            { likeTotal: LikeTotal ->
-                                Log.v(TAG, "success :" + likeTotal.success)
-                                if (likeTotal.success) {
-                                    post.opinion = 0
-                                    post.likes = likeTotal.total
-                                    updatePostItem(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
+    override fun onReportButtonClick(index: Int): Observable<Boolean> {
+        val comment = commentList[index]
+        if (!isReportRequestSent) {
+            isReportRequestSent = true
+            return contentRepository.submitReport(token, comment.birthId, LoggedSubject.birthId, 1, comment._id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        isReportRequestSent = false
+                    }
+                    .doOnError {
+                        isReportRequestSent = false
+                        it.printStackTrace()
+                    }
+                    .flatMap {
+                        if (it.isSuccessful) Observable.just(true) else Observable.just(false)
+                    }
         } else {
-            onLikeButtonClick(post._id, value)
-                    .subscribe(
-                            { likeTotal: LikeTotal ->
-                                Log.v(TAG, "success :" + likeTotal.success)
-                                if (likeTotal.success) {
-                                    post.likes = likeTotal.total
-                                    post.opinion = value
-                                    updatePostItem(post)
-                                }
-                            }
-                            , { error -> error.printStackTrace() })
+            return Observable.empty()
         }
-    }
-
-    override fun onReportButtonClick(post: Post) {}
-
-    override fun openProfile(birthId: String, name: String) {
-        mutableSubject.value = Subject(birthId, name)
     }
 
     override fun openProfile(index: Int) {
         Log.v(TAG, "setting birthid")
         val comment = commentList[index]
         mutableSubject.value = Subject(comment.birthId, comment.name)
-    }
-
-    private fun updatePostItem(post: Post) {
-        mutablePost.value = post
-    }
-
-    private fun onLikeButtonClick(postId: String, value: Int): Observable<LikeTotal> {
-        Log.v(TAG, "upLikeButtonClick")
-        return contentRepository.submitLike(token, postId, LoggedSubject.birthId, value)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
     }
 
     private var commentList = ArrayList<Comment>()
@@ -183,6 +188,8 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     lateinit var glide: GlideRequests
     private var isCommentRequestSent = false
     private var isSubmitCommentRequestSent = false
+    private var isLikeRequestSent = false
+    private var isReportRequestSent = false
     private var hasNewItems = false
 
     internal var mutableSubject: SingleSubject = SingleSubject()
@@ -274,7 +281,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
                 CommentDiffUtilCallback(adapter.commentList, commentList))
         commentList.sort()
         adapter.commentList.clear()
-        adapter.commentList.addAll(commentList)
+        adapter.commentList = Comment.cloneList(commentList)
         lastTimestamp = if (commentList.isEmpty()) {
             Calendar.getInstance().timeInMillis
         } else {
@@ -321,5 +328,34 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         updateCommentAdapter()
 
         getComments()
+    }
+
+    fun onReportButtonClick(): Observable<Boolean> {
+        val post = mutablePost.value
+        if (post != null && !isReportRequestSent) {
+            isReportRequestSent = true
+            return contentRepository.submitReport(token, post.creatorId, LoggedSubject.birthId, 0, post._id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        isReportRequestSent = false
+                    }
+                    .doOnError {
+                        isReportRequestSent = false
+                        it.printStackTrace()
+                    }
+                    .flatMap {
+                        if (it.isSuccessful)
+                            Observable.just(true)
+                        else
+                            Observable.just(false)
+                    }
+        } else {
+            return Observable.empty()
+        }
+    }
+
+    fun openProfile(birthId: String, name: String) {
+        mutableSubject.value = Subject(birthId, name)
     }
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
@@ -12,6 +13,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_detail.*
 import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
+import xyz.siddharthseth.crostata.data.model.SnackbarMessage
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.util.viewModel.ProfileInteractionListener
 import xyz.siddharthseth.crostata.util.viewModel.ViewPostInteractionListener
@@ -24,6 +26,10 @@ class DetailActivity : AppCompatActivity()
         , ProfileInteractionListener
         , View.OnClickListener {
 
+    override fun showSnackbar(snackbarMessage: SnackbarMessage) {
+        Snackbar.make(forTheSnackbar, snackbarMessage.message, snackbarMessage.duration)
+                .show()
+    }
 
     override fun onClick(v: View) {
         when (v.id) {

@@ -6,11 +6,15 @@ import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class Comment : Comparable<Comment> {
+open class Comment : Comparable<Comment>, Cloneable {
 
     class CommentGlove {
         var requestId: String = ""
         var list: List<Comment> = ArrayList()
+    }
+
+    override fun clone(): Comment {
+        return super.clone() as Comment
     }
 
     override fun compareTo(other: Comment): Int {
@@ -79,5 +83,13 @@ open class Comment : Comparable<Comment> {
         private val calendar = Calendar.getInstance()
         private val calendar2 = Calendar.getInstance()
         private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+
+        fun cloneList(commentList: ArrayList<Comment>): ArrayList<Comment> {
+            val newList = ArrayList<Comment>()
+            for (comment in commentList) {
+                newList.add(comment.clone())
+            }
+            return newList
+        }
     }
 }

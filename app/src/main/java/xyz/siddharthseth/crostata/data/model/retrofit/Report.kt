@@ -4,7 +4,7 @@ import com.github.marlonlom.utilities.timeago.TimeAgo
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Report : Comparable<Report> {
+class Report : Comparable<Report>, Cloneable {
     override fun compareTo(other: Report): Int {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")
@@ -17,6 +17,10 @@ class Report : Comparable<Report> {
             (calendar2.timeInMillis - calendar.timeInMillis) < 0 -> -1
             else -> 0
         }
+    }
+
+    override fun clone(): Report {
+        return super.clone() as Report
     }
 
     lateinit var _id: String
@@ -52,5 +56,12 @@ class Report : Comparable<Report> {
         private val calendar = Calendar.getInstance()
         private val calendar2 = Calendar.getInstance()
         private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        fun cloneList(reportList: ArrayList<Report>): ArrayList<Report> {
+            val newList = ArrayList<Report>()
+            for (report in reportList) {
+                newList.add(report.clone())
+            }
+            return newList
+        }
     }
 }

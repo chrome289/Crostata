@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -25,6 +26,7 @@ import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.R.layout.activity_main
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
+import xyz.siddharthseth.crostata.data.model.SnackbarMessage
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Token
@@ -45,6 +47,11 @@ class MainActivity : AppCompatActivity()
         , ProfileInteractionListener
         , PostInteractionListener
         , View.OnClickListener {
+
+    override fun showSnackbar(snackbarMessage: SnackbarMessage) {
+        Snackbar.make(forTheSnackbar, snackbarMessage.message, snackbarMessage.duration)
+                .show()
+    }
 
     override fun onClick(v: View) {
         when (v.id) {

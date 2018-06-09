@@ -38,10 +38,10 @@
     <string name="sample_name_all_caps">DARWIN CENICEROS</string>
     <string name="info_message">Visit your nearest Citizen Help Desk</string>
     <string name="comments_caps">COMMENTS</string>
-    <string name="posts">POSTS</string>
+    <string name="posts">Posts</string>
     <string name="sample_comment">Can you not please?</string>
     <string name="index_own_pre">Your Patriot Index is \u0020</string>
-    <string name="sample_area">130 KM<sup><small>2</small></sup></string>
+    <string name="sample_area">130 ha</string>
     <string name="security4">Hyperlocal Citizen Surveillance</string>
     <string name="security3">News Correction System</string>
     <string name="security2">102,794 Informers</string>
@@ -123,5 +123,6 @@
     <string name="like">Like</string>
     <string name="comment">Comment</string>
     <string name="refresh">Refresh</string>
+    <string name="no_more_posts">No more posts</string>
 
 </resources>

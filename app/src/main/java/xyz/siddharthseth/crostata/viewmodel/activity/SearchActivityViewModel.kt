@@ -122,7 +122,7 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
                 SearchResultDiffUtilCallback(searchResultAdapter.searchResultList, searchResultList))
         searchResultList.sort()
         searchResultAdapter.searchResultList.clear()
-        searchResultAdapter.searchResultList.addAll(searchResultList)
+        searchResultAdapter.searchResultList = SearchResult.cloneList(searchResultList)
         after = if (searchResultList.isEmpty()) {
             0
         } else {
