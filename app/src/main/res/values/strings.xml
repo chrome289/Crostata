@@ -29,7 +29,7 @@
     <string name="content_image">content image</string>
     <string name="down_like_button">down like button</string>
     <string name="brplogo">brpLogo</string>
-    <string name="server_url">http://192.168.1.123:3000/api/v1/</string>
+    <string name="server_url">http://crostata-env.ap-south-1.elasticbeanstalk.com/api/v1/</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="toolbar_add_post">New Post</string>

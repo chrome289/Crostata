@@ -120,7 +120,7 @@
 
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
+        android:id="@+id/animationViewLogin"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_gravity="center"

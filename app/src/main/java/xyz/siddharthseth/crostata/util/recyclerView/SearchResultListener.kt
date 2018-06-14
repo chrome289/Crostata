@@ -7,4 +7,5 @@ interface SearchResultListener {
     fun clearImage(imageView: ImageView)
     fun openProfile(index: Int)
     fun loadProfileImage(searchResult: SearchResult, dimen: Int, imageView: ImageView)
+
 }

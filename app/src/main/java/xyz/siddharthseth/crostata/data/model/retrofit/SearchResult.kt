@@ -17,6 +17,18 @@ class SearchResult : Comparable<SearchResult>, Cloneable {
         return this.name.compareTo(other.name)
     }
 
+    override fun equals(other: Any?): Boolean {
+        other as SearchResult
+        return this.birthId == other.birthId
+    }
+
+    override fun hashCode(): Int {
+        var result = birthId.hashCode()
+        result += 31 * name.hashCode()
+
+        return result
+    }
+
     private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlProfileThumb = GlideUrl(baseUrl +
                 "subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"

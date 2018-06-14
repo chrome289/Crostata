@@ -11,7 +11,7 @@ class SearchResultViewHolder(view: View, private val searchResultListener: Searc
     : RecyclerView.ViewHolder(view), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.profileImage, R.id.profileName, R.id.profession -> {
+            R.id.profileImage, R.id.profileName, R.id.profession, R.id.subjectContainer -> {
                 searchResultListener.openProfile(adapterPosition)
             }
         }
@@ -22,6 +22,7 @@ class SearchResultViewHolder(view: View, private val searchResultListener: Searc
         itemView.profileName.setOnClickListener(this)
         itemView.profession.text = searchResult.profession.toLowerCase().capitalize()
         itemView.profession.setOnClickListener(this)
+        itemView.subjectContainer.setOnClickListener(this)
     }
 
     fun clearImages() {

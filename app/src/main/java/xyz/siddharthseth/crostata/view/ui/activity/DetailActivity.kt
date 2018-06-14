@@ -74,7 +74,7 @@ class DetailActivity : AppCompatActivity()
     }
 
     override fun showError(isShown: Boolean) {
-        errorLayout.visibility = if (isShown) View.VISIBLE else View.GONE
+        errorLayoutDetail.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     override fun showLoader(isShown: Boolean) {
@@ -83,13 +83,13 @@ class DetailActivity : AppCompatActivity()
 
     override fun showAnimation(isShown: Boolean) {
         if (isShown) {
-            animationView.setAnimation(R.raw.loader1)
-            animationView.scale = 0.2f
-            animationView.visibility = View.VISIBLE
-            animationView.playAnimation()
+            animationViewDetail.setAnimation(R.raw.loader1)
+            animationViewDetail.scale = 0.2f
+            animationViewDetail.visibility = View.VISIBLE
+            animationViewDetail.playAnimation()
         } else {
-            animationView.cancelAnimation()
-            animationView.visibility = View.GONE
+            animationViewDetail.cancelAnimation()
+            animationViewDetail.visibility = View.GONE
         }
     }
 

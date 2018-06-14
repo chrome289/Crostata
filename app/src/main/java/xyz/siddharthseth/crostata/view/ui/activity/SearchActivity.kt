@@ -23,7 +23,6 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import kotlinx.android.synthetic.main.activity_search.*
-import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
@@ -37,7 +36,7 @@ import java.util.*
 class SearchActivity : AppCompatActivity(), BusyLoaderListener {
 
     override fun showError(isShown: Boolean) {
-        errorLayout.visibility = if (isShown) View.VISIBLE else View.GONE
+        errorLayoutSearch.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     override fun showLoader(isShown: Boolean) {
@@ -46,13 +45,13 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
 
     override fun showAnimation(isShown: Boolean) {
         if (isShown) {
-            animationView.setAnimation(R.raw.loader1)
-            animationView.scale = 0.2f
-            animationView.visibility = View.VISIBLE
-            animationView.playAnimation()
+            animationViewSearch.setAnimation(R.raw.loader1)
+            animationViewSearch.scale = 0.2f
+            animationViewSearch.visibility = View.VISIBLE
+            animationViewSearch.playAnimation()
         } else {
-            animationView.cancelAnimation()
-            animationView.visibility = View.GONE
+            animationViewSearch.cancelAnimation()
+            animationViewSearch.visibility = View.GONE
         }
     }
 
@@ -72,13 +71,6 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
 
     override fun isNetAvailable() {
         searchActivityViewModel.checkNetworkAvailable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mutableNetStatusChanged.value = true
-                }, {
-                    mutableNetStatusChanged.value = false
-                    it.printStackTrace()
-                })
     }
 
     override var mutableNetStatusChanged: MutableLiveData<Boolean> = MutableLiveData()
@@ -92,10 +84,10 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
         if (savedInstanceState != null) {
             scrollPositionData = savedInstanceState.getParcelable("ScrollPosition")
         }
-        animationView.setAnimation(R.raw.loader1)
-        animationView.scale = 0.2f
-        animationView.visibility = View.VISIBLE
-        animationView.playAnimation()
+        animationViewSearch.setAnimation(R.raw.loader1)
+        animationViewSearch.scale = 0.2f
+        animationViewSearch.visibility = View.VISIBLE
+        animationViewSearch.playAnimation()
 
         searchActivityViewModel = ViewModelProviders.of(this).get(SearchActivityViewModel::class.java)
         searchActivityViewModel.glide = GlideApp.with(this)
@@ -147,6 +139,9 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
             }
             searchClear.setOnClickListener {
                 resetSearch()
+            }
+            refreshButton.setOnClickListener {
+                isNetAvailable()
             }
             isInitialized = true
         }

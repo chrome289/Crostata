@@ -17,7 +17,8 @@
 
     <style name="SearchTheme" parent="AppTheme">
         <item name="android:colorForeground">@color/grey_600</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/grey_50</item>
+        <item name="android:statusBarColor">@color/grey_500</item>
     </style>
 
     <style name="Text.Light" parent="AppTheme">
@@ -90,6 +91,12 @@
         <item name="fontFamily">@font/open_sans_semibold</item>
         <item name="android:textSize">@dimen/font_size_larger</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Text.Bold" parent="AppTheme">
+        <item name="fontFamily">@font/open_sans_bold</item>
+        <item name="android:textSize">@dimen/font_size_normal</item>
+        <item name="android:textColor">@color/grey_900</item>
     </style>
 
     <style name="Text.Bold.Red" parent="AppTheme">

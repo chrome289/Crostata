@@ -21,10 +21,15 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.SearchResultDiffUtilCallback
+import xyz.siddharthseth.crostata.util.recyclerView.FooterListener
 import xyz.siddharthseth.crostata.util.recyclerView.SearchResultListener
 import xyz.siddharthseth.crostata.view.adapter.SearchResultAdapter
 
-class SearchActivityViewModel(application: Application) : AndroidViewModel(application), SearchResultListener {
+class SearchActivityViewModel(application: Application) : AndroidViewModel(application), SearchResultListener, FooterListener {
+    override fun reloadSecondary() {
+        getNextSearchResults()
+    }
+
     override fun openProfile(index: Int) {
         mutableProfile.value = Subject(searchResultList[index].birthId, searchResultList[index].name)
     }
@@ -44,54 +49,64 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
     }
 
     private fun fetchSearchResults() {
-        if (!isSearchRequestSent) {
-            isSearchRequestSent = true
-            contentRepository.getSearchResults(token, searchText)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap {
-                        requestId = it.requestId
-                        Observable.from(it.list)
-                    }
-                    .subscribe({ onRequestNext(it) }
-                            , { onRequestError(it) }
-                            , { onRequestComplete() }
-                    )
-        }
+        isSearchRequestSent = true
+        hasNewItems = false
+        contentRepository.getSearchResults(token, searchText)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap {
+                    requestId = it.requestId
+                    Observable.from(it.list)
+                }
+                .subscribe({ onRequestNext(it) }
+                        , { onRequestError(it, false) }
+                        , { onRequestComplete() }
+                )
     }
 
     private fun fetchNextSearchResults() {
-        if (!isSearchRequestSent) {
-            isSearchRequestSent = true
-            contentRepository.getSearchResults(token, requestId, searchText, after)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap {
-                        Observable.from(it.list)
-                    }
-                    .subscribe({ onRequestNext(it) }
-                            , { onRequestError(it) }
-                            , { onRequestComplete() }
-                    )
-        }
+        isSearchRequestSent = true
+        hasNewItems = false
+        contentRepository.getSearchResults(token, requestId, searchText, after)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap {
+                    Observable.from(it.list)
+                }
+                .doOnNext {
+                    setLoaderLiveData(false, false, false, true)
+                }
+                .doOnError { setLoaderLiveData(true, false, true, true) }
+                .subscribe({ onRequestNext(it) }
+                        , { onRequestError(it, true) }
+                        , { onRequestComplete() }
+                )
+
     }
 
     private fun onRequestComplete() {
         isSearchResultsAvailable = true
         isSearchRequestSent = false
-        updateSearchResultList()
+        if (hasNewItems) {
+            updateSearchResultList()
+        } else {
+            hasReachedEnd = true
+            searchResultAdapter.isEndVisible = true
+            searchResultAdapter.notifyItemChanged(searchResultAdapter.searchResultList.size - 1)
+        }
     }
 
-    private fun onRequestError(throwable: Throwable) {
+    private fun onRequestError(throwable: Throwable, isSecondary: Boolean) {
         throwable.printStackTrace()
-        setLoaderLiveData(true, false, true)
+        setLoaderLiveData(true, false, true, isSecondary)
         isSearchRequestSent = false
     }
 
     private fun onRequestNext(searchResult: SearchResult) {
         val context: Context = getApplication()
         searchResult.initExtraInfo(context.getString(R.string.server_url), token)
-        searchResultList.add(searchResult)
+        hasNewItems = true
+        searchResultList.add(if (searchResultList.size == 0) 0 else searchResultList.size - 1, searchResult)
     }
 
     fun clearList() {
@@ -100,41 +115,46 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         isSearchRequestSent = false
         isSearchResultsAvailable = false
         isServerStatusRequestSent = false
+        hasNewItems = false
+        hasReachedEnd = false
         searchResultList.clear()
         updateSearchResultList()
     }
 
     fun getSearchResults() {
-        setLoaderLiveData(true, true, false)
+        setLoaderLiveData(true, true, false, false)
         if (isSearchResultsAvailable) {
             updateSearchResultList()
         } else {
-            fetchSearchResults()
+            if (!isSearchRequestSent) {
+                fetchSearchResults()
+            }
         }
     }
 
     fun getNextSearchResults() {
-        fetchNextSearchResults()
+        if (!isSearchRequestSent && !hasReachedEnd) {
+            setLoaderLiveData(true, true, false, true)
+            fetchNextSearchResults()
+        }
     }
 
     private fun updateSearchResultList() {
         val diffUtil = DiffUtil.calculateDiff(
                 SearchResultDiffUtilCallback(searchResultAdapter.searchResultList, searchResultList))
-        searchResultList.sort()
         searchResultAdapter.searchResultList.clear()
         searchResultAdapter.searchResultList = SearchResult.cloneList(searchResultList)
-        after = if (searchResultList.isEmpty()) {
+        after = if (searchResultList.size < 2) {
             0
         } else {
             searchResultList.size
         }
         diffUtil.dispatchUpdatesTo(searchResultAdapter)
 
-        setLoaderLiveData(false, false, false)
-        // Log.d(TAG, "results size ${searchResultAdapter.list.size}")
+        setLoaderLiveData(false, false, false, false)
     }
 
-    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean, setSecondary: Boolean) {
         Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
         isLoadPending = isLoaderVisible
 
@@ -142,23 +162,31 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         tempList.add(isLoaderVisible)
         tempList.add(isAnimationVisible)
         tempList.add(isErrorVisible)
-        mutableLoaderConfig.value = tempList
+        if (!setSecondary) {
+            mutableLoaderConfig.value = tempList
+        } else {
+            searchResultAdapter.isErrorVisible = isErrorVisible
+            searchResultAdapter.isSecondLoaderVisible = isAnimationVisible
+            searchResultAdapter.notifyItemChanged(searchResultList.size - 1)
+        }
     }
 
-    fun checkNetworkAvailable(): Observable<Boolean> {
-        return if (!isServerStatusRequestSent) {
+    fun checkNetworkAvailable() {
+        if (!isServerStatusRequestSent) {
             isServerStatusRequestSent = true
             contentRepository.serverStatus(token)
                     .subscribeOn(Schedulers.io())
-                    .doOnNext { isServerStatusRequestSent = false }
-                    .doOnError { isServerStatusRequestSent = false }
-                    .flatMap {
-                        Observable.just(it.isSuccessful)
-                    }
-        } else {
-            Observable.empty()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        isServerStatusRequestSent = false
+                        setLoaderLiveData(false, false, false, false)
+                        getSearchResults()
+                    }, {
+                        isServerStatusRequestSent = false
+                        setLoaderLiveData(true, false, true, false)
+                        it.printStackTrace()
+                    })
         }
-
     }
 
     var TAG: String = javaClass.simpleName
@@ -167,7 +195,7 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
     private val sharedPreferencesService = SharedPreferencesService()
     private val token = sharedPreferencesService.getToken(application)
 
-    var searchResultAdapter: SearchResultAdapter = SearchResultAdapter(this)
+    var searchResultAdapter: SearchResultAdapter = SearchResultAdapter(this, this)
     private var searchResultList = ArrayList<SearchResult>()
     var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
     lateinit var glide: GlideRequests
@@ -181,6 +209,12 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
     private var isSearchRequestSent = false
     private var isServerStatusRequestSent = false
     private var isSearchResultsAvailable = false
+    private var hasReachedEnd = false
+    private var hasNewItems = false
     var isDetailActivityOpen: Boolean = false
 
+    init {
+        searchResultAdapter.setHasStableIds(true)
+        searchResultList.add(SearchResult())
+    }
 }

@@ -4,8 +4,10 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -27,9 +29,20 @@ class ViewPostFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            scrollPositionData = savedInstanceState.getParcelable("ScrollPosition")
+        }
+
         arguments?.let {
             post = it.getParcelable("post")
         }
+        viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
+        viewPostViewModel.glide = GlideApp.with(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("ScrollPosition", recyclerView.layoutManager.onSaveInstanceState())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -55,8 +68,6 @@ class ViewPostFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        viewPostViewModel = ViewModelProviders.of(this).get(ViewPostViewModel::class.java)
-        viewPostViewModel.glide = GlideApp.with(this)
         viewPostViewModel.mutablePost.observe(this, observer)
         viewPostViewModel.mutableSubject.observe(this, observerSubject)
 
@@ -93,6 +104,8 @@ class ViewPostFragment : Fragment() {
     private var listener: ViewPostInteractionListener? = null
     private lateinit var post: Post
     private var isInitialized = false
+    private val toleranceEndlessScroll = 3
+    private var scrollPositionData: Parcelable? = null
 
     companion object {
         @JvmStatic
@@ -161,9 +174,20 @@ class ViewPostFragment : Fragment() {
                 (if (post.opinion == 1) viewPostViewModel.likeColorTint
                 else viewPostViewModel.grey500)
 
+        val manager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        if (scrollPositionData != null) {
+            manager.onRestoreInstanceState(scrollPositionData)
+        }
 
-        recyclerView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = manager
         recyclerView.adapter = viewPostViewModel.adapter
+        nestedScrollView2.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            //pagination
+            if (dy > 0) {
+                checkMoreCommentsNeeded(recyclerView)
+            }
+        })
 
         commentButton.setOnClickListener {
             viewPostViewModel.onCommentButtonClick(addComment.text.toString())
@@ -184,7 +208,15 @@ class ViewPostFragment : Fragment() {
         viewPostViewModel.getComments()
     }
 
-    fun setSnackbarMessage(message: String, duration: Int) {
+    private fun checkMoreCommentsNeeded(recyclerView: RecyclerView) {
+        val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+        if (layoutManager.itemCount <=
+                (layoutManager.findLastVisibleItemPosition() + toleranceEndlessScroll)) {
+            viewPostViewModel.getNextComments()
+        }
+    }
+
+    private fun setSnackbarMessage(message: String, duration: Int) {
         listener?.showSnackbar(SnackbarMessage(message, duration))
     }
 }

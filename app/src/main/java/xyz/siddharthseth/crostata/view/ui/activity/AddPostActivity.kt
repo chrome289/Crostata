@@ -31,9 +31,9 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
 
     override fun showError(isShown: Boolean) {
         if (isShown) {
-            errorLayout.visibility = View.VISIBLE
+            errorLayoutAddPost.visibility = View.VISIBLE
         } else {
-            errorLayout.visibility = View.GONE
+            errorLayoutAddPost.visibility = View.GONE
         }
     }
 
@@ -47,13 +47,13 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
 
     override fun showAnimation(isShown: Boolean) {
         if (isShown) {
-            animationView.setAnimation(R.raw.loader1)
-            animationView.scale = 0.2f
-            animationView.visibility = View.VISIBLE
-            animationView.playAnimation()
+            animationViewAddPost.setAnimation(R.raw.loader1)
+            animationViewAddPost.scale = 0.2f
+            animationViewAddPost.visibility = View.VISIBLE
+            animationViewAddPost.playAnimation()
         } else {
-            animationView.cancelAnimation()
-            animationView.visibility = View.GONE
+            animationViewAddPost.cancelAnimation()
+            animationViewAddPost.visibility = View.GONE
         }
     }
 

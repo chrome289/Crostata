@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
+        android:id="@+id/animationViewSplash"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
@@ -20,7 +20,7 @@
         app:lottie_loop="true" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/errorLayout"
+        android:id="@+id/errorLayoutSplash"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

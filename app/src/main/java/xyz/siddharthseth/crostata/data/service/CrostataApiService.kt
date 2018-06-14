@@ -174,7 +174,7 @@ interface CrostataApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("http://192.168.1.123:3000/api/v1/")
+                    .baseUrl("http://crostata-env.ap-south-1.elasticbeanstalk.com/api/v1/")
                     .build()
 
             return retrofit.create(CrostataApiService::class.java)

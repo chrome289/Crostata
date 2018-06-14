@@ -17,9 +17,9 @@ class DetailActivityViewModel(application: Application) : AndroidViewModel(appli
     private var isRequestSent = false
 
     fun checkNetworkAvailable(): Observable<Boolean> {
-        if (!isRequestSent) {
+        return if (!isRequestSent) {
             isRequestSent = true
-            return contentRepository.serverStatus(token)
+            contentRepository.serverStatus(token)
                     .subscribeOn(Schedulers.io())
                     .doOnNext { isRequestSent = false }
                     .doOnError { isRequestSent = false }
@@ -27,7 +27,7 @@ class DetailActivityViewModel(application: Application) : AndroidViewModel(appli
                         Observable.just(it.isSuccessful)
                     }
         } else {
-            return Observable.empty()
+            Observable.empty()
         }
     }
 }

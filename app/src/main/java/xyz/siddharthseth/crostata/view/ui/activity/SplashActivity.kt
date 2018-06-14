@@ -25,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(activity_splash_actvity)
 
-        animationView.setAnimation(R.raw.loader1)
+        animationViewSplash.setAnimation(R.raw.loader1)
 
         LoggedSubject.init(applicationContext)
         splashActivityViewModel = ViewModelProviders.of(this).get(SplashActivityViewModel::class.java)
@@ -39,12 +39,12 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun showErrorMessage() {
-        errorLayout.visibility = View.VISIBLE
+        errorLayoutSplash.visibility = View.VISIBLE
         refreshButton.setOnClickListener { signInSilently() }
     }
 
     private fun hideErrorMessage() {
-        errorLayout.visibility = View.GONE
+        errorLayoutSplash.visibility = View.GONE
         refreshButton.setOnClickListener { }
     }
 
@@ -84,13 +84,13 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun hideLoadingAnimation() {
-        animationView.visibility = View.GONE
-        animationView.cancelAnimation()
+        animationViewSplash.visibility = View.GONE
+        animationViewSplash.cancelAnimation()
     }
 
     private fun showLoadingAnimation() {
-        animationView.visibility = View.VISIBLE
-        animationView.playAnimation()
+        animationViewSplash.visibility = View.VISIBLE
+        animationViewSplash.playAnimation()
     }
 
     private fun openLoginActivity() {

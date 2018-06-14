@@ -49,14 +49,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun hideLoadingDialog() {
         loadingFrame.visibility = View.GONE
-        animationView.visibility = View.GONE
-        animationView.cancelAnimation()
+        animationViewLogin.visibility = View.GONE
+        animationViewLogin.cancelAnimation()
     }
 
     private fun showLoadingDialog() {
         loadingFrame.visibility = View.VISIBLE
-        animationView.visibility = View.VISIBLE
-        animationView.playAnimation()
+        animationViewLogin.visibility = View.VISIBLE
+        animationViewLogin.playAnimation()
     }
 
     private fun openHomePage() {
@@ -110,7 +110,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             Log.v(TAG, "Don't click")
             true
         }
-        animationView.setAnimation(R.raw.loader1)
+        animationViewLogin.setAnimation(R.raw.loader1)
 
         if (LoggedSubject.isInitDone()) {
             showLoadingDialog()

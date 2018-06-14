@@ -30,12 +30,16 @@ import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
+import xyz.siddharthseth.crostata.util.recyclerView.FooterListener
 import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
 import xyz.siddharthseth.crostata.view.adapter.ViewPostCommentAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener {
+class ViewPostViewModel(application: Application) : AndroidViewModel(application), CommentItemListener, PostItemListener, FooterListener {
+    override fun reloadSecondary() {
+        getNextComments()
+    }
 
     fun handleLike() {
         val post = mutablePost.value
@@ -184,115 +188,131 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     private var requestId: String = ""
     private var lastTimestamp: Long = Calendar.getInstance().timeInMillis
     private var isInitialized = false
-    internal var adapter: ViewPostCommentAdapter = ViewPostCommentAdapter(this)
+    internal var adapter: ViewPostCommentAdapter = ViewPostCommentAdapter(this, this)
     lateinit var glide: GlideRequests
     private var isCommentRequestSent = false
     private var isSubmitCommentRequestSent = false
     private var isLikeRequestSent = false
     private var isReportRequestSent = false
     private var hasNewItems = false
+    private var hasReachedEnd = false
+    private var isLoadPending = false
 
     internal var mutableSubject: SingleSubject = SingleSubject()
     var mutablePost: SingleLivePost = SingleLivePost()
 
     init {
         adapter.setHasStableIds(true)
+        commentList.add(Comment())
     }
 
     fun getComments() {
-        //setLoaderLiveData(true, true, false)
+        setLoaderLiveData(true, true, false)
         if (isInitialized) {
             updateCommentAdapter()
-        } else
-            fetchComments()
-
+        } else {
+            if (!isCommentRequestSent) {
+                fetchComments()
+            }
+        }
     }
 
     fun getNextComments() {
-        fetchNextComments()
+        if (!isCommentRequestSent && !hasReachedEnd) {
+            setLoaderLiveData(true, true, false)
+            fetchNextComments()
+        }
     }
 
     private fun fetchComments() {
-        if (!isCommentRequestSent) {
-            isCommentRequestSent = true
-            val post: Post = mutablePost.value!!
-            contentRepository.getComments(token, post._id, lastTimestamp)
-                    .subscribeOn(Schedulers.io())
-                    .flatMap {
-                        if (!isInitialized)
-                            isInitialized = true
-                        val context: Context = getApplication()
-                        for (comment in it.list) {
-                            comment.initExtraInfo(context.getString(R.string.server_url), token)
-                        }
-                        requestId = it.requestId
-                        return@flatMap Observable.from(it.list)
+        hasNewItems = false
+        isCommentRequestSent = true
+        val post: Post = mutablePost.value!!
+        contentRepository.getComments(token, post._id, lastTimestamp)
+                .subscribeOn(Schedulers.io())
+                .flatMap {
+                    if (!isInitialized)
+                        isInitialized = true
+                    val context: Context = getApplication()
+                    for (comment in it.list) {
+                        comment.initExtraInfo(context.getString(R.string.server_url), token)
                     }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ onRequestNext(it) }
-                            , { onRequestError(it) }
-                            , { onRequestCompleted() }
-                    )
-        }
+                    requestId = it.requestId
+                    return@flatMap Observable.from(it.list)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ onRequestNext(it) }
+                        , { onRequestError(it) }
+                        , { onRequestCompleted() }
+                )
     }
 
     private fun onRequestCompleted() {
         if (hasNewItems) {
             isCommentRequestSent = false
             updateCommentAdapter()
+        } else {
+            hasReachedEnd = true
+            adapter.isEndVisible = true
+            adapter.notifyItemChanged(adapter.commentList.size - 1)
         }
     }
 
     private fun onRequestError(throwable: Throwable) {
         isCommentRequestSent = false
+        setLoaderLiveData(true, false, true)
         throwable.printStackTrace()
     }
 
     private fun onRequestNext(comment: Comment) {
-        commentList.add(comment)
         hasNewItems = true
+        commentList.add(if (commentList.size == 0) 0 else commentList.size - 1, comment)
     }
 
     private fun fetchNextComments() {
-        if (!isCommentRequestSent) {
-            isCommentRequestSent = true
-            val post: Post = mutablePost.value!!
-            contentRepository.getComments(token, post._id, lastTimestamp, requestId, after)
-                    .subscribeOn(Schedulers.io())
-                    .flatMap {
-                        if (!isInitialized)
-                            isInitialized = true
-                        val context: Context = getApplication()
-                        for (comment in it.list) {
-                            comment.initExtraInfo(context.getString(R.string.server_url), token)
-                        }
-                        return@flatMap Observable.from(it.list)
+        hasNewItems = false
+        isCommentRequestSent = true
+        val post: Post = mutablePost.value!!
+        contentRepository.getComments(token, post._id, lastTimestamp, requestId, after)
+                .subscribeOn(Schedulers.io())
+                .flatMap {
+                    if (!isInitialized)
+                        isInitialized = true
+                    val context: Context = getApplication()
+                    for (comment in it.list) {
+                        comment.initExtraInfo(context.getString(R.string.server_url), token)
                     }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ onRequestNext(it) }
-                            , { onRequestError(it) }
-                            , { onRequestCompleted() }
-                    )
-        }
+                    return@flatMap Observable.from(it.list)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted {
+                    setLoaderLiveData(false, false, false)
+                }
+                .subscribe({ onRequestNext(it) }
+                        , { onRequestError(it) }
+                        , { onRequestCompleted() }
+                )
     }
+
 
     private fun updateCommentAdapter() {
         val diffUtil = DiffUtil.calculateDiff(
                 CommentDiffUtilCallback(adapter.commentList, commentList))
-        commentList.sort()
         adapter.commentList.clear()
         adapter.commentList = Comment.cloneList(commentList)
-        lastTimestamp = if (commentList.isEmpty()) {
+        lastTimestamp = if (commentList.size < 2) {
             Calendar.getInstance().timeInMillis
         } else {
-            commentList[commentList.size - 1].getTimestamp()
+            commentList[commentList.size - 2].getTimestamp()
         }
-        after = if (commentList.isEmpty()) {
+        after = if (commentList.size < 2) {
             0
         } else {
             commentList.size
         }
         diffUtil.dispatchUpdatesTo(adapter)
+
+        setLoaderLiveData(false, false, false)
     }
 
     fun initPost(post: Post) {
@@ -323,6 +343,13 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         commentList.clear()
 
         isInitialized = false
+        hasNewItems = false
+        hasReachedEnd = false
+        isCommentRequestSent = false
+        isSubmitCommentRequestSent = false
+        isReportRequestSent = false
+        isLikeRequestSent = false
+        isLoadPending = false
         lastTimestamp = Calendar.getInstance().timeInMillis
 
         updateCommentAdapter()
@@ -354,6 +381,19 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
             return Observable.empty()
         }
     }
+
+    private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
+        isLoadPending = isLoaderVisible
+
+        val tempList = ArrayList<Boolean>()
+        tempList.add(isLoaderVisible)
+        tempList.add(isAnimationVisible)
+        tempList.add(isErrorVisible)
+        adapter.isErrorVisible = isErrorVisible
+        adapter.isSecondLoaderVisible = isAnimationVisible
+        adapter.notifyItemChanged(commentList.size - 1)
+    }
+
 
     fun openProfile(birthId: String, name: String) {
         mutableSubject.value = Subject(birthId, name)
