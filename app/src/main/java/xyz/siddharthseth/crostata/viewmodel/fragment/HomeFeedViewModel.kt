@@ -276,7 +276,7 @@ class HomeFeedViewModel(application: Application) : AndroidViewModel(application
 
     fun refreshData() {
         postList.clear()
-
+        postList.add(Post())
         isInitialized = false
         hasNewItems = false
         hasReachedEnd = false

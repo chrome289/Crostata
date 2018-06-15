@@ -42,8 +42,9 @@
     <string name="sample_comment">Can you not please?</string>
     <string name="index_own_pre">Your Patriot Index is \u0020</string>
     <string name="sample_area">130 ha</string>
+    <string name="security5">Internet Security Agency</string>
     <string name="security4">Hyperlocal Citizen Surveillance</string>
-    <string name="security3">News Correction System</string>
+    <string name="security3">Fake News Correction System</string>
     <string name="security2">102,794 Informers</string>
     <string name="security1">44,586 CCTVs</string>
     <string name="security_amp_privacy">Security &amp; Privacy</string>
@@ -80,7 +81,7 @@
     <string name="all_posts">All Posts</string>
     <string name="p_index">P Index</string>
     <string name="_48">48</string>
-    <string name="el_presidente_s_monetary_fund">The President\'s Monetary Fund</string>
+    <string name="el_presidente_s_monetary_fund">President\'s Monetary Fund</string>
     <string name="p_4_71_billion">P$ 4.71 Billion</string>
     <string name="our_achievements">Our Achievements</string>
     <string name="economy">Economy</string>
@@ -102,13 +103,10 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="app_version">v0.1.0 Beta</string>
     <string name="help_amp_feedback">Help &amp; Feedback</string>
-    <string name="about_crostata">About Crostata</string>
+    <string name="about_crostata">Terms of Use</string>
     <string name="title_activity_search">Search</string>
     <string name="approved">Approved</string>
     <string name="approve_image">Approve Image</string>
@@ -124,5 +122,19 @@
     <string name="comment">Comment</string>
     <string name="refresh">Refresh</string>
     <string name="no_more_posts">No more posts</string>
-
+    <string name="terms_of_use_1">Crostata is the only, state approved, social networking service available for citizens of Palmyra.</string>
+    <string name="terms_of_use_2">This service is being provided free of charge to all Palmyrene citizens.</string>
+    <string name="terms_of_use_3">Use of any other social networking service is against the law and will be treated as an act of political dissidence.</string>
+    <string name="terms_of_use_4">While using the service, the following points should be remembered:</string>
+    <string name="terms_of_use_5">\u2022 Palmyrene Code of Conduct should always be obeyed when interacting with the service in any form.</string>
+    <string name="terms_of_use_6">\u2022 All interactions-i.e., Posts &amp; Comments, by the user will be recorded and can be used to justify a future penalty.</string>
+    <string name="terms_of_use_7">\u2022 Penalties can range from Patriot Index deductions to admittance in the President\'s Relocation Programme.</string>
+    <string name="terms_of_use_8">\u2022 Content meant to spread political dissidence should be reported as soon as possible to the Internet Security Agency.</string>
+    <string name="terms_of_use_9">\u2022 The user whose content is deemed inappropriate by the Internet Security Agency, will be subject to such penalty as the committee thinks is a appropriate punishment.</string>
+    <string name="terms_of_use_10">\u2022 In event that the report is found to be valid, the reporter will be rewarded with Patriot Index points.</string>
+    <string name="terms_of_use_11">Any future terms of use, that may be added here, will apply retroactively to all past interactions.</string>
+    <string name="terms_of_use_12">By continuing to use this service, you agree to abide by these terms and will accept the consequences of violating them.</string>
+    <string name="sample_birthid">067845504</string>
+    <string name="sample_password">Password1</string>
+    <string name="need_help">Need Help?</string>
 </resources>

@@ -339,8 +339,8 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun refreshComments() {
-        adapter.commentList.clear()
         commentList.clear()
+        commentList.add(Comment())
 
         isInitialized = false
         hasNewItems = false

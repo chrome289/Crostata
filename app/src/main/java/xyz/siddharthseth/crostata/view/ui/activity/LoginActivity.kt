@@ -16,7 +16,7 @@ import xyz.siddharthseth.crostata.viewmodel.activity.LoginActivityViewModel
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
-    private val TAG = "LoginActivity"
+    private val TAG: String = javaClass.simpleName
     private lateinit var loginActivityViewModel: LoginActivityViewModel
 
     private var compositeSubscription = CompositeSubscription()
@@ -24,25 +24,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.signIn -> {
-                showLoadingDialog()
-
-                Log.v(TAG, "birthId-${birthId.text}-password-${password.text}")
-                loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ resultCode ->
-                            Log.v(TAG, "code-$resultCode")
-                            if (resultCode == 0) {
-                                getSubjectDetails()
-                            } else {
-                                showErrorAlert(resultCode)
-                                hideLoadingDialog()
-                            }
-                        }, { onError ->
-                            onError.printStackTrace()
-                            Log.v(TAG, "Network Error")
-                            hideLoadingDialog()
-                            showErrorAlert(3)
-                        })
+                signIn()
+            }
+            R.id.helpButton -> {
+                showHelp()
             }
         }
     }
@@ -94,6 +79,23 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         alertDialog.show()
     }
 
+    private fun showHelp() {
+
+        val alertDialog = AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setNegativeButton("CANCEL", { dialog, _ -> dialog.dismiss() })
+                .setPositiveButton("AUTO-FILL", { dialog, _ ->
+                    birthId.setText(getString(R.string.sample_birthid))
+                    password.setText(getString(R.string.sample_password))
+                    signIn()
+                    dialog.dismiss()
+                })
+                .setTitle("Login details")
+                .create()
+
+        alertDialog.show()
+    }
+
     override fun onDetachedFromWindow() {
         compositeSubscription.unsubscribe()
         super.onDetachedFromWindow()
@@ -124,9 +126,28 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         password.setText(LoggedSubject.password)
     }
 
+    private fun signIn() {
+        showLoadingDialog()
+        loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ resultCode ->
+                    if (resultCode == 0) {
+                        getSubjectDetails()
+                    } else {
+                        showErrorAlert(resultCode)
+                        hideLoadingDialog()
+                    }
+                }, { onError ->
+                    onError.printStackTrace()
+                    hideLoadingDialog()
+                    showErrorAlert(3)
+                })
+    }
+
     override fun onStart() {
         super.onStart()
 
         signIn.setOnClickListener(this)
+        helpButton.setOnClickListener(this)
     }
 }

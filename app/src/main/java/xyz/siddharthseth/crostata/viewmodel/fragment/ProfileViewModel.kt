@@ -294,8 +294,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun refreshData() {
-        profilePostAdapter.postList.clear()
         postList.clear()
+        postList.add(Post())
 
         isInitialized = false
         hasNewItems = false

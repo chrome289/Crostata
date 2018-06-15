@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity()
                     R.id.vigilance -> getFragment(R.id.vigilance)
                     R.id.about -> getFragment(R.id.about)
                     R.id.help -> {
-                        val url = Uri.parse("https://www.google.com")
+                        val url = Uri.parse("https://www.siddharthseth.xyz")
                         val builder = CustomTabsIntent.Builder()
                         builder.setToolbarColor(resources.getColor(R.color.colorPrimary))
                         val customTabsIntent = builder.build()

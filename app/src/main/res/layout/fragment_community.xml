@@ -573,7 +573,7 @@
                     android:contentDescription="@string/security_amp_privacy"
                     android:padding="2dp"
                     android:src="@drawable/cctv"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView18"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView26"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias=".15"
                     app:layout_constraintStart_toStartOf="parent"
@@ -585,7 +585,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginTop="16dp"
-
                     android:text="@string/security1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView5"
@@ -598,7 +597,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginTop="8dp"
-
                     android:text="@string/security2"
                     android:theme="@style/Text.Medium"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -611,7 +609,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginTop="8dp"
-
                     android:text="@string/security3"
                     android:theme="@style/Text.Medium"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -624,12 +621,23 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginTop="8dp"
-
-                    android:text="@string/security4"
+                    android:text="@string/security5"
                     android:theme="@style/Text.Medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView5"
                     app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/security4"
+                    android:theme="@style/Text.Medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
                 <View
                     android:id="@+id/view2"
@@ -639,7 +647,7 @@
                     android:background="@color/grey_100"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView26" />
 
                 <Button
                     android:id="@+id/button3"

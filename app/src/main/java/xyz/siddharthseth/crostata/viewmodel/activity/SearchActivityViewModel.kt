@@ -118,6 +118,7 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         hasNewItems = false
         hasReachedEnd = false
         searchResultList.clear()
+        searchResultList.add(SearchResult())
         updateSearchResultList()
     }
 

@@ -19,11 +19,11 @@
         <activity android:name=".view.ui.activity.MainActivity" />
         <activity
             android:name=".view.ui.activity.DetailActivity"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".view.ui.activity.AddPostActivity"
-            android:parentActivityName=".view.ui.activity.MainActivity" />
+            android:parentActivityName=".view.ui.activity.MainActivity"
+            android:theme="@style/SearchTheme" />
         <activity
             android:name=".view.ui.activity.SplashActivity"
             android:theme="@style/SplashTheme">

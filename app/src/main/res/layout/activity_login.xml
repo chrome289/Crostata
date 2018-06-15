@@ -105,6 +105,21 @@
         app:layout_constraintTop_toBottomOf="@+id/passwordLayout" />
 
     <TextView
+        android:id="@+id/helpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/need_help"
+        android:textAllCaps="true"
+        android:theme="@style/Text.Light.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signIn" />
+
+    <TextView
         android:id="@+id/credit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
