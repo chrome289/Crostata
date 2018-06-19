@@ -10,14 +10,15 @@ import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 
+/**
+ * viewmodel for main activity
+ */
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
-    private val token = SharedPreferencesService().getToken(application)
-    private val TAG: String = this::class.java.simpleName
-    var isDetailActivityOpen: Boolean = false
-    private var isServerStatusRequestSent = false
-
+    /**
+     * get title for toolbar
+     * @param fragmentId id for selected fragment
+     */
     internal fun getToolbarTitle(fragmentId: Int): String {
         val context: Context = getApplication()
         return when (fragmentId) {
@@ -29,6 +30,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    /**
+     * check if network is available
+     */
     fun checkNetworkAvailable(): Observable<Boolean> {
         return if (!isServerStatusRequestSent) {
             isServerStatusRequestSent = true
@@ -44,7 +48,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    /**
+     * get token value
+     */
     fun getToken(): String {
         return token
+    }
+
+    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
+    private val token = SharedPreferencesService().getToken(application)
+    //static stuff
+    companion object {
+        private val TAG: String = this::class.java.simpleName
+        var isDetailActivityOpen: Boolean = false
+        private var isServerStatusRequestSent = false
     }
 }

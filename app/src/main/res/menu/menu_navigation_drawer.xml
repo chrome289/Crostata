@@ -26,6 +26,16 @@
             android:orderInCategory="3"
             android:title="@string/toolbar_vigilance"
             app:showAsAction="ifRoom" />
+
+        <item
+            android:id="@+id/location"
+            android:checkable="true"
+            android:checked="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_my_location"
+            android:orderInCategory="4"
+            android:title="@string/location"
+            app:showAsAction="ifRoom" />
     </group>
     <group
         android:id="@+id/group2"
@@ -34,7 +44,7 @@
             android:id="@+id/addPost"
             android:checkable="false"
             android:icon="@drawable/ic_add_circle"
-            android:orderInCategory="4"
+            android:orderInCategory="5"
             android:title="@string/add_post"
             app:showAsAction="ifRoom" />
     </group>
@@ -44,16 +54,16 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/profile"
-            android:icon="@drawable/ic_person"
-            android:orderInCategory="5"
-            android:title="@string/toolbar_profile"
             android:checkable="false"
+            android:icon="@drawable/ic_person"
+            android:orderInCategory="6"
+            android:title="@string/toolbar_profile"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/signOut"
             android:checkable="false"
             android:icon="@drawable/ic_action_trash"
-            android:orderInCategory="6"
+            android:orderInCategory="7"
             android:title="@string/toolbar_signOut"
             app:showAsAction="ifRoom" />
     </group>
@@ -63,13 +73,13 @@
         <item
             android:id="@+id/about"
             android:checkable="true"
-            android:orderInCategory="7"
+            android:orderInCategory="8"
             android:title="@string/about_crostata"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/help"
             android:checkable="false"
-            android:orderInCategory="8"
+            android:orderInCategory="9"
             android:title="@string/help_amp_feedback"
             app:showAsAction="ifRoom" />
         <item
@@ -77,7 +87,7 @@
             android:checkable="false"
             android:checked="false"
             android:enabled="false"
-            android:orderInCategory="9"
+            android:orderInCategory="10"
             android:title="@string/app_version"
             app:showAsAction="ifRoom" />
     </group>

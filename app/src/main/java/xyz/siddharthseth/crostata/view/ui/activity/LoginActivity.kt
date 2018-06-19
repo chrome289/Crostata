@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_login.*
 import rx.android.schedulers.AndroidSchedulers
@@ -49,11 +48,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         finish()
     }
 
+    /**
+     * subject details
+     */
     private fun getSubjectDetails() {
         loginActivityViewModel.getSubjectDetails(birthId.text.toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    loginActivityViewModel.subject = it
+                    LoginActivityViewModel.subject = it
                     loginActivityViewModel.saveSubjectDetails(birthId.text.toString(), password.text.toString(), it.name)
                     hideLoadingDialog()
                     openHomePage()
@@ -62,6 +64,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 })
     }
 
+    /**
+     * error dialog
+     * @param resultCode 1 = User doesn't exist
+     * , 2 = Incorrect password
+     * , else = "Random error"
+     */
     private fun showErrorAlert(resultCode: Int) {
         val message: String = when (resultCode) {
             1 -> "No User with this Birth ID exists"
@@ -71,7 +79,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         val alertDialog = AlertDialog.Builder(this)
                 .setCancelable(true)
-                .setPositiveButton("OKAY", { dialog, _ -> dialog.dismiss() })
+                .setPositiveButton("OKAY") { dialog, _ -> dialog.dismiss() }
                 .setTitle("Login Unsuccessful")
                 .setMessage(message)
                 .create()
@@ -79,17 +87,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         alertDialog.show()
     }
 
+    /**
+     * auto fill fields and perform login
+     */
     private fun showHelp() {
-
         val alertDialog = AlertDialog.Builder(this)
                 .setCancelable(true)
-                .setNegativeButton("CANCEL", { dialog, _ -> dialog.dismiss() })
-                .setPositiveButton("AUTO-FILL", { dialog, _ ->
+                .setNegativeButton("CANCEL") { dialog, _ -> dialog.dismiss() }
+                .setPositiveButton("AUTO-FILL") { dialog, _ ->
                     birthId.setText(getString(R.string.sample_birthid))
                     password.setText(getString(R.string.sample_password))
                     signIn()
                     dialog.dismiss()
-                })
+                }
                 .setTitle("Login details")
                 .create()
 
@@ -109,7 +119,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         loginActivityViewModel = ViewModelProviders.of(this).get(LoginActivityViewModel::class.java)
 
         loadingFrame.setOnTouchListener { _, _ ->
-            Log.v(TAG, "Don't click")
             true
         }
         animationViewLogin.setAnimation(R.raw.loader1)
@@ -120,12 +129,18 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    /**
+     * auto fill fields with default credentials
+     */
     private fun autoFillFields() {
         //val user = SharedPreferencesService().getUserDetails(applicationContext)
         birthId.setText(LoggedSubject.birthId)
         password.setText(LoggedSubject.password)
     }
 
+    /**
+     * sign in loudly
+     */
     private fun signIn() {
         showLoadingDialog()
         loginActivityViewModel.signIn(birthId.text.toString(), password.text.toString())

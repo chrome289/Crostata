@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -48,11 +47,13 @@ class MainActivity : AppCompatActivity()
         , PostInteractionListener
         , View.OnClickListener {
 
+    //helper for setting snackbar
     override fun showSnackbar(snackbarMessage: SnackbarMessage) {
         Snackbar.make(forTheSnackbar, snackbarMessage.message, snackbarMessage.duration)
                 .show()
     }
 
+    //onclick
     override fun onClick(v: View) {
         when (v.id) {
             R.id.refreshButton -> {
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    //ask viewmodel if network is available & set net status live data
     override fun isNetAvailable() {
         mainActivityViewModel.checkNetworkAvailable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,6 +74,7 @@ class MainActivity : AppCompatActivity()
                 })
     }
 
+    //helpers for setting loading layouts
     override fun showError(isShown: Boolean) {
         errorLayoutMainActivity.visibility = if (isShown) View.VISIBLE else View.GONE
     }
@@ -92,16 +95,17 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    //set loader visibility
     override fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
-
         showLoader(isLoaderVisible)
         showAnimation(isAnimationVisible)
         showError(isErrorVisible)
     }
 
+    //open profile
     override fun openProfile(birthId: String, name: String) {
         val intent = Intent(this, DetailActivity::class.java)
+        //set toolbar title to "My Profile' if opening the user's profile, use name otherwise
         if (LoggedSubject.birthId == birthId) {
             intent.putExtra("birthId", birthId)
             intent.putExtra("name", "My Profile")
@@ -109,30 +113,21 @@ class MainActivity : AppCompatActivity()
             intent.putExtra("birthId", birthId)
             intent.putExtra("name", name)
         }
-        if (!mainActivityViewModel.isDetailActivityOpen) {
-            mainActivityViewModel.isDetailActivityOpen = true
+        //check if detail activity already open
+        if (!MainActivityViewModel.isDetailActivityOpen) {
+            MainActivityViewModel.isDetailActivityOpen = true
+            //using activity result
             startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
         }
     }
 
-    override fun addNewPost() {
-        startActivity(Intent(this, AddPostActivity::class.java))
-    }
-
+    //create toolbar menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar_main, menu)
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.clear()
-        if (isMainToolbarMenuShown)
-            menuInflater.inflate(R.menu.menu_toolbar_main, menu)
-        else
-            menuInflater.inflate(R.menu.menu_toolbar_view_post, menu)
-        return true
-    }
-
+    //click listener for toolbar menu
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return if (item != null) {
             when (item.itemId) {
@@ -148,14 +143,15 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    //dialog to show before signing out
     private fun showSignOutDialog() {
         val alertDialog = AlertDialog.Builder(this)
                 .setCancelable(true)
-                .setPositiveButton("OKAY", { dialog, _ ->
+                .setPositiveButton("OKAY") { dialog, _ ->
                     dialog.dismiss()
                     signOut()
-                })
-                .setNegativeButton("CANCEL", { dialog, _ -> dialog.dismiss() })
+                }
+                .setNegativeButton("CANCEL") { dialog, _ -> dialog.dismiss() }
                 .setTitle("Sign Out ?")
                 .setMessage("Close the session and sign out.")
                 .create()
@@ -163,6 +159,12 @@ class MainActivity : AppCompatActivity()
         alertDialog.show()
     }
 
+    //sign out confirmed. follow through
+    /*
+    clear logged subject singleton
+    clear saved token
+    start login activity
+    */
     private fun signOut() {
         LoggedSubject.clear(applicationContext)
         val sharedPreferences = SharedPreferencesService()
@@ -171,13 +173,19 @@ class MainActivity : AppCompatActivity()
         finish()
     }
 
+    //open new post activity
+    private fun addNewPost() {
+        startActivity(Intent(this, AddPostActivity::class.java))
+    }
+
+    //open selected post through detail activity
     override fun openFullPost(post: Post) {
-        Log.v(TAG, "activity click listener")
         val intent = Intent(this, DetailActivity::class.java)
+        //set post object as intent extra
         intent.putExtra("post", post)
 
-        if (!mainActivityViewModel.isDetailActivityOpen) {
-            mainActivityViewModel.isDetailActivityOpen = true
+        if (!MainActivityViewModel.isDetailActivityOpen) {
+            MainActivityViewModel.isDetailActivityOpen = true
             startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
         }
     }
@@ -186,20 +194,23 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(activity_main)
 
+        //init viewmodel
         mainActivityViewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
+        //init toolbar, drawer & nav header
         setupToolbarAndDrawer()
         setNavigationHeader()
     }
 
     override fun onStart() {
         super.onStart()
-
+        //loading layout refresh button
         refreshButton.setOnClickListener(this)
     }
 
 
     private fun setNavigationHeader() {
+        //set header name and profile image
         navigationView.getHeaderView(0).profileName.text = LoggedSubject.name
         GlideApp.with(this)
                 .load(getProfileImageLink())
@@ -213,6 +224,7 @@ class MainActivity : AppCompatActivity()
     }
 
     private fun getProfileImageLink(): GlideUrl {
+        //form url for profile image
         return GlideUrl(getString(R.string.server_url) +
                 "subject/profileImage?birthId=${LoggedSubject.birthId}&dimen=320&quality=80"
                 , LazyHeaders.Builder()
@@ -241,32 +253,46 @@ class MainActivity : AppCompatActivity()
         navigationDrawerListener(navigationView.menu.getItem(0))
     }
 
+    //result from detail activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             DETAIL_ACTIVITY_RESULT_CODE -> {
                 if (data != null) {
+                    //if data is present check if it's openitem, then set nav selected
                     if (data.hasExtra("openItem")) {
-                        //  Log.d(TAG, "i am not working 2")
                         val openItemId = data.getIntExtra("openItem", R.id.home)
                         navigationDrawerListener(navigationView.menu.findItem(openItemId))
                     }
                 }
-                mainActivityViewModel.isDetailActivityOpen = false
+                MainActivityViewModel.isDetailActivityOpen = false
             }
         }
     }
 
+    //listener for nav drawer items
     private fun navigationDrawerListener(item: MenuItem): Boolean {
-        // Log.v(TAG, item.order.toString())
         when {
+        //open sister activities
+        //add post
             item.itemId == R.id.addPost -> addNewPost()
+        //sign out
             item.itemId == R.id.signOut -> showSignOutDialog()
+        //location
+            item.itemId == R.id.location -> {
+                startActivity(Intent(this, LocationActivity::class.java))
+            }
+        //my profile
             item.itemId == R.id.profile -> openProfile(LoggedSubject.birthId, "My Profile")
             else -> {
+                //open fragments
                 val fragment = when (item.itemId) {
+                //commmunity
                     R.id.community -> getFragment(R.id.community)
+                //vigilance
                     R.id.vigilance -> getFragment(R.id.vigilance)
+                //about i.e terms of use
                     R.id.about -> getFragment(R.id.about)
+                //open website
                     R.id.help -> {
                         val url = Uri.parse("https://www.siddharthseth.xyz")
                         val builder = CustomTabsIntent.Builder()
@@ -277,15 +303,19 @@ class MainActivity : AppCompatActivity()
                     }
                     else -> getFragment(R.id.home)
                 }
+                //set item to checked
                 navigationView.menu.findItem(item.itemId).isChecked = true
 
+                //perform transition
                 performFragmentTransaction(fragment, item.itemId.toString())
             }
         }
         return true
     }
 
+    //perform fragment transaction
     private fun performFragmentTransaction(fragment: Fragment, fragmentTag: String) {
+        //if fragment transaction present in backstack use it otherwise use new transaction
         val fragmentEntry = supportFragmentManager.findFragmentByTag(fragmentTag)
         if (fragmentEntry != null) {
             val transaction = supportFragmentManager.beginTransaction()
@@ -302,10 +332,12 @@ class MainActivity : AppCompatActivity()
         }
     }
 
+    //get selected fragment
     private fun getFragment(fragmentId: Int): Fragment {
-        Log.v(TAG, "toolbar ${mainActivityViewModel.getToolbarTitle(fragmentId)}")
+        //set toolbar title
         titleTextView.text = mainActivityViewModel.getToolbarTitle(fragmentId)
 
+        //return selected fragment. init one if not available
         return when (fragmentId) {
             R.id.community -> {
                 if (communityFragment == null) {
@@ -348,7 +380,6 @@ class MainActivity : AppCompatActivity()
     private var vigilanceFragment: VigilanceFragment? = null
     private var aboutFragment: AboutFragment? = null
 
-    private var isMainToolbarMenuShown = true
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
     override var mutableNetStatusChanged = MutableLiveData<Boolean>()

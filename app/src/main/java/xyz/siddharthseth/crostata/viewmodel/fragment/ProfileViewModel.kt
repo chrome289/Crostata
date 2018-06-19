@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
@@ -32,7 +31,7 @@ import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.PostDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.FooterListener
 import xyz.siddharthseth.crostata.util.recyclerView.PostItemListener
-import xyz.siddharthseth.crostata.view.adapter.HomeFeedAdapter
+import xyz.siddharthseth.crostata.view.adapter.PostFeedAdapter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -93,11 +92,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     override fun openFullPost(index: Int) {
-        Log.v(TAG, "viewmodel click listener")
         mutablePost.value = postList[index]
     }
 
-    override fun clearPostedImageGlide(imageView: ImageView) {
+    override fun clearImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
     }
@@ -112,7 +110,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         get() = ColorStateList.valueOf(ContextCompat.getColor(getApplication(), R.color.grey_500))
 
     override fun openProfile(index: Int) {
-        Log.v(TAG, "setting birthid")
         val post = postList[index]
         mutableSubject.value = Subject(post.creatorId, post.creatorName)
     }
@@ -130,7 +127,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private var mutableSubject: SingleSubject = SingleSubject()
     lateinit var glide: GlideRequests
 
-    var profilePostAdapter: HomeFeedAdapter = HomeFeedAdapter(this, this)
+    var profilePostAdapter: PostFeedAdapter = PostFeedAdapter(this, this)
     private var hasNewItems = false
     private var hasReachedEnd = false
     private var isPostRequestSent: Boolean = false
@@ -277,8 +274,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean, isSecondary: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
-        isLoadPending = isLoaderVisible
+       isLoadPending = isLoaderVisible
 
         val tempList = ArrayList<Boolean>()
         tempList.add(isLoaderVisible)
@@ -295,7 +291,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun refreshData() {
         postList.clear()
-        postList.add(Post())
 
         isInitialized = false
         hasNewItems = false
@@ -306,6 +301,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         lastTimestamp = Calendar.getInstance().timeInMillis
 
         updatePostAdapter()
+        postList.add(Post())
 
         getPosts()
     }
@@ -313,7 +309,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun onReportButtonClick(): Observable<Boolean> {
         if (!isReportRequestSent) {
             isReportRequestSent = true
-            return contentRepository.submitReport(token, birthId, LoggedSubject.birthId, 2, birthId)
+            return contentRepository.submitReport(token, birthId, LoggedSubject.birthId, ContentRepository.PROFILE, birthId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {

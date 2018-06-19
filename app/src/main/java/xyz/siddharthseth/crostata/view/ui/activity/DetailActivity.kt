@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_detail.*
@@ -40,7 +39,7 @@ class DetailActivity : AppCompatActivity()
     override fun openFullPost(post: Post) {
         val viewPostFragment = ViewPostFragment.newInstance(post)
 
-        detailActivityViewModel.toolbarTitle.add(getString(R.string.comments))
+        DetailActivityViewModel.toolbarTitle.add(getString(R.string.comments))
         titleTextView.text = getString(R.string.comments)
 
         supportFragmentManager.beginTransaction()
@@ -52,7 +51,7 @@ class DetailActivity : AppCompatActivity()
     override fun openProfile(birthId: String, name: String) {
         val profileFragment = ProfileFragment.newInstance(birthId)
 
-        detailActivityViewModel.toolbarTitle.add(name)
+        DetailActivityViewModel.toolbarTitle.add(name)
         titleTextView.text = name
 
         supportFragmentManager.beginTransaction()
@@ -94,9 +93,7 @@ class DetailActivity : AppCompatActivity()
     }
 
     override fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
-
-        showLoader(isLoaderVisible)
+       showLoader(isLoaderVisible)
         showAnimation(isAnimationVisible)
         showError(isErrorVisible)
         //swipeRefresh.isRefreshing = false
@@ -117,32 +114,36 @@ class DetailActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        setSupportActionBar(toolbar)
 
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
         detailActivityViewModel = ViewModelProviders.of(this).get(DetailActivityViewModel::class.java)
 
-        if (intent.hasExtra("post")) {
-            openFullPost(intent.getParcelableExtra("post"))
-        } else if (intent.hasExtra("birthId")) {
-            val birthId = intent.getStringExtra("birthId")
-            val name = intent.getStringExtra("name")
-            openProfile(birthId, name)
+        if (savedInstanceState == null) {
+            //if post ectra is available open the post or open profile
+            if (intent.hasExtra("post")) {
+                openFullPost(intent.getParcelableExtra("post"))
+            } else if (intent.hasExtra("birthId")) {
+                val birthId = intent.getStringExtra("birthId")
+                val name = intent.getStringExtra("name")
+                openProfile(birthId, name)
+            }
         }
     }
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 1) {
+            //remove fragments from stack
             supportFragmentManager.popBackStackImmediate()
 
-            detailActivityViewModel.toolbarTitle
-                    .removeAt(detailActivityViewModel.toolbarTitle.size - 1)
-            val temp = detailActivityViewModel.toolbarTitle.last()
+            DetailActivityViewModel.toolbarTitle
+                    .removeAt(DetailActivityViewModel.toolbarTitle.size - 1)
+            val temp = DetailActivityViewModel.toolbarTitle.last()
             titleTextView.text = temp
         } else {
-            finishAfterTransition()
+            finish()
         }
     }
 

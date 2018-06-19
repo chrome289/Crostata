@@ -18,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers
 import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.LoggedSubject
 import xyz.siddharthseth.crostata.data.model.glide.GlideApp
+import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.util.viewModel.BusyLoaderListener
 import xyz.siddharthseth.crostata.viewmodel.activity.AddPostActivityViewModel
 import java.io.File
@@ -80,6 +81,7 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
     override fun onStart() {
         super.onStart()
 
+        //either show add image button or the selected image
         addImage.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"
@@ -93,11 +95,11 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
             GlideApp.with(this)
                     .load(R.drawable.home_feed_content_placeholder)
                     .into(contentImage)
-            addPostActivityViewModel.isImagePost = false
-            addPostActivityViewModel.imageUri = null
+            AddPostActivityViewModel.isImagePost = false
+            AddPostActivityViewModel.imageUri = null
         }
-        removeImage.visibility = if (addPostActivityViewModel.imageUri == null) View.GONE else View.VISIBLE
-        addImage.visibility = if (addPostActivityViewModel.imageUri != null) View.GONE else View.VISIBLE
+        removeImage.visibility = if (AddPostActivityViewModel.imageUri == null) View.GONE else View.VISIBLE
+        addImage.visibility = if (AddPostActivityViewModel.imageUri != null) View.GONE else View.VISIBLE
         setProfileDetails()
         loadContentImage()
     }
@@ -138,14 +140,14 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
                             .subscribe({
                                 setLoaderVisibility(false, false, false)
                                 if (it) {
-                                    Snackbar.make(theParent, "Post submitted.", Snackbar.LENGTH_SHORT).show()
+                                    Snackbar.make(theParent, Post.MESSAGE_SUBMITTED, Snackbar.LENGTH_SHORT).show()
                                     finish()
                                 } else {
-                                    Snackbar.make(theParent, "Post not submitted. Try Again.", Snackbar.LENGTH_SHORT).show()
+                                    Snackbar.make(theParent, Post.MESSAGE_NOT_SUBMITTED, Snackbar.LENGTH_SHORT).show()
                                 }
                             }, {
                                 setLoaderVisibility(false, false, false)
-                                Snackbar.make(theParent, "Post not submitted. Try Again.", Snackbar.LENGTH_SHORT).show()
+                                Snackbar.make(theParent, Post.MESSAGE_NOT_SUBMITTED, Snackbar.LENGTH_SHORT).show()
                                 it.printStackTrace()
                             })
                 } else {
@@ -162,11 +164,12 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        //copy selected image in cache and set uri and file
         if (requestCode == 1 && data != null) {
             addImage.visibility = View.GONE
             removeImage.visibility = View.VISIBLE
 
-            addPostActivityViewModel.isImagePost = true
+            AddPostActivityViewModel.isImagePost = true
             val file = File(cacheDir, "image.jpg")
             file.createNewFile()
             val outputStream = file.outputStream()
@@ -174,17 +177,20 @@ class AddPostActivity : AppCompatActivity(), BusyLoaderListener {
             stream.copyTo(outputStream)
             stream.close()
             outputStream.close()
-            addPostActivityViewModel.imageFile = file
-            addPostActivityViewModel.imageUri = data.data
+            AddPostActivityViewModel.imageFile = file
+            AddPostActivityViewModel.imageUri = data.data
 
             loadContentImage()
         }
     }
 
+    /**
+     * load selected image
+     */
     private fun loadContentImage() {
-        if (addPostActivityViewModel.imageUri != null) {
+        if (AddPostActivityViewModel.imageUri != null) {
             GlideApp.with(this)
-                    .load(addPostActivityViewModel.imageUri)
+                    .load(AddPostActivityViewModel.imageUri)
                     .fitCenter()
                     .into(contentImage)
             contentImage.requestLayout()

@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -56,8 +55,6 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
     }
 
     override fun setLoaderVisibility(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
-
         showLoader(isLoaderVisible)
         showAnimation(isAnimationVisible)
         showError(isErrorVisible)
@@ -103,6 +100,7 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
         addObservers()
         if (!isInitialized) {
 
+            //init ui
             val manager = LinearLayoutManager(this)
             manager.isItemPrefetchEnabled = true
             if (scrollPositionData != null) {
@@ -125,12 +123,13 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
                 }
             })
 
-            searchQuery.setOnEditorActionListener { view, actionId, event ->
+            //reset search before performing new one
+            searchQuery.setOnEditorActionListener { view, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     val searchQuery = view.text.toString()
                     resetSearch()
                     view.text = searchQuery
-                    searchActivityViewModel.searchText = searchQuery
+                    SearchActivityViewModel.searchText = searchQuery
                     searchActivityViewModel.getSearchResults()
                     val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     inputManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
@@ -153,13 +152,13 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
     }
 
     private fun addObservers() {
-        searchActivityViewModel.mutableProfile.observe(this, observerProfile)
-        searchActivityViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        SearchActivityViewModel.mutableProfile.observe(this, observerProfile)
+        SearchActivityViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
     }
 
     private fun removeObservers() {
-        searchActivityViewModel.mutableProfile.removeObserver(observerProfile)
-        searchActivityViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        SearchActivityViewModel.mutableProfile.removeObserver(observerProfile)
+        SearchActivityViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
     }
 
     private fun resetSearch() {
@@ -181,12 +180,11 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
             DETAIL_ACTIVITY_RESULT_CODE -> {
                 if (data != null) {
                     if (data.hasExtra("openItem")) {
-                        Log.d(TAG, "i am not working 2")
                         val openItemId = data.getIntExtra("openItem", R.id.home)
                         //navigationDrawerListener(navigationView.menu.findItem(openItemId))
                     }
                 }
-                searchActivityViewModel.isDetailActivityOpen = false
+                SearchActivityViewModel.isDetailActivityOpen = false
             }
         }
     }
@@ -203,13 +201,6 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
         }
     }
 
-    lateinit var searchActivityViewModel: SearchActivityViewModel
-    private var isInitialized = false
-    private val TAG: String = javaClass.simpleName
-    private val toleranceEndlessScroll = 3
-    private var scrollPositionData: Parcelable? = null
-
-    private val DETAIL_ACTIVITY_RESULT_CODE: Int = 0
 
     private var observerProfile: Observer<Subject> = Observer {
         if (it != null) {
@@ -221,8 +212,8 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
                 intent.putExtra("birthId", it.birthId)
                 intent.putExtra("name", it.name)
             }
-            if (!searchActivityViewModel.isDetailActivityOpen) {
-                searchActivityViewModel.isDetailActivityOpen = true
+            if (!SearchActivityViewModel.isDetailActivityOpen) {
+                SearchActivityViewModel.isDetailActivityOpen = true
                 startActivityForResult(intent, DETAIL_ACTIVITY_RESULT_CODE)
             }
         }
@@ -235,6 +226,16 @@ class SearchActivity : AppCompatActivity(), BusyLoaderListener {
             }
             setLoaderVisibility(it[0], it[1], it[2])
         }
+    }
+
+    lateinit var searchActivityViewModel: SearchActivityViewModel
+    private var isInitialized = false
+    private var scrollPositionData: Parcelable? = null
+
+    companion object {
+        private val TAG: String = this::class.java.simpleName
+        private const val toleranceEndlessScroll = 3
+        private const val DETAIL_ACTIVITY_RESULT_CODE: Int = 0
     }
 
     private inner class MyPreloadModelProvider : ListPreloader.PreloadModelProvider<GlideUrl> {

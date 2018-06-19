@@ -3,6 +3,9 @@ package xyz.siddharthseth.crostata.util.diffUtil
 import android.support.v7.util.DiffUtil
 import xyz.siddharthseth.crostata.data.model.retrofit.SearchResult
 
+/**
+ * diffutil implementation for search results
+ */
 class SearchResultDiffUtilCallback(private val resultList: ArrayList<SearchResult>, private val newResultList: ArrayList<SearchResult>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return resultList[oldItemPosition].birthId == newResultList[newItemPosition].birthId

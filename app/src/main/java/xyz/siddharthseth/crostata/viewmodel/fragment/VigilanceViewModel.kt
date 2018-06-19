@@ -6,7 +6,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
-import android.util.Log
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -17,7 +16,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Report
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
-import xyz.siddharthseth.crostata.util.CurrencyFormatter
+import xyz.siddharthseth.crostata.util.Formatter
 import xyz.siddharthseth.crostata.util.diffUtil.VigilanceActionDiffUtilCallback
 import xyz.siddharthseth.crostata.util.diffUtil.VigilanceReportDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.VigilanceActionListener
@@ -112,7 +111,7 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
             val vigilanceAction =
                     VigilanceAction(3,
                             true,
-                            "Donated " + CurrencyFormatter.commaSeparated(subject.moneyDonated) + " to President's Fund.")
+                            "Donated " + Formatter.currencyCommaSeparated(subject.moneyDonated) + " to President's Fund.")
             actionList.add(vigilanceAction)
         }
         if (subject.reportsMade > 0) {
@@ -204,7 +203,6 @@ class VigilanceViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
         isLoadPending = isLoaderVisible
 
         val tempList = ArrayList<Boolean>()

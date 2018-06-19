@@ -10,16 +10,11 @@ import xyz.siddharthseth.crostata.util.recyclerView.SearchResultListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.FooterViewHolder
 import xyz.siddharthseth.crostata.view.adapter.viewholder.SearchResultViewHolder
 
+/**
+ *adapter for search results
+ */
 class SearchResultAdapter(private val searchResultListener: SearchResultListener, private val footerListener: FooterListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var searchResultList = ArrayList<SearchResult>()
-
-    val TAG: String = javaClass.simpleName
-    private val itemView = 1
-    private val footerView = 2
-    var isSecondLoaderVisible = false
-    var isErrorVisible = false
-    var isEndVisible: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == itemView) {
@@ -67,5 +62,17 @@ class SearchResultAdapter(private val searchResultListener: SearchResultListener
 
     override fun getItemCount(): Int {
         return searchResultList.size
+    }
+
+    var searchResultList = ArrayList<SearchResult>()
+    var isSecondLoaderVisible = false
+    var isErrorVisible = false
+    var isEndVisible: Boolean = false
+
+    //static stuff
+    companion object {
+        private val TAG: String = this::class.java.simpleName
+        private const val itemView = 1
+        private const val footerView = 2
     }
 }

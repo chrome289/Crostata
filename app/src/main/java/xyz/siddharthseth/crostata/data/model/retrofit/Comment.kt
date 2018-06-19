@@ -8,6 +8,7 @@ import java.util.*
 
 open class Comment : Comparable<Comment>, Cloneable {
 
+    //cover class for getting requestid from the list
     class CommentGlove {
         var requestId: String = ""
         var list: List<Comment> = ArrayList()
@@ -33,29 +34,28 @@ open class Comment : Comparable<Comment>, Cloneable {
 
     var _id: String = ""
     var name: String = ""
-    var postId = ""
     var birthId = ""
     var text: String = ""
     var timeCreated = ""
     var isGenerated = false
     var isCensored = false
 
+    //generated attributes
     lateinit var glideUrlProfileThumb: GlideUrl
     lateinit var timeCreatedText: String
     lateinit var date: Date
 
-
+    //calculate timestamp
     fun getTimestamp(): Long {
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
-        calendar.time = date
-
-        return calendar.timeInMillis
+        return date.time
     }
 
+    //set date
     private fun setDate() {
         date = inputFormat.parse(timeCreated)
     }
 
+    //use tiemago to create relative timespan strings
     private fun setTimeCreatedText() {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = date
@@ -63,6 +63,7 @@ open class Comment : Comparable<Comment>, Cloneable {
         timeCreatedText = TimeAgo.using(calendar.timeInMillis).capitalize()
     }
 
+    //set glide url attribute for profile image thumb
     private fun setGlideUrlProfileThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlProfileThumb = GlideUrl(baseUrl +
                 "subject/profileImage?birthId=$birthId&dimen=$dimen&quality=$quality"
@@ -71,6 +72,7 @@ open class Comment : Comparable<Comment>, Cloneable {
                 .build())
     }
 
+    //init extra attributes
     fun initExtraInfo(baseUrl: String, token: String) {
         val dimen2 = 64
         val quality = 80
@@ -79,11 +81,15 @@ open class Comment : Comparable<Comment>, Cloneable {
         setGlideUrlProfileThumb(baseUrl, dimen2, quality, token)
     }
 
+    //static stuff
     companion object {
         private val calendar = Calendar.getInstance()
         private val calendar2 = Calendar.getInstance()
         private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        const val MESSAGE_SUBMITTED: String = "Comment submitted successfully"
+        const val MESSAGE_NOT_SUBMITTED: String = "Comment not submitted. Try again."
 
+        //deep copy list
         fun cloneList(commentList: ArrayList<Comment>): ArrayList<Comment> {
             val newList = ArrayList<Comment>()
             for (comment in commentList) {

@@ -8,6 +8,9 @@ import xyz.siddharthseth.crostata.data.model.retrofit.Report
 import xyz.siddharthseth.crostata.util.recyclerView.VigilanceReportListener
 import xyz.siddharthseth.crostata.view.adapter.viewholder.VigilanceReportViewHolder
 
+/**
+ *adapter for vigilance report list
+ */
 class VigilanceReportAdapter(private val vigilanceReportListener: VigilanceReportListener) : RecyclerView.Adapter<VigilanceReportViewHolder>() {
 
     var reportList = ArrayList<Report>()

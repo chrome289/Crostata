@@ -8,14 +8,14 @@ import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
 import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 
+/**
+ * viewmodel for detail activity
+ */
 class DetailActivityViewModel(application: Application) : AndroidViewModel(application) {
-    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
-    private val token = SharedPreferencesService().getToken(application)
-    private val TAG: String = this::class.java.simpleName
-    var isDetailActivityOpen: Boolean = false
-    val toolbarTitle = ArrayList<String>()
-    private var isRequestSent = false
 
+    /**
+     * check if network is available
+     */
     fun checkNetworkAvailable(): Observable<Boolean> {
         return if (!isRequestSent) {
             isRequestSent = true
@@ -29,5 +29,16 @@ class DetailActivityViewModel(application: Application) : AndroidViewModel(appli
         } else {
             Observable.empty()
         }
+    }
+
+    private val contentRepository: ContentRepository = ContentRepositoryProvider.getContentRepository()
+    private val token = SharedPreferencesService().getToken(application)
+
+    //static stuff
+    companion object {
+        private val TAG: String = this::class.java.simpleName
+        var isDetailActivityOpen: Boolean = false
+        val toolbarTitle = ArrayList<String>()
+        private var isRequestSent = false
     }
 }

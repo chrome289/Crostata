@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat
 import android.support.v7.util.DiffUtil
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
@@ -27,6 +26,7 @@ import xyz.siddharthseth.crostata.data.model.retrofit.LikeTotal
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import xyz.siddharthseth.crostata.data.providers.ContentRepositoryProvider
+import xyz.siddharthseth.crostata.data.repository.ContentRepository
 import xyz.siddharthseth.crostata.data.service.SharedPreferencesService
 import xyz.siddharthseth.crostata.util.diffUtil.CommentDiffUtilCallback
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
@@ -80,7 +80,6 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         return contentRepository.clearLike(token, post._id, LoggedSubject.birthId)
                 .subscribeOn(Schedulers.io())
     }
-
 
     override fun loadPostedImage(post: Post, dimen: Int, imageView: ImageView) {
         glide.load(post.glideUrl)
@@ -137,7 +136,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    override fun clearPostedImageGlide(imageView: ImageView) {
+    override fun clearImageGlide(imageView: ImageView) {
         val context: Context = getApplication()
         GlideApp.with(context).clear(imageView as View)
     }
@@ -155,7 +154,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         val comment = commentList[index]
         if (!isReportRequestSent) {
             isReportRequestSent = true
-            return contentRepository.submitReport(token, comment.birthId, LoggedSubject.birthId, 1, comment._id)
+            return contentRepository.submitReport(token, comment.birthId, LoggedSubject.birthId, ContentRepository.COMMENT, comment._id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
@@ -174,7 +173,6 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
     }
 
     override fun openProfile(index: Int) {
-        Log.v(TAG, "setting birthid")
         val comment = commentList[index]
         mutableSubject.value = Subject(comment.birthId, comment.name)
     }
@@ -340,7 +338,6 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
 
     fun refreshComments() {
         commentList.clear()
-        commentList.add(Comment())
 
         isInitialized = false
         hasNewItems = false
@@ -353,6 +350,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         lastTimestamp = Calendar.getInstance().timeInMillis
 
         updateCommentAdapter()
+        commentList.add(Comment())
 
         getComments()
     }
@@ -361,7 +359,7 @@ class ViewPostViewModel(application: Application) : AndroidViewModel(application
         val post = mutablePost.value
         if (post != null && !isReportRequestSent) {
             isReportRequestSent = true
-            return contentRepository.submitReport(token, post.creatorId, LoggedSubject.birthId, 0, post._id)
+            return contentRepository.submitReport(token, post.creatorId, LoggedSubject.birthId, ContentRepository.POST, post._id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {

@@ -8,6 +8,7 @@ import android.util.Log
 import xyz.siddharthseth.crostata.data.model.retrofit.Post
 import java.util.concurrent.atomic.AtomicBoolean
 
+//mutable post for firing a one time event
 class SingleLivePost : MutableLiveData<Post>() {
     private val TAG = "SingleLivePost"
 

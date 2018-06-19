@@ -6,10 +6,16 @@ import kotlinx.android.synthetic.main.recyclerview_comment_card.view.*
 import xyz.siddharthseth.crostata.data.model.retrofit.Comment
 import xyz.siddharthseth.crostata.util.recyclerView.CommentItemListener
 
+/**
+ * viewholder for comments
+ */
 class CommentViewHolder(view: View, private val commentItemListener: CommentItemListener)
     : RecyclerView.ViewHolder(view) {
 
-    private val TAG = javaClass.simpleName
+    /**
+     * init the comment item
+     * @param comment comment object
+     */
     fun init(comment: Comment) {
         itemView.profileName.text = comment.name
         itemView.profileName.setOnClickListener {
@@ -20,10 +26,21 @@ class CommentViewHolder(view: View, private val commentItemListener: CommentItem
         itemView.timeText.text = comment.timeCreatedText
     }
 
+    /**
+     * load profile image
+     * @param comment comment object
+     */
     fun loadImages(comment: Comment) {
         commentItemListener.loadProfileImage(comment, 128, itemView.profileImage)
         itemView.profileImage.setOnClickListener {
             commentItemListener.openProfile(adapterPosition)
         }
+    }
+
+    /**
+     * static stuff
+     */
+    companion object {
+        val TAG: String = this::class.java.simpleName
     }
 }

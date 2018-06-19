@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.Keep
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_splash_actvity.*
 import rx.android.schedulers.AndroidSchedulers
@@ -51,7 +50,7 @@ class SplashActivity : AppCompatActivity() {
     private fun signInSilently() {
         showLoadingAnimation()
         hideErrorMessage()
-        splashActivityViewModel.signInSilently()
+        splashActivityViewModel.performSilentSignIn()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it) {
@@ -68,7 +67,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        splashActivityViewModel.signIn().subscribe({ resultCode ->
+        splashActivityViewModel.performLoudSignIn().subscribe({ resultCode ->
             if (resultCode == 0) {
                 hideLoadingAnimation()
                 openHomePage()
@@ -77,7 +76,6 @@ class SplashActivity : AppCompatActivity() {
             }
         }, { onError ->
             onError.printStackTrace()
-            Log.v(TAG, "Network Error")
             hideLoadingAnimation()
             showErrorMessage()
         })

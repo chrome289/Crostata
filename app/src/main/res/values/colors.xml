@@ -24,4 +24,5 @@
     <color name="grey_600">#757575</color>
     <color name="grey_500">#9e9e9e</color>
     <color name="blue_grey_500">#607d8b</color>
+    <color name="redTransparent">#2de53935</color>
 </resources>

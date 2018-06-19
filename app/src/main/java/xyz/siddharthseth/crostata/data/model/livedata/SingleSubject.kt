@@ -8,6 +8,8 @@ import android.util.Log
 import xyz.siddharthseth.crostata.data.model.retrofit.Subject
 import java.util.concurrent.atomic.AtomicBoolean
 
+
+//mutable subject for firing a one time event
 class SingleSubject : MutableLiveData<Subject>() {
     val TAG: String = javaClass.simpleName
 

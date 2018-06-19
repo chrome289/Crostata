@@ -122,7 +122,7 @@
     <string name="comment">Comment</string>
     <string name="refresh">Refresh</string>
     <string name="no_more_posts">No more posts</string>
-    <string name="terms_of_use_1">Crostata is the only, state approved, social networking service available for citizens of Palmyra.</string>
+    <string name="terms_of_use_1">Crostata is the only, state approved, social networking service available for the citizens of Palmyra.</string>
     <string name="terms_of_use_2">This service is being provided free of charge to all Palmyrene citizens.</string>
     <string name="terms_of_use_3">Use of any other social networking service is against the law and will be treated as an act of political dissidence.</string>
     <string name="terms_of_use_4">While using the service, the following points should be remembered:</string>
@@ -130,11 +130,15 @@
     <string name="terms_of_use_6">\u2022 All interactions-i.e., Posts &amp; Comments, by the user will be recorded and can be used to justify a future penalty.</string>
     <string name="terms_of_use_7">\u2022 Penalties can range from Patriot Index deductions to admittance in the President\'s Relocation Programme.</string>
     <string name="terms_of_use_8">\u2022 Content meant to spread political dissidence should be reported as soon as possible to the Internet Security Agency.</string>
-    <string name="terms_of_use_9">\u2022 The user whose content is deemed inappropriate by the Internet Security Agency, will be subject to such penalty as the committee thinks is a appropriate punishment.</string>
+    <string name="terms_of_use_9">\u2022 The user whose content is deemed inappropriate by the Internet Security Agency, will be subject to such penalty as the agency thinks is a appropriate punishment.</string>
     <string name="terms_of_use_10">\u2022 In event that the report is found to be valid, the reporter will be rewarded with Patriot Index points.</string>
     <string name="terms_of_use_11">Any future terms of use, that may be added here, will apply retroactively to all past interactions.</string>
     <string name="terms_of_use_12">By continuing to use this service, you agree to abide by these terms and will accept the consequences of violating them.</string>
     <string name="sample_birthid">067845504</string>
     <string name="sample_password">Password1</string>
     <string name="need_help">Need Help?</string>
+    <string name="settings">Settings</string>
+    <string name="location">Location</string>
+    <string name="post_total">%1$d likes</string>
+    <string name="comment_total">%1$d comments</string>
 </resources>

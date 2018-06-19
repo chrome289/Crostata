@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,8 +41,8 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //    Log.v(TAG, "onCreate")
 
+        //restore scroll position
         if (savedInstanceState != null) {
             scrollPositionData = savedInstanceState.getParcelable("ScrollPosition")
         }
@@ -54,9 +53,12 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         homeFeedViewModel.glide = GlideApp.with(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Log.v(TAG, "onCreateView")
         return inflater.inflate(R.layout.fragment_home_feed, container, false)
     }
 
@@ -67,50 +69,28 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onStart() {
         super.onStart()
-
-        addObservers()
         if (!isInitialized) {
+            initUi()
+        }
+        addObservers()
+    }
 
-            val manager = LinearLayoutManager(context)
-            manager.isItemPrefetchEnabled = true
-            if (scrollPositionData != null) {
-                manager.onRestoreInstanceState(scrollPositionData)
-            }
+    override fun onStop() {
+        super.onStop()
+        removeObservers()
+    }
 
-            val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
-            val modelProvider = MyPreloadModelProvider()
-            val preLoader = RecyclerViewPreloader<GlideUrl>(GlideApp.with(activity?.applicationContext!!), modelProvider, sizeProvider, 5)
-            recyclerView.addOnScrollListener(preLoader)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.layoutManager = manager
-            recyclerView.adapter = homeFeedViewModel.homeFeedAdapter
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    //pagination
-                    if (dy > 0) {
-                        checkMorePostsNeeded(recyclerView)
-                    }
-                }
-            })
+    override fun onResume() {
+        super.onResume()
 
-            swipeRefresh.setOnRefreshListener {
-                homeFeedViewModel.refreshData()
-            }
-
+        if (!isInitialized) {
             homeFeedViewModel.getPosts()
             isInitialized = true
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.v(TAG, "onstop")
-        removeObservers()
-    }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        Log.v(TAG, "onattach")
         mListener = if (context is PostInteractionListener) {
             context
         } else {
@@ -120,25 +100,72 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
 
     override fun onDetach() {
         super.onDetach()
-        Log.v(TAG, "ondetach")
         mListener = null
     }
 
+    private fun initUi() {
+        val manager = LinearLayoutManager(context)
+        manager.isItemPrefetchEnabled = true
+        if (scrollPositionData != null) {
+            manager.onRestoreInstanceState(scrollPositionData)
+        }
+
+        val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
+        val modelProvider = MyPreloadModelProvider()
+        val preLoader = RecyclerViewPreloader<GlideUrl>(GlideApp.with(activity?.applicationContext!!), modelProvider, sizeProvider, 5)
+
+        recyclerView.addOnScrollListener(preLoader)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = homeFeedViewModel.postFeedAdapter
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                //pagination
+                if (dy > 0) {
+                    checkMorePostsNeeded(recyclerView)
+                }
+            }
+        })
+
+        swipeRefresh.setOnRefreshListener {
+            homeFeedViewModel.refreshData()
+        }
+
+    }
+
+    //observers
+    //add helper
+    private fun addObservers() {
+        homeFeedViewModel.mutablePost.observe(this, observer)
+        homeFeedViewModel.mutableSubject.observe(this, observerSubject)
+        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
+    }
+
+    //remove helper
+    private fun removeObservers() {
+        homeFeedViewModel.mutablePost.removeObserver(observer)
+        homeFeedViewModel.mutableSubject.removeObserver(observerSubject)
+        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
+        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
+    }
+
+    //observer for selected post
     private val observer: Observer<Post> = Observer {
-        Log.v(TAG, "observer called")
         if (it != null) {
-            Log.v(TAG, "fragment click listener")
             mListener?.openFullPost(it)
         }
     }
 
+    //observer for selected profile
     private val observerSubject: Observer<Subject> = Observer {
-        Log.v(TAG, "birthid observer called")
         if (it != null) {
             mListener?.openProfile(it.birthId, it.name)
         }
     }
 
+    //observer for busy loader config
     private val observerLoaderConfig: Observer<List<Boolean>> = Observer {
         if (it != null) {
             if (!it[0]) {
@@ -148,6 +175,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //observer with net status change
     private val observerNetStatus: Observer<Boolean> = Observer {
         if (it != null) {
             if (it && homeFeedViewModel.isLoadPending) {
@@ -157,6 +185,7 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //check if more posts are needed on scroll
     private fun checkMorePostsNeeded(recyclerView: RecyclerView) {
         val layoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
         if (layoutManager.itemCount <=
@@ -165,37 +194,22 @@ class HomeFeedFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun addObservers() {
-        homeFeedViewModel.mutablePost.observe(this, observer)
-        homeFeedViewModel.mutableSubject.observe(this, observerSubject)
-        homeFeedViewModel.mutableLoaderConfig.observe(this, observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.observe(this, observerNetStatus)
-    }
-
-    private fun removeObservers() {
-        homeFeedViewModel.mutablePost.removeObserver(observer)
-        homeFeedViewModel.mutableSubject.removeObserver(observerSubject)
-        homeFeedViewModel.mutableLoaderConfig.removeObserver(observerLoaderConfig)
-        mListener!!.mutableNetStatusChanged.removeObserver(observerNetStatus)
-    }
-
     private lateinit var homeFeedViewModel: HomeFeedViewModel
     private var mListener: PostInteractionListener? = null
-    private var isInitialized: Boolean = false
-    private val toleranceEndlessScroll = 3
     private var scrollPositionData: Parcelable? = null
+    private var isInitialized: Boolean = false
 
     companion object {
+        private const val toleranceEndlessScroll = 3
         private val TAG: String = HomeFeedFragment::class.java.simpleName
         fun newInstance(): HomeFeedFragment {
-            Log.v(TAG, "new fragment requested")
             return HomeFeedFragment()
         }
     }
 
     private inner class MyPreloadModelProvider : PreloadModelProvider<GlideUrl> {
         override fun getPreloadItems(position: Int): MutableList<GlideUrl> {
-            val post = homeFeedViewModel.homeFeedAdapter.postList[position]
+            val post = homeFeedViewModel.postFeedAdapter.postList[position]
             val glideUrl = GlideUrl(context!!.getString(R.string.server_url) +
                     "subject/profileImage?birthId=" + post.creatorId + "&dimen=640&quality=80"
                     , LazyHeaders.Builder()

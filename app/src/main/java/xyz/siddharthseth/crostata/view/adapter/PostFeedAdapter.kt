@@ -11,14 +11,10 @@ import xyz.siddharthseth.crostata.view.adapter.viewholder.FooterViewHolder
 import xyz.siddharthseth.crostata.view.adapter.viewholder.PostViewHolder
 import java.util.*
 
-class HomeFeedAdapter(private val postItemListener: PostItemListener, private val footerListener: FooterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var postList = ArrayList<Post>()
-    val TAG: String = javaClass.simpleName
-    private val itemView = 1
-    private val footerView = 2
-    var isSecondLoaderVisible = false
-    var isErrorVisible = false
-    var isEndVisible: Boolean = false
+/**
+ *adapter for post feed
+ */
+class PostFeedAdapter(private val postItemListener: PostItemListener, private val footerListener: FooterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == itemView) {
@@ -66,5 +62,17 @@ class HomeFeedAdapter(private val postItemListener: PostItemListener, private va
 
     override fun getItemCount(): Int {
         return postList.size
+    }
+
+    var postList = ArrayList<Post>()
+    var isSecondLoaderVisible = false
+    var isErrorVisible = false
+    var isEndVisible: Boolean = false
+
+    //static stuff
+    companion object {
+        private val TAG: String = this::class.java.simpleName
+        private const val itemView = 1
+        private const val footerView = 2
     }
 }

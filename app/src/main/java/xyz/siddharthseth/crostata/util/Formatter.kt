@@ -1,9 +1,16 @@
 package xyz.siddharthseth.crostata.util
 
-class CurrencyFormatter {
+/**
+ * formatter class for misc things
+ */
+class Formatter {
     companion object {
-
-        internal fun commaSeparated(amount: Long): String {
+        /**
+         * format currency in US format
+         * @param amount the amount
+         * @return 123456789 -> P$ 123,456,789
+         */
+        internal fun currencyCommaSeparated(amount: Long): String {
             val str = StringBuilder(amount.toString())
             var x = amount.toString().length
 

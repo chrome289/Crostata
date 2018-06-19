@@ -10,15 +10,19 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Post() : Comparable<Post>, Parcelable, Cloneable {
+
+    //cover class for getting requestid from the list
     class PostGlove {
         var requestId: String = ""
         var list: List<Post> = ArrayList()
     }
 
+    //cloneable
     override fun clone(): Post {
         return super.clone() as Post
     }
 
+    //equals implementation, using only some attributes
     override fun equals(other: Any?): Boolean {
         other as Post
         if (_id != other._id)
@@ -32,10 +36,12 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         return true
     }
 
+    //for serialization
     override fun describeContents(): Int {
         return 0
     }
 
+    //for serialization
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(_id)
         parcel.writeString(creatorName)
@@ -54,6 +60,7 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         parcel.writeSerializable(date)
     }
 
+    //sort by time created
     override fun compareTo(other: Post): Int {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")
@@ -68,6 +75,7 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         }
     }
 
+    //hashcode implementation
     override fun hashCode(): Int {
         var result = _id.hashCode()
         result = 31 * result + creatorName.hashCode()
@@ -100,13 +108,14 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
     var opinion = Int.MAX_VALUE
     var imageId = ""
 
+    //generated attributes
     lateinit var timeCreatedText: String
     lateinit var date: Date
     lateinit var glideUrl: GlideUrl
     lateinit var glideUrlThumb: GlideUrl
     lateinit var glideUrlProfileThumb: GlideUrl
 
-
+    //for serialization
     constructor(parcel: Parcel) : this() {
         _id = parcel.readString()
         creatorName = parcel.readString()
@@ -126,17 +135,17 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         date = parcel.readSerializable() as Date
     }
 
+    //get timestamp
     fun getTimestamp(): Long {
-        calendar.timeZone = TimeZone.getTimeZone("UTC")
-        calendar.time = date
-
-        return calendar.timeInMillis
+        return date.time
     }
 
+    //set date
     private fun setDate() {
         date = inputFormat.parse(timeCreated)
     }
 
+    //use tiemago to create relative timespan strings
     private fun setTimeCreatedText() {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = date
@@ -144,6 +153,7 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         timeCreatedText = TimeAgo.using(calendar.timeInMillis)
     }
 
+    //set glide url attribute for posted image
     private fun setGlideUrl(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrl = GlideUrl(baseUrl +
                 "content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
@@ -152,6 +162,7 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
                 .build())
     }
 
+    //set glide url attribute for posted image thumb
     private fun setGlideUrlThumb(baseUrl: String, dimen: Int, quality: Int, token: String) {
         glideUrlThumb = GlideUrl(baseUrl +
                 "content/postedImage?imageId=$imageId&dimen=$dimen&quality=$quality"
@@ -168,12 +179,14 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
                 .build())
     }
 
+    //init extra attributes
     fun initExtraInfo(baseUrl: String, token: String) {
         setDate()
         setTimeCreatedText()
         setGlideUrls(baseUrl, token)
     }
 
+    //set glide urls
     private fun setGlideUrls(baseUrl: String, token: String) {
         val dimen = 640
         val dimen2 = 64
@@ -184,10 +197,13 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
         setGlideUrlProfileThumb(baseUrl, dimen2, quality, token)
     }
 
+    //static stuff
     companion object CREATOR : Parcelable.Creator<Post> {
         private val calendar = Calendar.getInstance()
         private val calendar2 = Calendar.getInstance()
         private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        const val MESSAGE_SUBMITTED: String= "Post submitted."
+        const val MESSAGE_NOT_SUBMITTED: String= "Post not submitted. Try Again."
 
         override fun createFromParcel(parcel: Parcel): Post {
             return Post(parcel)
@@ -197,6 +213,7 @@ class Post() : Comparable<Post>, Parcelable, Cloneable {
             return arrayOfNulls(size)
         }
 
+        //deep copy list
         fun cloneList(postList: ArrayList<Post>): java.util.ArrayList<Post> {
             val newList = ArrayList<Post>()
             for (post in postList) {

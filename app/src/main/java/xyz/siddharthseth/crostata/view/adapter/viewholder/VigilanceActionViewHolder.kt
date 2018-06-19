@@ -7,11 +7,19 @@ import xyz.siddharthseth.crostata.R
 import xyz.siddharthseth.crostata.data.model.VigilanceAction
 import xyz.siddharthseth.crostata.util.recyclerView.VigilanceActionListener
 
+/**
+ * viewholder for vigilance action
+ */
 class VigilanceActionViewHolder(itemView: View, vigilanceActionListener: VigilanceActionListener) : RecyclerView.ViewHolder(itemView) {
 
+    //colors
     private val positiveColor = vigilanceActionListener.positiveColorTint
     private val negativeColor = vigilanceActionListener.negativeColorTint
 
+    /**
+     * init vigilance action
+     * @param vigilanceAction vigilance action
+     */
     fun init(vigilanceAction: VigilanceAction) {
         itemView.actionPolarity.setImageResource(
                 if (vigilanceAction.isPositive)

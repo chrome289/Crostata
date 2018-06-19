@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Report : Comparable<Report>, Cloneable {
+
     override fun compareTo(other: Report): Int {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar2.timeZone = TimeZone.getTimeZone("UTC")
@@ -23,28 +24,32 @@ class Report : Comparable<Report>, Cloneable {
         return super.clone() as Report
     }
 
-    lateinit var _id: String
+    var _id: String = ""
     var timeCreated = ""
-    lateinit var contentId: String
+    var contentId: String = ""
     var contentType: Int = 0
-    lateinit var creatorId: String
-    lateinit var reporterId: String
+    var creatorId: String = ""
+    var creatorName: String = ""
+    var reporterId: String = ""
     var isReviewed: Boolean = false
     var isAccepted: Boolean = false
-    lateinit var creatorName: String
 
+    //generated attributes
     lateinit var date: Date
     lateinit var timeCreatedText: String
 
+    //set date
     private fun setDate() {
         date = inputFormat.parse(timeCreated)
     }
 
+    //init extra attributes
     fun initExtraInfo() {
         setDate()
         setTimeCreatedText()
     }
 
+    //use tiemago to create relative timespan strings
     private fun setTimeCreatedText() {
         calendar.timeZone = TimeZone.getTimeZone("UTC")
         calendar.time = date
@@ -52,10 +57,15 @@ class Report : Comparable<Report>, Cloneable {
         timeCreatedText = TimeAgo.using(calendar.timeInMillis).capitalize()
     }
 
+    //static stuff
     companion object {
         private val calendar = Calendar.getInstance()
         private val calendar2 = Calendar.getInstance()
         private val inputFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US)
+        const val MESSAGE_SUBMITTED: String = "Report submitted successfully"
+        const val MESSAGE_NOT_SUBMITTED: String = "Report not submitted. Try again."
+
+        //deep copy list
         fun cloneList(reportList: ArrayList<Report>): ArrayList<Report> {
             val newList = ArrayList<Report>()
             for (report in reportList) {

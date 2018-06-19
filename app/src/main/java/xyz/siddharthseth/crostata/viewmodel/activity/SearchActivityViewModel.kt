@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.support.v7.util.DiffUtil
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Priority
@@ -25,6 +24,9 @@ import xyz.siddharthseth.crostata.util.recyclerView.FooterListener
 import xyz.siddharthseth.crostata.util.recyclerView.SearchResultListener
 import xyz.siddharthseth.crostata.view.adapter.SearchResultAdapter
 
+/**
+ * viewmodel for search activity
+ */
 class SearchActivityViewModel(application: Application) : AndroidViewModel(application), SearchResultListener, FooterListener {
     override fun reloadSecondary() {
         getNextSearchResults()
@@ -48,7 +50,22 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
                 .into(imageView)
     }
 
-    private fun fetchSearchResults() {
+    override fun updateSearchResultList() {
+        val diffUtil = DiffUtil.calculateDiff(
+                SearchResultDiffUtilCallback(searchResultAdapter.searchResultList, searchResultList))
+        searchResultAdapter.searchResultList.clear()
+        searchResultAdapter.searchResultList = SearchResult.cloneList(searchResultList)
+        after = if (searchResultList.size < 2) {
+            0
+        } else {
+            searchResultList.size
+        }
+        diffUtil.dispatchUpdatesTo(searchResultAdapter)
+
+        setLoaderLiveData(false, false, false, false)
+    }
+
+    override fun fetchSearchResults() {
         isSearchRequestSent = true
         hasNewItems = false
         contentRepository.getSearchResults(token, searchText)
@@ -64,7 +81,7 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
                 )
     }
 
-    private fun fetchNextSearchResults() {
+    override fun fetchNextSearchResults() {
         isSearchRequestSent = true
         hasNewItems = false
         contentRepository.getSearchResults(token, requestId, searchText, after)
@@ -84,6 +101,9 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
 
     }
 
+    /**
+     * callback for onComplete
+     */
     private fun onRequestComplete() {
         isSearchResultsAvailable = true
         isSearchRequestSent = false
@@ -96,12 +116,18 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * callback for onError
+     */
     private fun onRequestError(throwable: Throwable, isSecondary: Boolean) {
         throwable.printStackTrace()
         setLoaderLiveData(true, false, true, isSecondary)
         isSearchRequestSent = false
     }
 
+    /**
+     * callback for onNext
+     */
     private fun onRequestNext(searchResult: SearchResult) {
         val context: Context = getApplication()
         searchResult.initExtraInfo(context.getString(R.string.server_url), token)
@@ -109,6 +135,9 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         searchResultList.add(if (searchResultList.size == 0) 0 else searchResultList.size - 1, searchResult)
     }
 
+    /**
+     * clear and reset everything
+     */
     fun clearList() {
         searchText = ""
         isLoadPending = false
@@ -122,6 +151,9 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         updateSearchResultList()
     }
 
+    /**
+     * helper for getting initial results
+     */
     fun getSearchResults() {
         setLoaderLiveData(true, true, false, false)
         if (isSearchResultsAvailable) {
@@ -133,6 +165,9 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * helper for getting next results
+     */
     fun getNextSearchResults() {
         if (!isSearchRequestSent && !hasReachedEnd) {
             setLoaderLiveData(true, true, false, true)
@@ -140,23 +175,14 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    private fun updateSearchResultList() {
-        val diffUtil = DiffUtil.calculateDiff(
-                SearchResultDiffUtilCallback(searchResultAdapter.searchResultList, searchResultList))
-        searchResultAdapter.searchResultList.clear()
-        searchResultAdapter.searchResultList = SearchResult.cloneList(searchResultList)
-        after = if (searchResultList.size < 2) {
-            0
-        } else {
-            searchResultList.size
-        }
-        diffUtil.dispatchUpdatesTo(searchResultAdapter)
-
-        setLoaderLiveData(false, false, false, false)
-    }
-
+    /**
+     * set busy loader config
+     * @param isLoaderVisible is loader layout visible
+     * @param isAnimationVisible is animation visible
+     * @param isErrorVisible is error visible
+     * @param setSecondary is secondary loader visible
+     */
     private fun setLoaderLiveData(isLoaderVisible: Boolean, isAnimationVisible: Boolean, isErrorVisible: Boolean, setSecondary: Boolean) {
-        Log.d(TAG, "setLoaderVisibility $isLoaderVisible $isAnimationVisible $isErrorVisible")
         isLoadPending = isLoaderVisible
 
         val tempList = ArrayList<Boolean>()
@@ -172,6 +198,9 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
+    /**
+     * check if internet is available
+     */
     fun checkNetworkAvailable() {
         if (!isServerStatusRequestSent) {
             isServerStatusRequestSent = true
@@ -190,29 +219,32 @@ class SearchActivityViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    var TAG: String = javaClass.simpleName
 
     private val contentRepository = ContentRepositoryProvider.getContentRepository()
     private val sharedPreferencesService = SharedPreferencesService()
     private val token = sharedPreferencesService.getToken(application)
-
-    var searchResultAdapter: SearchResultAdapter = SearchResultAdapter(this, this)
-    private var searchResultList = ArrayList<SearchResult>()
-    var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
     lateinit var glide: GlideRequests
-    var mutableProfile = SingleSubject()
+    var searchResultAdapter: SearchResultAdapter = SearchResultAdapter(this, this)
 
-    var searchText: String = ""
-    private var requestId: String = ""
-    private var after: Int = -1
+    //static stuff
+    companion object {
+        var TAG: String = this::class.java.simpleName
+        private var searchResultList = ArrayList<SearchResult>()
+        var mutableLoaderConfig = MutableLiveData<List<Boolean>>()
+        var mutableProfile = SingleSubject()
 
-    private var isLoadPending = false
-    private var isSearchRequestSent = false
-    private var isServerStatusRequestSent = false
-    private var isSearchResultsAvailable = false
-    private var hasReachedEnd = false
-    private var hasNewItems = false
-    var isDetailActivityOpen: Boolean = false
+        var searchText: String = ""
+        private var requestId: String = ""
+        private var after: Int = -1
+
+        private var isLoadPending = false
+        private var isSearchRequestSent = false
+        private var isServerStatusRequestSent = false
+        private var isSearchResultsAvailable = false
+        private var hasReachedEnd = false
+        private var hasNewItems = false
+        var isDetailActivityOpen: Boolean = false
+    }
 
     init {
         searchResultAdapter.setHasStableIds(true)
