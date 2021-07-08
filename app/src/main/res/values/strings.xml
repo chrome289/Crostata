@@ -29,7 +29,7 @@
     <string name="content_image">content image</string>
     <string name="down_like_button">down like button</string>
     <string name="brplogo">brpLogo</string>
-    <string name="server_url">http://crostata-env.ap-south-1.elasticbeanstalk.com/api/v1/</string>
+    <string name="server_url">http://192.168.1.123:3000/api/v1/</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="toolbar_add_post">New Post</string>
@@ -139,6 +139,9 @@
     <string name="need_help">Need Help?</string>
     <string name="settings">Settings</string>
     <string name="location">Location</string>
-    <string name="post_total">%1$d likes</string>
-    <string name="comment_total">%1$d comments</string>
+    <string name="post_total">%1$d</string>
+    <string name="comment_total">%1$d</string>
+    <string name="key_app_theme" />
+    <string name="baseurl">http://192.168.1.123:3000/api/v1/</string>
+    <string name="sample_tweet"><![CDATA[\@Maryann_Schneider16 @Francisco94 @Judith_Schiller10 @Kristy29 Congratulations Ethan &amp; Snore and Cough! 🥳]]></string>
 </resources>

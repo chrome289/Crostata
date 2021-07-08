@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="-100dp"
+        android:right="-100dp">
+        <rotate
+            android:fromDegrees="90"
+            android:toDegrees="90">
+            <shape android:shape="line">
+                <stroke
+                    android:width="1dp"
+                    android:color="@color/textColorPrimary"
+                    android:dashWidth="7dp"
+                    android:dashGap="7dp" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>

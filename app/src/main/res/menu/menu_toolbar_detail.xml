@@ -1,2 +1,2 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="xyz.siddharthseth.crostata.view.ui.activity.DetailActivity" />
+    tools:context=".ui.view.ui.activity.DetailActivity" />
