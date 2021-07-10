@@ -5,4 +5,19 @@
         android:icon="@drawable/ic_home_white_24dp"
         android:orderInCategory="0"
         android:title="Home" />
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/ic_magnify_white_24dp"
+        android:orderInCategory="0"
+        android:title="Search" />
+    <item
+        android:id="@+id/mentionsFragment"
+        android:icon="@drawable/ic_tag_faces_white_24dp"
+        android:orderInCategory="0"
+        android:title="Mentions" />
+    <item
+        android:id="@+id/messagingFragment"
+        android:icon="@drawable/ic_chat_processing_outline_white_24dp"
+        android:orderInCategory="0"
+        android:title="Messages" />
 </menu>

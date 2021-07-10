@@ -26,11 +26,11 @@
         android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            android:id="@+id/action_homeFragment_to_profileActivity"
+            app:destination="@id/profileActivity" />
         <action
-            android:id="@+id/action_homeFragment_to_postFragment"
-            app:destination="@id/postFragment" />
+            android:id="@+id/action_homeFragment_to_postActivity"
+            app:destination="@id/postActivity" />
     </fragment>
     <action
         android:id="@+id/action_global_navigation_signup"
@@ -41,22 +41,21 @@
         android:name="xyz.siddharthseth.crostata.ui.view.fragment.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="xyz.siddharthseth.crostata.ui.view.fragment.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile">
-        <action
-            android:id="@+id/action_profileFragment_to_postFragment"
-            app:destination="@id/postFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/postFragment"
-        android:name="xyz.siddharthseth.crostata.ui.view.fragment.PostFragment"
-        android:label="fragment_post"
-        tools:layout="@layout/fragment_post">
-        <action
-            android:id="@+id/action_postFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
+    <activity
+        android:id="@+id/profileActivity"
+        android:name="xyz.siddharthseth.crostata.ui.view.activity.ProfileActivity"
+        android:label="activity_profile"
+        tools:layout="@layout/activity_profile">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </activity>
+    <activity
+        android:id="@+id/postActivity"
+        android:name="xyz.siddharthseth.crostata.ui.view.activity.PostActivity"
+        android:label="PostActivity">
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </activity>
 </navigation>

@@ -49,6 +49,7 @@
         android:id="@+id/textViewFeedPostCreatorName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
@@ -107,10 +108,9 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardFeedPostContent"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:cardCornerRadius="16dp"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/textViewFeedPostContent"
         app:layout_constraintStart_toStartOf="@id/textViewFeedPostContent"
         app:layout_constraintTop_toBottomOf="@id/textViewFeedPostContent">
@@ -118,9 +118,9 @@
         <ImageView
             android:id="@+id/imageViewFeedPostContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/content_image"
-            android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
     </com.google.android.material.card.MaterialCardView>
 

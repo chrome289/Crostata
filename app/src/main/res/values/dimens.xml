@@ -16,5 +16,6 @@
     <dimen name="margin_vertical">24dp</dimen>
     <dimen name="margin_vertical_large">36dp</dimen>
     <dimen name="margin_vertical_larger">54dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

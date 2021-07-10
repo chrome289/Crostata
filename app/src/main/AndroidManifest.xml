@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,7 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="xyz.siddharthseth.crostata.ui.view.activity.MainActivity"
+            android:name=".ui.view.activity.PostActivity"
+            android:label="@string/title_activity_post"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.view.activity.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.view.activity.MainActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -37,7 +44,6 @@
                     android:pathPattern="/user/@.*"
                     android:scheme="crostata" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -50,6 +56,7 @@
                     android:scheme="crostata" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

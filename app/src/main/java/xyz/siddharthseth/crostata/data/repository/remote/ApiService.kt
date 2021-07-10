@@ -8,15 +8,31 @@ import xyz.siddharthseth.crostata.domain.model.remote.JsonResponse
 
 interface ApiService {
 
-    @GET("users/{userId}/feed")
+    @GET("feed/{userId}/posts")
+    suspend fun getProfileFeed(
+        @Path("userId") userId: String,
+        @Query("cursor") cursor: String?
+    ): Response<JsonResponse>
+
+    @GET("feed/{userId}")
     suspend fun getFeed(
         @Path("userId") userId: String,
         @Query("cursor") cursor: String?
     ): Response<JsonResponse>
 
-    @GET("users/{userId}")
+    @GET("users/{username}?username=1")
+    suspend fun getProfileByUsername(
+        @Path("username") username: String,
+    ): Response<JsonResponse>
+
+    @GET("users/{userId}?username=0")
     suspend fun getProfile(
         @Path("userId") userId: String,
     ): Response<JsonResponse>
 
+    @GET("posts/{postId}")
+    suspend fun getPost(
+        @Path("postId") postId: String,
+        @Query("cursor") cursor: String?
+    ): Response<JsonResponse>
 }

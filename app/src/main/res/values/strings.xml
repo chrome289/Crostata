@@ -144,4 +144,14 @@
     <string name="key_app_theme" />
     <string name="baseurl">http://192.168.1.123:3000/api/v1/</string>
     <string name="sample_tweet"><![CDATA[\@Maryann_Schneider16 @Francisco94 @Judith_Schiller10 @Kristy29 Congratulations Ethan &amp; Snore and Cough! 🥳]]></string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_post">Post Activity</string>
 </resources>

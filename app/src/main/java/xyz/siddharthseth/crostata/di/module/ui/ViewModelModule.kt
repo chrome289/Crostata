@@ -7,8 +7,9 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import xyz.siddharthseth.crostata.di.scope.ViewModelKey
 import xyz.siddharthseth.crostata.ui.viewmodel.activity.MainActivityViewModel
+import xyz.siddharthseth.crostata.ui.viewmodel.activity.PostActivityViewModel
+import xyz.siddharthseth.crostata.ui.viewmodel.activity.ProfileActivityViewModel
 import xyz.siddharthseth.crostata.ui.viewmodel.fragment.HomeFragmentViewModel
-import xyz.siddharthseth.crostata.ui.viewmodel.fragment.ProfileFragmentViewModel
 import xyz.siddharthseth.crostata.util.CustomViewModelFactory
 
 
@@ -29,7 +30,12 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ProfileFragmentViewModel::class)
-    internal abstract fun profileFragmentViewModel(viewModel: ProfileFragmentViewModel): ViewModel
+    @ViewModelKey(ProfileActivityViewModel::class)
+    internal abstract fun profileActivityViewModel(viewModel: ProfileActivityViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PostActivityViewModel::class)
+    internal abstract fun postFragmentViewModel(viewModel: PostActivityViewModel): ViewModel
 
 }

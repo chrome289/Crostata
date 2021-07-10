@@ -12,10 +12,7 @@ import xyz.siddharthseth.crostata.data.dao.remote.ApiManager
 import xyz.siddharthseth.crostata.data.repository.local.UserRepository
 import xyz.siddharthseth.crostata.data.repository.local.disk.StorageRepository
 import xyz.siddharthseth.crostata.di.module.*
-import xyz.siddharthseth.crostata.di.module.ui.ActivityModule
-import xyz.siddharthseth.crostata.di.module.ui.FragmentModule
-import xyz.siddharthseth.crostata.di.module.ui.MainActivityModule
-import xyz.siddharthseth.crostata.di.module.ui.ViewModelModule
+import xyz.siddharthseth.crostata.di.module.ui.*
 import xyz.siddharthseth.crostata.di.module.usecase.FeedUseCaseModule
 import xyz.siddharthseth.crostata.di.scope.AppScope
 import xyz.siddharthseth.crostata.util.TimeConverter
@@ -27,6 +24,8 @@ import xyz.siddharthseth.crostata.util.TimeConverter
         (AndroidSupportInjectionModule::class),
 
         (MainActivityModule::class),
+        (ProfileActivityModule::class),
+        (PostActivityModule::class),
 
         (AppModule::class),
         (NetworkModule::class),

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutFeedPostCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textViewFeedPostRecommended"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:scaleType="centerInside"
+        android:text="Recommended Post"
+        android:textAppearance="@style/Text.Caption"
+        android:textColor="@color/colorAccent"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/ic_star_white_18dp"
+        app:drawableTint="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardFeedPostProfileImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewFeedPostCreatedAt"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewFeedPostCreatorName">
+
+        <ImageView
+            android:id="@+id/imageViewFeedPostProfileImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/profile_image"
+            android:scaleType="centerCrop"
+            app:srcCompat="@color/colorGrey"
+            tools:srcCompat="@tools:sample/avatars" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/textViewFeedPostCreatorName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="@string/sample_name"
+        android:textAppearance="@style/Text.SubHeading"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonFeedPostMenu"
+        app:layout_constraintStart_toEndOf="@id/cardFeedPostProfileImage"
+        app:layout_constraintTop_toBottomOf="@id/textViewFeedPostRecommended" />
+
+    <TextView
+        android:id="@+id/textViewFeedPostCreatedAt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:text="@string/sample_time"
+        android:textAppearance="@style/Text.Caption"
+        app:layout_constraintEnd_toEndOf="@id/textViewFeedPostCreatorName"
+        app:layout_constraintStart_toStartOf="@id/textViewFeedPostCreatorName"
+        app:layout_constraintTop_toBottomOf="@id/textViewFeedPostCreatorName" />
+
+    <ImageButton
+        android:id="@+id/imageButtonFeedPostMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/white"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="@id/textViewFeedPostCreatedAt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewFeedPostCreatorName"
+        app:srcCompat="@drawable/ic_dots_vertical_white_36dp"
+        app:tint="@color/grey_500" />
+
+    <TextView
+        android:id="@+id/textViewFeedPostContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:textAppearance="@style/Text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardFeedPostProfileImage"
+        tools:text="@string/sample_tweet" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardFeedPostContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="@id/textViewFeedPostContent"
+        app:layout_constraintStart_toStartOf="@id/textViewFeedPostContent"
+        app:layout_constraintTop_toBottomOf="@id/textViewFeedPostContent">
+
+        <ImageView
+            android:id="@+id/imageViewFeedPostContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_image"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <ImageButton
+        android:id="@+id/buttonFeedPostLike"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/like"
+        android:padding="0dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_heart_outline_white_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewFeedPostLikeCount"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/textViewFeedPostContent"
+        app:layout_constraintTop_toTopOf="@id/textViewFeedPostLikeCount"
+        app:tint="@color/colorBlue" />
+
+    <TextView
+        android:id="@+id/textViewFeedPostLikeCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text="@string/_123"
+        android:textAppearance="@style/Text.Caption"
+        android:textColor="@color/colorBlue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonFeedPostLike"
+        app:layout_constraintTop_toBottomOf="@id/cardFeedPostContent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/buttonFeedPostComment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/comment"
+        android:padding="0dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_comment_text_outline_white_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewFeedPostCommentCount"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toEndOf="@id/textViewFeedPostLikeCount"
+        app:layout_constraintTop_toTopOf="@id/textViewFeedPostCommentCount"
+        app:tint="@color/colorYellow" />
+
+    <TextView
+        android:id="@+id/textViewFeedPostCommentCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="72"
+        android:textAppearance="@style/Text.Caption"
+        android:textColor="@color/colorYellow"
+        app:layout_constraintStart_toEndOf="@id/buttonFeedPostComment"
+        app:layout_constraintTop_toBottomOf="@id/cardFeedPostContent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

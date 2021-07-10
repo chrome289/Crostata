@@ -7,10 +7,17 @@ import xyz.siddharthseth.crostata.domain.model.User
 import javax.inject.Inject
 
 class GetProfileUseCase @Inject constructor(var apiManager: ApiManager) {
-    suspend fun execute(userId: String): User {
-        val response = apiManager.getProfile(userId).body()
-        var adapter: JsonAdapter<User> = Moshi.Builder().build().adapter(User::class.java)
-        adapter = adapter.lenient()
-        return adapter.fromJsonValue(response?.data)!!
+    suspend fun execute(resource: String, isUsername: Boolean): User? {
+        return if (!isUsername) {
+            val response = apiManager.getProfile(resource).body()
+            var adapter: JsonAdapter<User> = Moshi.Builder().build().adapter(User::class.java)
+            adapter = adapter.lenient()
+            adapter.fromJsonValue(response?.data)
+        } else {
+            val response = apiManager.getProfileByUsername(resource).body()
+            var adapter: JsonAdapter<User> = Moshi.Builder().build().adapter(User::class.java)
+            adapter = adapter.lenient()
+            adapter.fromJsonValue(response?.data)
+        }
     }
 }

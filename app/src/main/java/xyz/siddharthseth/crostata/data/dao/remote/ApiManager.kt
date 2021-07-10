@@ -15,6 +15,18 @@ class ApiManager(
         return apiService.getFeed(userId, cursor)
     }
 
+    suspend fun getProfileFeed(userId: String, cursor: String?): Response<JsonResponse> {
+        return apiService.getProfileFeed(userId, cursor)
+    }
+
+    suspend fun getPost(postId: String, cursor: String?): Response<JsonResponse> {
+        return apiService.getPost(postId, cursor)
+    }
+
+    suspend fun getProfileByUsername(username: String): Response<JsonResponse> {
+        return apiService.getProfileByUsername(username)
+    }
+
     suspend fun getProfile(userId: String): Response<JsonResponse> {
         return apiService.getProfile(userId)
     }

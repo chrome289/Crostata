@@ -14,7 +14,7 @@ import xyz.siddharthseth.crostata.data.dao.remote.ApiManager
 import xyz.siddharthseth.crostata.domain.model.remote.FeedPost
 import xyz.siddharthseth.crostata.domain.usecase.feed.GetFeedUseCase
 import xyz.siddharthseth.crostata.ui.adapter.FeedRecyclerViewAdapter
-import xyz.siddharthseth.crostata.ui.paging.PostPagingSource
+import xyz.siddharthseth.crostata.ui.paging.FeedPagingSource
 import xyz.siddharthseth.crostata.util.TimeConverter
 import javax.inject.Inject
 
@@ -26,13 +26,14 @@ class HomeFragmentViewModel
     private val getFeedUseCase: GetFeedUseCase,
     sharedPreferencesDao: SharedPreferencesDao
 ) : ViewModel() {
+
     fun syncPosts(): Flow<PagingData<FeedPost>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10
             ),
             pagingSourceFactory = {
-                PostPagingSource(apiManager = apiManager)
+                FeedPagingSource(apiManager = apiManager)
             }
         ).flow.cachedIn(viewModelScope)
     }

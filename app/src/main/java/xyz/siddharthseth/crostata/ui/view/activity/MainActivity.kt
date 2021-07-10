@@ -22,16 +22,21 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null) {
             intent.data?.path?.let {
-                if (it.contains("/user/@"))
+                if (it.contains("/user/@")) {
+                    val bundle = Bundle()
+                    bundle.putString("userId", it.substring(it.indexOf("@") + 1))
                     findNavController(R.id.navHostFragment).navigate(
-                        R.id.profileFragment,
-                        intent.extras
+                        R.id.profileActivity,
+                        bundle
                     )
-                if (it.contains("/post/@"))
+                }
+                if (it.contains("/post/@")) {
+                    val bundle = Bundle()
+                    bundle.putString("postId", it.substring(it.indexOf("@") + 1))
                     findNavController(R.id.navHostFragment).navigate(
-                        R.id.postFragment,
-                        intent.extras
+                        R.id.postActivity, bundle
                     )
+                }
             }
         }
     }
